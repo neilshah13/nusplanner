@@ -26,10 +26,11 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
 .header-login-signup{
 	background-color:#292c2f;
 	box-shadow:0 1px 1px #ccc;
-	padding: 10px 40px;
+	padding: 10px;
 	height: 60px;
 	color: #ffffff;
 	box-sizing: border-box;
@@ -99,6 +100,7 @@ export default {
 	display: inline-block;
 	margin-left: 15px;
 	opacity:0.9;
+	margin-top: 10px;
 }
 
 .header-login-signup .header-limiter ul li:hover{
