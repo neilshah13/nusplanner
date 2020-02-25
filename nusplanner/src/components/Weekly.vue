@@ -4,7 +4,7 @@
       <v-sheet height="150">
 <!-- add event -->
         <v-btn color = "primary" class="mr-4" @click="dialog = true">New Event</v-btn>
-<!-- <div class="text-center"> <!-- for the title to be in middle -->
+<!-- <div class="text-center">  for the title to be in middle -->
 <!-- prev week -->
         <v-btn fab text small color="grey darken-2" @click="prev">
             <v-icon text small>mdi-chevron-left</v-icon>
@@ -18,7 +18,7 @@ Title
         </v-btn>
 
 <!-- to pick view of month/week/day -->
-<!-- <div class="text-right"> <!-- for view button to be on the right -->
+<!-- <div class="text-right"> for view button to be on the right -->
         <v-menu bottom right>
           <template v-slot:activator="{ on }">
           <v-btn outlined color="grey darken-2" v-on="on">
