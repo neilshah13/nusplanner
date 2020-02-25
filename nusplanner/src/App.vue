@@ -1,25 +1,36 @@
 
 <template>
-  <div id="app">
-    <Header></Header>
-	<body>
+<div id="app">
+  <Header></Header>
+  <body>
     <div id="prioritylist">
       <todolist></todolist>
     </div>
-	</body>
-  </div>
+    <v-app>
+      <v-content>
+        <week></week>
+        <!-- <Tasks></Tasks> -->
+      </v-content>
+    </v-app>
+  </body>
+</div>
 </template>
 
 <script>
 import todolist from "./components/todolist.vue";
 import Header from "./components/Header.vue";
+import Weekly from "./components/Weekly";
 
 export default {
   name: "App",
   components: {
     Header,
     todolist,
-  }
+    week: Weekly
+  },
+  data: () => ({
+    //
+  })
 };
 </script>
 
