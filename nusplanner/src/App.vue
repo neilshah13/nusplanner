@@ -12,6 +12,7 @@
         <!-- <Tasks></Tasks> -->
       </v-content>
     </v-app>
+    <moduleAdding></moduleAdding>
   </body>
 </div>
 </template>
@@ -20,21 +21,25 @@
 import todolist from "./components/todolist.vue";
 import Header from "./components/Header.vue";
 import Weekly from "./components/Weekly";
+import Vue from "vue";
+import { AutoCompletePlugin } from "@syncfusion/ej2-vue-dropdowns";
+import ModuleAdding from './components/ModuleAdding.vue';
 
-export default {
+Vue.use(AutoCompletePlugin);
+export default Vue.extend({
   name: "App",
   components: {
     Header,
     todolist,
-    week: Weekly
+    week: Weekly,
+    'ModuleAdding':ModuleAdding,
   },
-  data: () => ({
-    //
-  })
-};
+});
 </script>
 
 <style>
+@import url(https://cdn.syncfusion.com/ej2/material.css);
+
 body {
   margin: 0;
   padding: 0;
