@@ -1,10 +1,12 @@
 <template>
-  <v-row>
+  <v-row no-gutters>
     <v-col>
-      <v-sheet height="150" min-width="400">
+      <v-sheet height="64">
 <!-- add event -->
-        <v-btn color = "primary" class="mr-4" @click="dialog = true">New Event</v-btn>
-<!-- <div class="text-center">  for the title to be in middle -->
+        <v-toolbar flat color="white">
+          <v-btn color="primary" dark @click.stop="dialog = true">
+            New Event
+          </v-btn>
 <!-- prev week -->
         <v-btn fab text small color="grey darken-2" @click="prev">
             <v-icon text small>mdi-chevron-left</v-icon>
@@ -17,15 +19,15 @@
         <v-btn outlined class="mr-4" color="grey darken-2" @click="viewDay">
             Today
           </v-btn>
-<!-- to pick view of month/week/day -->
-<!-- <div class="text-right"> for view button to be on the right -->
-        <v-menu bottom right>
-          <template v-slot:activator="{ on }">
-          <v-btn outlined color="grey darken-2" v-on="on">
+<!-- to pick the month/week/day view -->
+          <div class="flex-grow-1"></div>
+          <v-menu bottom right>
+            <template v-slot:activator="{ on }">
+              <v-btn outlined v-on="on">
                 <span>{{ typeToLabel[type] }}</span>
-                <v-icon bottom>mdi-menu-down</v-icon>
-          </v-btn>
-          </template>
+                <v-icon right>mdi-menu-down</v-icon>
+              </v-btn>
+            </template>
             <v-list>
               <v-list-item @click="type = 'day'">
                 <v-list-item-title>Day</v-list-item-title>
@@ -36,9 +38,16 @@
               <v-list-item @click="type = 'month'">
                 <v-list-item-title>Month</v-list-item-title>
               </v-list-item>
+              <!--
+              <v-list-item @click="type = '4day'">
+                <v-list-item-title>4 days</v-list-item-title>
+              </v-list-item>
+              -->
             </v-list>
-        </v-menu>
+          </v-menu>
+        </v-toolbar>
       </v-sheet>
+
 <!-- add event dialog -->
 <v-dialog v-model="dialog" max-width='550'>
   <v-card>
@@ -82,7 +91,7 @@
         <v-text-field class= 'field' v-model="color" type="color" label="Color (Click to open color menu)"></v-text-field>
       </v-form>
       <v-form v-else-if="eventType== 'groupMeeting'" @submit.prevent="addEvent">
-        <v-card-text class='menu'> Saved Group Name: 
+        <v-card-text class='menu'> Saved Group Name:
         <v-menu>
         <template v-slot:activator="{ on }">
         <v-btn outlined color='grey darken-2' v-on="on" class="btn">
@@ -112,19 +121,20 @@
   </v-card>
 </v-dialog>
 
-      <v-sheet height="600">
 <!-- calendar -->
+      <v-sheet height="600">
         <v-calendar
           ref="calendar"
+          dark: true
+          v-model="focus"
           color="primary"
-          class="calendar"
-          v-model="today"
-          :now="today"
           :events="events"
           :event-color="getEventColor"
+          :event-margin-bottom="3"
+          :now="today"
           :type="type"
-          @click:date="viewDay"
           @click:event="showEvent"
+          @click:date="viewDay"
           @change="updateRange"
         ></v-calendar>
         <v-container></v-container>
@@ -136,7 +146,12 @@
           :activator="selectedElement">
           <v-card color="grey lighten-4" flat>
             <v-toolbar class="menu" :color="selectedEvent.color" dark>
-              <form><textarea v-model= "selectedEvent.name" class='txtarea' type="text" placeholder="Add a title"></textarea></form>
+              <form><textarea-autosize
+                v-model= "selectedEvent.name"
+                class='txtarea'
+                type="text"
+                placeholder="Add a title">
+                </textarea-autosize></form>
               <v-btn icon v-if="currentlyEditing !== selectedEvent.id"
                 @click.prevent="editEvent(selectedEvent)">
                 <v-icon>mdi-pencil</v-icon>
@@ -149,12 +164,12 @@
             <v-card-text>
               <form v-if="currentlyEditing !== selectedEvent.id"> {{ selectedEvent.details }} </form>
               <form v-else>
-                <textarea
+                <textarea-autosize
                   v-model="selectedEvent.details"
                   class = "txtarea"
                   type="text"
                   placeholder="Add some notes"
-                ></textarea>
+                ></textarea-autosize>
               </form>
             </v-card-text>
             <v-card-actions>
@@ -170,18 +185,19 @@
 <script>
 export default {
     data: () => ({
-      type: 'month', //default
-      eventType: 'event', //default
-      start: null,
-      end: null,
       today: new Date().toISOString().substr(0, 10),
       focus: '',
-      selectedEvent: {},
-      group: 'teamwork',
+      type: 'month', //default
+      eventType: 'event', //default
+      color: '#1976D2', // default event color
+      start: null,
+      end: null,
       currentlyEditing: null,
-      dialog: false, // for adding event
-      selectedOpen: false,
+      selectedEvent: {},
       selectedElement: null,
+      selectedOpen: false,
+      dialog: false, // for adding event
+      group: 'teamwork',
       typeToLabel: {
         month: 'Month',
         week: 'Week',
@@ -231,27 +247,56 @@ export default {
         }
       ],
     }),
-    mounted() { // for calendar page to be at 8am
-//      this.$refs.calendar.scrollToTime('08:00')
-      this.$refs.calendar.checkChange();
+    mounted () {
+      this.getEvents()
+    },
+    computed: {
+      title () {
+        const { start, end } = this
+        if (!start || !end) {
+          return ''
+        }
+        const startMonth = this.monthFormatter(start)
+        const endMonth = this.monthFormatter(end)
+        const suffixMonth = startMonth === endMonth ? '' : endMonth
+        const startYear = start.year
+        const endYear = end.year
+        const suffixYear = startYear === endYear ? '' : endYear
+        const startDay = start.day + this.nth(start.day)
+        const endDay = end.day + this.nth(end.day)
+        switch (this.type) {
+          case 'month':
+            return `${startMonth} ${startYear}`
+          case 'week':
+            return `${startMonth} ${startDay} ${startYear} - ${suffixMonth} ${endDay} ${suffixYear}`
+          case 'day':
+            return ` ${startMonth} ${startDay} ${startYear}`
+        }
+        return ''
+      },
+      monthFormatter () {
+        return this.$refs.calendar.getFormatter({
+          timeZone: 'UTC', month: 'long',
+        })
+      }
     },
     methods: {
       viewDay({ date }) {
         this.focus = date;
         this.type = "day"; // by default is month
       },
-      showEvent( {nativeEvent, event} ) {
+      showEvent ({ nativeEvent, event }) {
         const open = () => {
-          this.selectedEvent = event;
-          this.selectedElement = nativeEvent.target;
-          this.selectedOpen = true;
+          this.selectedEvent = event
+          this.selectedElement = nativeEvent.target
+          setTimeout(() => this.selectedOpen = true, 10)
         }
         if (this.selectedOpen) {
-          this.selectedOpen = false;
+          this.selectedOpen = false
+          setTimeout(open, 10)
         } else {
-          open();
+          open()
         }
-
         nativeEvent.stopPropagation()
       },
       editEvent(ev) {
@@ -272,55 +317,70 @@ export default {
         ? "th"
         : ["th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th"][d % 10];
       },
-        updateRange ({ start, end }) {
-          this.start = start
-          this.end = end
+      updateRange ({ start, end }) {
+        this.start = start
+        this.end = end
       },
       formatDate (a, withTime) {
         return withTime
           ? `${a.getFullYear()}-${a.getMonth() + 1}-${a.getDate()} ${a.getHours()}:${a.getMinutes()}`
           : `${a.getFullYear()}-${a.getMonth() + 1}-${a.getDate()}`
       },
-    },
-    computed: {
-      title () {
-        const { start, end } = this
-        if (!start || !end) {
-          return ''
+      /*async getEvents () {
+      let snapshot = await db.collection('calEvent').get()
+      const events = []
+      snapshot.forEach(doc => {
+        let appData = doc.data()
+        appData.id = doc.id
+        events.push(appData)
+      })
+      this.events = events
+      },*/
+      /*
+      async addEvent () {
+        if (this.name && this.start && this.end) {
+          await db.collection('calEvent').add({
+            name: this.name,
+            details: this.details,
+            start: this.start,
+            end: this.end,
+            color: this.color
+          })
+          this.getEvents()
+          this.name = '',
+          this.details = '',
+          this.start = '',
+          this.end = '',
+          this.color = ''
+        } else {
+          alert('You must enter event name, start, and end time')
         }
-
-        const startMonth = this.monthFormatter(start)
-        const endMonth = this.monthFormatter(end)
-        const suffixMonth = startMonth === endMonth ? '' : endMonth
-
-        const startYear = start.year
-        const endYear = end.year
-        const suffixYear = startYear === endYear ? '' : endYear
-
-        const startDay = start.day + this.nth(start.day)
-        const endDay = end.day + this.nth(end.day)
-
-        switch (this.type) {
-          case 'month':
-            return `${startMonth} ${startYear}`
-          case 'week':
-            return `${startMonth} ${startDay} ${startYear} - ${suffixMonth} ${endDay} ${suffixYear}`
-          case 'day':
-            return ` ${startMonth} ${startDay} ${startYear}`
-        }
-        return ''
-      },
-      monthFormatter () {
-        return this.$refs.calendar.getFormatter({
-          timeZone: 'UTC', month: 'long',
-        })
-      },
+        },*/
+        /*
+        async updateEvent (ev) {
+          await db.collection('calEvent').doc(this.currentlyEditing).update({
+            details: ev.details
+          })
+          this.selectedOpen = false
+          this.currentlyEditing = null
+          this.getEvents()
+        },
+        async deleteEvent (ev) {
+          await db.collection('calEvent').doc(ev).delete()
+          this.selectedOpen = false
+          this.getEvents()
+        },*/
     },
   }
+}
 </script>
 
 <style scoped>
 .calendar {
+  margin: auto;
+  max-height: 600px;
+  max-width: 900px;
+  position: relative;
   background-color: rgb(48, 57, 105);
   transform: scale(0.75);
   min-width: 500px;
