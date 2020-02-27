@@ -1,31 +1,31 @@
 <template>
-  <v-row>
+  <v-row no-gutters>
     <v-col>
-      <v-sheet height="150">
-<!-- add event -->
-        <v-btn color = "primary" class="mr-4" @click="dialog = true">New Event</v-btn>
-<!-- <div class="text-center">  for the title to be in middle -->
-<!-- prev week -->
-        <v-btn fab text small color="grey darken-2" @click="prev">
-            <v-icon text small>mdi-chevron-left</v-icon>
-        </v-btn>
-<!-- title -->
-        <!-- <v-toolbar-title>{{ title }}</v-toolbar-title> -->
-Title
-<!-- next week -->
-        <v-btn fab text small color="grey darken-2" @click="next"> <!-- class mr-4 means to have a margin-->
-            <v-icon small>mdi-chevron-right</v-icon>
-        </v-btn>
-
-<!-- to pick view of month/week/day -->
-<!-- <div class="text-right"> for view button to be on the right -->
-        <v-menu bottom right>
-          <template v-slot:activator="{ on }">
-          <v-btn outlined color="grey darken-2" v-on="on">
-                <span>{{ typeToLabel[type] }}</span>
-                <v-icon bottom>mdi-menu-down</v-icon>
+      <v-sheet height="64">
+        <v-toolbar flat color="white">
+          <v-btn color="primary" dark @click.stop="dialog = true">
+            New Event
           </v-btn>
-          </template>
+          <v-btn outlined class="mr-4" @click="setToday">
+            Today
+          </v-btn>
+          <v-btn fab text small @click="prev">
+            <v-icon small>mdi-chevron-left</v-icon>
+          </v-btn>
+          <v-btn fab text small @click="next">
+            <v-icon small>mdi-chevron-right</v-icon>
+          </v-btn>
+
+          <v-toolbar-title>{{ title }}</v-toolbar-title>
+          <div class="flex-grow-1"></div>
+          <v-menu bottom right>
+
+            <template v-slot:activator="{ on }">
+              <v-btn outlined v-on="on">
+                <span>{{ typeToLabel[type] }}</span>
+                <v-icon right>mdi-menu-down</v-icon>
+              </v-btn>
+            </template>
             <v-list>
               <v-list-item @click="type = 'day'">
                 <v-list-item-title>Day</v-list-item-title>
@@ -36,45 +36,54 @@ Title
               <v-list-item @click="type = 'month'">
                 <v-list-item-title>Month</v-list-item-title>
               </v-list-item>
+              <!--
+              <v-list-item @click="type = '4day'">
+                <v-list-item-title>4 days</v-list-item-title>
+              </v-list-item>
+              -->
             </v-list>
-        </v-menu>
+          </v-menu>
+        </v-toolbar>
       </v-sheet>
-<!-- add event dialog -->
-<v-dialog v-model="dialog" max-width="500">
-  <v-card>
-    <v-container>
-      <v-form @submit.prevent="addEvent">
-        <v-text-field v-model="name" type="text" label="Event Name"></v-text-field>
-        <v-text-field v-model="details" type="text" label="Detail"></v-text-field>
-        <v-text-field v-model="start" type="date" label="Start Date"></v-text-field>
-        <v-text-field v-model="end" type="date" label="End Date"></v-text-field>
-        <v-text-field v-model="color" type="color" label="Color (Click to open color menu)"></v-text-field>
-      <v-btn type="submit" color="primary" class="mr-4" @click.stop="dialog=false">Create Event</v-btn>
-      </v-form>
-    </v-container>
-  </v-card>
-</v-dialog>
+
+      <v-dialog v-model="dialog" max-width="500">
+        <v-card>
+          <v-container>
+            <v-form @submit.prevent="addEvent">
+              <v-text-field v-model="name" type="text" label="event name (required)"></v-text-field>
+              <v-text-field v-model="details" type="text" label="detail"></v-text-field>
+              <v-text-field v-model="start" type="date" label="start (required)"></v-text-field>
+              <v-text-field v-model="end" type="date" label="end (required)"></v-text-field>
+              <v-text-field v-model="color" type="color" label="color (click to open color menu)"></v-text-field>
+              <v-btn type="submit" color="primary" class="mr-4" @click.stop="dialog = false">
+                create event
+              </v-btn>
+            </v-form>
+          </v-container>
+        </v-card>
+      </v-dialog>
 
       <v-sheet height="600">
-<!-- calendar -->
         <v-calendar
           ref="calendar"
+          dark: true
+          v-model="focus"
           color="primary"
-          class="calendar"
-          v-model="today"
-          :now="today"
           :events="events"
           :event-color="getEventColor"
+          :event-margin-bottom="3"
+          :now="today"
           :type="type"
-          @click:date="viewDay"
           @click:event="showEvent"
-          event-margin-bottom="10px"
-        ></v-calendar> <!-- @click:event="showEvent" -->
-<!-- after clicking on event -->
-          <v-menu
+          @click:more="viewDay"
+          @click:date="viewDay"
+          @change="updateRange"
+        ></v-calendar>
+        <v-menu
           v-model="selectedOpen"
           :close-on-content-click="false"
           :activator="selectedElement"
+          full-width
           offset-x
         >
           <v-card color="grey lighten-4" min-width="350px" flat>
@@ -83,20 +92,33 @@ Title
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
               <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
-              <v-spacer></v-spacer>
+              <div class="flex-grow-1"></div>
             </v-toolbar>
             <v-card-text>
-              <form v-if="currentlyEditing !== selectedEvent.id">{{selectedEvent.details}}</form>
-              <form v="else">
-                <textarea
+              <form v-if="currentlyEditing !== selectedEvent.id">
+                {{ selectedEvent.details }}
+             </form>
+              <form v-else>
+                <textarea-autosize
                   v-model="selectedEvent.details"
                   type="text"
                   style="width: 100%"
                   :min-height="100"
-                  placeholder="add note"
-                ></textarea>
+                  placeholder="add note">
+                </textarea-autosize>
               </form>
             </v-card-text>
+            <v-card-actions>
+              <v-btn text color="secondary" @click="selectedOpen = false">
+                close
+              </v-btn>
+              <v-btn v-if="currentlyEditing !== selectedEvent.id" text @click.prevent="editEvent(selectedEvent)">
+                edit
+              </v-btn>
+              <v-btn text v-else type="submit" @click.prevent="updateEvent(selectedEvent)">
+                Save
+              </v-btn>
+            </v-card-actions>
           </v-card>
         </v-menu>
       </v-sheet>
@@ -105,103 +127,193 @@ Title
 </template>
 
 <script>
-  export default {
-    data: () => ({
-      today: new Date().toISOString().substr(0, 10),
-      focus: new Date().toISOString().substr(0, 10),
-      selectedEvent: {},
-      type: "week", // default
-      dialog: false, // for adding event
-      selectedOpen: false,
-      typeToLabel: {
-        month: 'Month',
-        week: 'Week',
-        day: 'Day',
-      },
-      events: [
-        {
-          name: 'BT3103 Meeting',
-          start: '2020-02-24 09:00',
-          end: '2020-02-24 10:00',
-          color: 'orange',
-        },
-        {
-          name: 'BT4222 Meeting',
-          start: '2020-02-26 08:30',
-          end: '2020-02-26 10:00',
-          color: 'purple',
-        },
-        {
-          name: 'Thomas\' Birthday',
-          start: '2020-02-24',
-          color: 'cyan',
-        },
-        {
-          name: 'Hackathon',
-          start: '2020-02-28 08:30',
-          end: '2020-02-29 18:30',
-          color: 'indigo',
-        },
-        {
-          name: 'Assignment due',
-          start: '2020-02-24',
-          color: 'cyan',
-        }
-      ],
-    }),
-    mounted() { // for calendar page to be at 8am
-      this.$refs.calendar.scrollToTime('08:00')
-//      this.$refs.calendar.checkChange();
+export default {
+  data: () => ({
+    today: new Date().toISOString().substr(0, 10),
+    focus: new Date().toISOString().substr(0, 10),
+    type: 'month',
+    typeToLabel: {
+      month: 'Month',
+      week: 'Week',
+      day: 'Day',
+      '4day': '4 Days',
     },
-    methods: {
-      viewDay({ date }) {
-        this.focus = date;
-        this.type = "day"; // by default is month
+    name: null,
+    details: null,
+    start: null,
+    end: null,
+    color: '#1976D2', // default event color
+    currentlyEditing: null,
+    selectedEvent: {},
+    selectedElement: null,
+    selectedOpen: false,
+    dialog: false,
+    events: [
+      {
+        name: "BT3103 Meeting",
+        start: "2020-02-24 09:00",
+        end: "2020-02-24 10:00",
+        color: "orange"
       },
-      open() {
-        this.selectedEvent = event
+      {
+        name: "BT4222 Meeting",
+        start: "2020-02-26 08:30",
+        end: "2020-02-26 10:00",
+        color: "purple"
       },
-      showEvent() {
-        if (this.selectedOpen) {
-          this.selectedOpen = false;
-        } else {
-          open();
-        }
+      {
+        name: "Thomas' Birthday",
+        start: "2020-02-24",
+        color: "cyan"
       },
-/*
-      addEvent() {
-        events.name= this.name
-        event.details= this.
-        
+      {
+        name: "Hackathon",
+        start: "2020-02-28 08:30",
+        end: "2020-02-29 18:30",
+        color: "indigo"
       },
-      */
-      getEventColor(event) {
-        return event.color;
-      },
-      next() {
-        this.$refs.calendar.next();
-      },
-      prev() {
-        this.$refs.calendar.prev();
-      },
-      computed: {
-        monthFormatter() {
-          return this.$refs.calendar.getFormatter({
-            timeZone: "UTC",
-            month: "long"
-      });
-    }
+      {
+        name: "Assignment due",
+        start: "2020-02-24",
+        color: "cyan"
       }
+    ]
+}),
+  mounted () {
+    this.getEvents()
+  },
+  computed: {
+    title () {
+      const { start, end } = this
+      if (!start || !end) {
+        return ''
+      }
+      const startMonth = this.monthFormatter(start)
+      const endMonth = this.monthFormatter(end)
+      const suffixMonth = startMonth === endMonth ? '' : endMonth
+      const startYear = start.year
+      const endYear = end.year
+      const suffixYear = startYear === endYear ? '' : endYear
+      const startDay = start.day + this.nth(start.day)
+      const endDay = end.day + this.nth(end.day)
+      switch (this.type) {
+        case 'month':
+        return `${startMonth} ${startYear}`
+        case 'week':
+        case '4day':
+        return `${startMonth} ${startDay} ${startYear} - ${suffixMonth} ${endDay} ${suffixYear}`
+        case 'day':
+        return `${startMonth} ${startDay} ${startYear}`
+      }
+      return ''
+    },
+    monthFormatter () {
+      return this.$refs.calendar.getFormatter({
+        timeZone: 'UTC', month: 'long',
+      })
+    }
+  },
+  methods: {
+    /*async getEvents () {
+      let snapshot = await db.collection('calEvent').get()
+      const events = []
+      snapshot.forEach(doc => {
+        let appData = doc.data()
+        appData.id = doc.id
+        events.push(appData)
+      })
+      this.events = events
+    },*/
+    setDialogDate( { date }) {
+      this.dialogDate = true
+      this.focus = date
+    },
+    viewDay ({ date }) {
+      this.focus = date
+      this.type = 'day'
+    },
+    getEventColor (event) {
+      return event.color
+    },
+    setToday () {
+      this.focus = this.today
+    },
+    prev () {
+      this.$refs.calendar.prev()
+    },
+    next () {
+      this.$refs.calendar.next()
+    },
+    /*
+    async addEvent () {
+      if (this.name && this.start && this.end) {
+        await db.collection('calEvent').add({
+          name: this.name,
+          details: this.details,
+          start: this.start,
+          end: this.end,
+          color: this.color
+        })
+        this.getEvents()
+        this.name = '',
+        this.details = '',
+        this.start = '',
+        this.end = '',
+        this.color = ''
+      } else {
+        alert('You must enter event name, start, and end time')
+      }
+    },*/
+    editEvent (ev) {
+      this.currentlyEditing = ev.id
+    },
+    /*
+    async updateEvent (ev) {
+      await db.collection('calEvent').doc(this.currentlyEditing).update({
+        details: ev.details
+      })
+      this.selectedOpen = false
+      this.currentlyEditing = null
+      this.getEvents()
+    },
+    async deleteEvent (ev) {
+      await db.collection('calEvent').doc(ev).delete()
+      this.selectedOpen = false
+      this.getEvents()
+    },*/
+    showEvent ({ nativeEvent, event }) {
+      const open = () => {
+        this.selectedEvent = event
+        this.selectedElement = nativeEvent.target
+        setTimeout(() => this.selectedOpen = true, 10)
+      }
+      if (this.selectedOpen) {
+        this.selectedOpen = false
+        setTimeout(open, 10)
+      } else {
+        open()
+      }
+      nativeEvent.stopPropagation()
+    },
+    updateRange ({ start, end }) {
+      this.start = start
+      this.end = end
+    },
+    nth (d) {
+      return d > 3 && d < 21
+      ? 'th'
+      : ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th'][d % 10]
     }
   }
+}
 </script>
 
 <style scoped>
 .calendar {
-  height: 600px;
-  width: 900px;
   margin: auto;
-  orientation: landscape;
+  max-height: 600px;
+  max-width: 900px;
+  position: relative;
   background-color: rgb(48, 57, 105);
   transform: scale(0.75);
 }
