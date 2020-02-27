@@ -84,12 +84,7 @@ export default {
 	padding:0;
 	box-sizing:border-box;
 }
-html, body {
-	background:#f7f1f1;
-	font-size:1.1rem;
-	font-family:'Quicksand', sans-serif;
-	height:100%;
-}
+
 @keyframes strikeitem {
 	to { width:calc(100% + 1rem); }
 }
@@ -101,8 +96,7 @@ html, body {
 	background:#FF6666;
 	color:#FFF;
 	box-shadow:-20px -20px 0px 0px rgba(100,100,100,.1);
-	transform: scale(0.6); /* scales entire todo-list smaller */
-
+	transform: scale(0.8); /* scales entire todo-list smaller */
 }
 #todolist h1 {
     /*text-align:center;*/
