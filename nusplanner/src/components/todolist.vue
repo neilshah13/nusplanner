@@ -85,7 +85,7 @@ export default {
 	box-sizing:border-box;
 }
 html, body {
-	background:#f7f1f1;
+	background: #ffffff;
 	font-size:1.1rem;
 	font-family:'Quicksand', sans-serif;
 	height:100%;

@@ -2,18 +2,24 @@
 <header class="header-login-signup">
   <div class="header-limiter">
 
-		<h1><a href="#">NUS<span>Planner</span></a></h1>
-<!--
+		<h1><a href="/">NUS<span>Planner</span></a></h1>
 		<nav>
+			<ul>
+				<li><router-link to="/login" exact>Login</router-link></li>
+				<li><router-link to="/signup" exact>Sign up</router-link></li>
+			</ul>
+			<!--
 			<a href="#">Home</a>
 			<a href="#" class="selected">Blog</a>
 			<a href="#">Pricing</a>
+			-->
 		</nav>
--->
+		<!--
 		<ul>
 			<li><a href="#">Login</a></li>
 			<li><a href="#">Sign up</a></li>
 		</ul>
+		-->
 
 	</div>
 </header>
@@ -65,7 +71,7 @@ export default {
 .header-login-signup .header-limiter nav {
 	font:16px Arial, Helvetica, sans-serif;
 	line-height: 40px;
-	float: left;
+	float: right;
 	margin: 0 0 0 60px;
 	padding: 0;
 }
@@ -109,11 +115,16 @@ export default {
 
 /* The sign up button */
 
-.header-login-signup .header-limiter ul li:last-child a {
-	font-weight: bold;
+.header-login-signup .header-limiter ul li:last-child {
+	/*font-weight: bold;*/
 	background-color: #3a3c3e;
 	padding: 10px 15px;
 	border-radius: 3px;
+}
+
+/* Active router links */
+.router-link-active {
+	font-weight: bold;
 }
 
 /* Making the header responsive */

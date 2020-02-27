@@ -1,36 +1,31 @@
 <template>
-<div id="app">
-  <Header></Header>
-  <router-view>
-  <body>
-    <div id="prioritylist">
-      <todolist></todolist>
+  <div id="app">
+      <body>
+        <div id="prioritylist">
+          <todolist></todolist>
+            </div>
+              <v-app>
+                <v-content>
+                  <week></week>
+                  <!-- <Tasks></Tasks> -->
+                </v-content>
+              </v-app>
+              <moduleAdding></moduleAdding>
+      </body>
     </div>
-    <v-app>
-      <v-content>
-        <week></week>
-        <!-- <Tasks></Tasks> -->
-      </v-content>
-    </v-app>
-    <moduleAdding></moduleAdding>
-  </body>
-  </router-view>
-</div>
 </template>
 
 <script>
-import todolist from "./components/todolist.vue";
-import Header from "./components/Header.vue";
-import Weekly from "./components/Weekly";
+import todolist from "./todolist.vue";
+import Weekly from "./Weekly";
 import Vue from "vue";
 import { AutoCompletePlugin } from "@syncfusion/ej2-vue-dropdowns";
-import ModuleAdding from './components/ModuleAdding.vue';
+import ModuleAdding from './ModuleAdding.vue';
 
 Vue.use(AutoCompletePlugin);
 export default Vue.extend({
   name: "App",
   components: {
-    Header,
     todolist,
     week: Weekly,
     'ModuleAdding':ModuleAdding,
@@ -134,6 +129,3 @@ body {
   color: #fff;
 }
 </style>
-
-
-
