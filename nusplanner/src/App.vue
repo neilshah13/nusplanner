@@ -1,18 +1,17 @@
-
 <template>
 <div id="app">
   <Header></Header>
   <body>
     <div id="prioritylist">
       <todolist></todolist>
+      <moduleAdding></moduleAdding>
     </div>
-    <v-app>
+      <v-app>
       <v-content>
         <week></week>
-        <!-- <Tasks></Tasks> -->
+            <announce></announce>
       </v-content>
     </v-app>
-    <moduleAdding></moduleAdding>
   </body>
 </div>
 </template>
@@ -20,10 +19,11 @@
 <script>
 import todolist from "./components/todolist.vue";
 import Header from "./components/Header.vue";
-import Weekly from "./components/Weekly";
+import Weekly from "./components/Weekly.vue";
 import Vue from "vue";
 import { AutoCompletePlugin } from "@syncfusion/ej2-vue-dropdowns";
 import ModuleAdding from './components/ModuleAdding.vue';
+import Announcement from './components/Announcement.vue';
 
 Vue.use(AutoCompletePlugin);
 export default Vue.extend({
@@ -31,9 +31,13 @@ export default Vue.extend({
   components: {
     Header,
     todolist,
-    week: Weekly,
-    'ModuleAdding':ModuleAdding,
+    'week': Weekly,
+    'moduleAdding':ModuleAdding,
+    'announce': Announcement,
   },
+  data: () => ({
+    dialog: false,
+  })
 });
 </script>
 
@@ -44,6 +48,7 @@ body {
   margin: 0;
   padding: 0;
 }
+
 #prioritylist {
   float: right;
   margin-right: 0;

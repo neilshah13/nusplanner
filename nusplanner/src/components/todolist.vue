@@ -85,7 +85,7 @@ export default {
 	box-sizing:border-box;
 }
 html, body {
-	background:#f7f1f1;
+	background:#FFF;
 	font-size:1.1rem;
 	font-family:'Quicksand', sans-serif;
 	height:100%;
@@ -95,9 +95,10 @@ html, body {
 }
 
 #todolist {
+	resize:none;
 	margin:4rem auto;
+	min-width: 10px;
 	padding:2rem 3rem 3rem;
-	max-width:500px;
 	background:#FF6666;
 	color:#FFF;
 	box-shadow:-20px -20px 0px 0px rgba(100,100,100,.1);
@@ -144,7 +145,6 @@ html, body {
 }
 
 #todolist .actions {
-	flex-shrink:0;
 	padding-left:0.7em;
 }
 #todolist .label {

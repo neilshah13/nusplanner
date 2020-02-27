@@ -7,7 +7,7 @@
       <txt>[Click to view full]</txt>
       <p></p>
 <!--first announcement -->
-      <v-card>
+      <v-card dense>
         <p><v-container class="contain">
           BT3103:
       <i><strong>Prof Thangamani </strong></i> <p>[01/03/20, 16:04]</p>
@@ -16,7 +16,7 @@
         </p>
       </v-card>
 <!-- second announcement-->
-      <v-card>
+      <v-card dense>
         <p><v-container class="contain">
           IS3103:
       <i><strong>Prof Oh</strong></i><p>[05/03/20, 12:53]</p>
