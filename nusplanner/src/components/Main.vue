@@ -3,9 +3,9 @@
   <body>
     <div class="row no-gutters">
       <div class="col-md-2">
+        <announcement></announcement>
         <Filters></Filters>
         <moduleAdding></moduleAdding>
-        <announcement></announcement>
       </div>
       <div class="col-md-7">
         <v-app>
@@ -15,7 +15,7 @@
         </v-app>
       </div>
       <div class="col-md-3">
-        <todolist></todolist>
+          <todolist></todolist>
       </div>
     </div>
   </body>
@@ -40,9 +40,9 @@ export default Vue.extend({
     todolist,
     Weekly,
     Filters,
-    'moduleAdding':ModuleAdding,
-    'announcement': Announcement,
-  },
+    moduleAdding: ModuleAdding,
+    announcement: Announcement
+  }
 });
 </script>
 

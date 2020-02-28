@@ -211,6 +211,9 @@ form button {
 	font-family:'Quicksand', sans-serif;
 	height:3rem;
 }
+form input{
+	color: black;
+}
 
 </style>
 
