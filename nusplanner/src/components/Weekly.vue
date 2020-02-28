@@ -49,10 +49,13 @@
       </v-sheet>
 
 <!-- add event dialog -->
-<v-dialog v-model="dialog" max-width='550'>
+<v-dialog v-model="dialog" max-width="550">
   <v-card>
     <v-container>
       <v-toolbar-title class="cont">
+        <v-btn icon dark @click="dialog = false" large color="white" small outlined> <!-- closing button -->
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
      Type of Event:
       <v-menu>
         <template v-slot:activator="{ on }">
@@ -75,7 +78,7 @@
         </v-menu>
       </v-toolbar-title>
 
-      <v-form v-if="eventType == 'event'">
+      <v-form v-if="eventType == 'event'" @submit.prevent="addEvent" ref="form">
         <v-text-field class= 'field' v-model="name" type="text" label="Event Name"></v-text-field>
         <v-text-field class= 'field' v-model="details" type="text" label="Details (e.g. Meet at Jurong East MRT)"></v-text-field>
         <v-text-field class= 'field' v-model="start" type="date" label="Start Date"></v-text-field>
@@ -84,13 +87,13 @@
         <v-text-field class= 'field' v-model="end" type="time" label="End Time"></v-text-field>
         <v-text-field class= 'field' v-model="color" type="color" label="Color (Click to open color menu)"></v-text-field>
       </v-form>
-      <v-form v-else-if="eventType == 'assignment'" @submit.prevent="addEvent">
+      <v-form v-else-if="eventType == 'assignment'" @submit.prevent="addEvent" ref="form">
         <v-text-field class= 'field' v-model="name" type="text" label="Assignment Name"></v-text-field>
         <v-text-field class= 'field' v-model="details" type="text" label="Details (e.g. Due 2359, submit in PDF format)"></v-text-field>
         <v-text-field class= 'field' v-model="start" type="date" label="Due Date"></v-text-field>
         <v-text-field class= 'field' v-model="color" type="color" label="Color (Click to open color menu)"></v-text-field>
       </v-form>
-      <v-form v-else-if="eventType== 'groupMeeting'" @submit.prevent="addEvent">
+      <v-form v-else-if="eventType== 'groupMeeting'" @submit.prevent="addEvent" ref="form">
         <v-card-text class='menu'> Saved Group Name:
         <v-menu>
         <template v-slot:activator="{ on }">
@@ -117,6 +120,7 @@
         <v-text-field class= 'field' v-model="color" type="color" label="Color (Click to open color menu)"></v-text-field>
       </v-form>
     <v-btn type="submit" color="primary" class="mr-4" @click.stop="dialog=false">Create Event</v-btn>
+    <v-btn color="error" class="mr-4" @click="reset"> Reset Form </v-btn>
     </v-container>
   </v-card>
 </v-dialog>
@@ -146,12 +150,12 @@
           :activator="selectedElement">
           <v-card color="grey lighten-4" flat>
             <v-toolbar class="menu" :color="selectedEvent.color" dark>
-              <form><textarea-autosize
+              <textarea
                 v-model= "selectedEvent.name"
                 class='txtarea'
                 type="text"
                 placeholder="Add a title">
-                </textarea-autosize></form>
+                </textarea>
               <v-btn icon v-if="currentlyEditing !== selectedEvent.id"
                 @click.prevent="editEvent(selectedEvent)">
                 <v-icon>mdi-pencil</v-icon>
@@ -228,9 +232,10 @@ export default {
           color: 'purple',
         },
         {
-          name: 'Tommy\'s Birthday',
-          details: 'Bring his present',
-          start: '2020-02-24',
+          name: 'Computing Career Fair',
+          details: 'Outside SR1',
+          start: '2020-02-24 12:00',
+          end: '2020-02-24 17:00',
           color: 'cyan',
         },
         {
@@ -284,6 +289,9 @@ export default {
       viewDay({ date }) {
         this.focus = date;
         this.type = "day"; // by default is month
+      },
+      reset() {
+        this.$refs.form.reset();
       },
       showEvent ({ nativeEvent, event }) {
         const open = () => {
@@ -400,12 +408,13 @@ export default {
 }
 .txtarea {
   font-size: 13px;
+  margin: auto;
+  padding:12px;
 }
 .txt{ 
   font-size: 10px;
 }
 .menu {
-  margin: auto;
   font-size: 13px;
 }
 .btn {
