@@ -42,7 +42,7 @@ export default {
 
 .container {
   background-color:rgb(42, 68, 99);
-  max-width: 220px;
+  max-width: 250px;
 }
 
 h1 {
@@ -60,5 +60,11 @@ h2 {
   margin-left: 35px;
   transform: scale(0.9);
   text-align:left;
+}
+
+.container{
+  transform: scale(0.7);
+  margin: 0;
+  font-size: 25px;
 }
 </style>

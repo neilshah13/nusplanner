@@ -1,5 +1,5 @@
 <template>
-  <v-sheet height="160">
+  <v-sheet>
     <!-- to view announcements, to be changed to when you enter website -->
     <v-container @click="dialog = true" class="contain">
       <v-container class="cont">
@@ -96,7 +96,7 @@ export default {
 <style scoped>
 h1 {
   color: white;
-  font-size: 24px;
+  font-size: 20px;
 }
 h2 {
   color: rgb(42, 68, 99);
@@ -128,10 +128,10 @@ txt {
 .contain {
   color: rgb(42, 68, 99);
   background: white;
-  max-width: 500px;
+  max-width: 250px;
   font-size: 25px;
   padding: 0;
-  transform: scale(0.7);
+  transform: scale(0.8);
 }
 btn {
   background-color: rgb(42, 68, 99);
