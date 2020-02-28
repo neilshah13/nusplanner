@@ -84,13 +84,13 @@ export default {
 	padding:0;
 	box-sizing:border-box;
 }
-
 html, body {
-	background:#FFF;
+	background: #ffffff;
 	font-size:1.1rem;
 	font-family:'Quicksand', sans-serif;
 	height:100%;
 }
+
 @keyframes strikeitem {
 	to { width:calc(100% + 1rem); }
 }
