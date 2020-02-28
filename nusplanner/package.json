@@ -8,24 +8,16 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-<<<<<<< HEAD
-    "@syncfusion/ej2-vue-dropdowns": "^17.4.50",
-=======
     "@syncfusion/ej2-vue-dropdowns": "^17.4.51",
     "bootstrap": "^4.4.1",
->>>>>>> 8bd560948b0e1199d9fb034bb6b161e065a9fceb
     "core-js": "^3.6.4",
     "jquery": "^3.4.1",
     "popper": "^1.0.1",
     "vue": "^2.6.11",
     "vue-horizontal-calendar": "^0.5.0",
-<<<<<<< HEAD
-    "vue-router": "^3.1.5",
-    "vuetify": "^2.2.11"
-=======
+    "vue-router": "^3.1.6",
     "vue-textarea-autosize": "^1.1.1",
     "vuetify": "^2.2.15"
->>>>>>> 8bd560948b0e1199d9fb034bb6b161e065a9fceb
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.2.0",
