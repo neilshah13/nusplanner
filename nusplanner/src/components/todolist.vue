@@ -84,24 +84,22 @@ export default {
 	padding:0;
 	box-sizing:border-box;
 }
-<<<<<<< HEAD
 html, body {
 	background: #ffffff;
 	font-size:1.1rem;
 	font-family:'Quicksand', sans-serif;
 	height:100%;
 }
-=======
 
->>>>>>> 8bd560948b0e1199d9fb034bb6b161e065a9fceb
 @keyframes strikeitem {
 	to { width:calc(100% + 1rem); }
 }
 
 #todolist {
+	resize:none;
 	margin:4rem auto;
+	min-width: 10px;
 	padding:2rem 3rem 3rem;
-	max-width:500px;
 	background:#FF6666;
 	color:#FFF;
 	box-shadow:-20px -20px 0px 0px rgba(100,100,100,.1);
@@ -147,7 +145,6 @@ html, body {
 }
 
 #todolist .actions {
-	flex-shrink:0;
 	padding-left:0.7em;
 }
 #todolist .label {

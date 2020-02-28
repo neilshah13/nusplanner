@@ -28,7 +28,7 @@
 <script>
 import todolist from "./components/todolist.vue";
 import Header from "./components/Header.vue";
-import Weekly from "./components/Weekly";
+import Weekly from "./components/Weekly.vue";
 import Vue from "vue";
 //import { AutoCompletePlugin } from "@syncfusion/ej2-vue-dropdowns";
 import ModuleAdding from "./components/ModuleAdding.vue";
@@ -42,10 +42,10 @@ export default Vue.extend({
     Header,
     todolist,
     Weekly,
-    ModuleAdding,
     Filters,
-    Announcement
-  }
+    'moduleAdding':ModuleAdding,
+    'announcement': Announcement,
+  },
 });
 </script>
 
