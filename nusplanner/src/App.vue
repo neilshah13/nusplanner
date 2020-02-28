@@ -1,7 +1,7 @@
-
 <template>
 <div id="app">
   <Header></Header>
+  <router-view>
   <body>
     <div class="row no-gutters">
       <div class="col-md-2">
@@ -21,6 +21,7 @@
       </div>
     </div>
   </body>
+  </router-view>
 </div>
 </template>
 

@@ -84,7 +84,16 @@ export default {
 	padding:0;
 	box-sizing:border-box;
 }
+<<<<<<< HEAD
+html, body {
+	background: #ffffff;
+	font-size:1.1rem;
+	font-family:'Quicksand', sans-serif;
+	height:100%;
+}
+=======
 
+>>>>>>> 8bd560948b0e1199d9fb034bb6b161e065a9fceb
 @keyframes strikeitem {
 	to { width:calc(100% + 1rem); }
 }
