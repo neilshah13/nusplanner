@@ -1,19 +1,24 @@
 <template>
-    <div class="container" id="selected">
-      <b>Filter By:</b>
-      <label><input type="radio" v-model="selectedCategory" value="Overview" /> Overview</label>
-      <label><input type="radio" v-model="selectedCategory" value="Assignment" /> Assignment</label>
-      <label><input type="radio" v-model="selectedCategory" value="Quiz" /> Quiz</label>
-      <label><input type="radio" v-model="selectedCategory" value="Exam" /> Exam</label>
-      <label><input type="radio" v-model="selectedCategory" value="Others" /> Others</label>
-    </div>
-    <!-- Testing Filter Results (without style)
-    <ul class="event-list">
-      <li v-bind:key="event" v-for="event in filteredEvents">{{ event.name }}</li>
-    </ul>  -->
+  <div>
+    <v-container class="container" id="selected" fluid>
+      <h1>
+        <strong>Filter By:</strong>
+      </h1>
+      <p></p>
+      <v-card>
+          <h2>
+            <v-checkbox value="Assignment" v-model="selectedCategories" label="Assignment" dense="False"></v-checkbox>
+            <v-checkbox value="Quiz" v-model="selectedCategories" label="Quiz" dense="False"></v-checkbox>
+            <v-checkbox value="Exam" v-model="selectedCategories" label="Exam" dense="False"></v-checkbox>
+            <v-checkbox value="Others" v-model="selectedCategories" label="Others" dense="False"></v-checkbox>
+          </h2>
+      </v-card>
+    </v-container>
+  </div>
 </template>
 
 <script>
+
 export default {  
   data: function(){
     return {
@@ -22,34 +27,38 @@ export default {
         { name: "Hackathon", category: "Others" },
         { name: "BT3103 Quiz", category: "Quiz" },
       ],
-      selectedCategory: "Overview" //default 
+      selectedCategories: ["Assignment", "Quiz", "Exam", "Others"] //default 
     }
   },
   computed: {
     filteredEvents: function() {
-      var vm = this;
-      var category = vm.selectedCategory;
-      
-      if(category === "Overview") {
-        return vm.events;
-      } else {
-        return vm.events.filter(function(selected) {
-          return selected.category === category;
-        });
-      }
-    }
-  }
+      return this.events.filter((ev) => { return this.selectedCategories.includes(ev.category) });
+    } 
+  } 
 };
 </script>
 
 <style scoped>
+
 .container {
-  width: 206.31px;
-  height: 245px;
+  background-color:rgb(42, 68, 99);
+  max-width: 220px;
 }
 
-label {
-  display: block;
-  line-height: 1.5em;
+h1 {
+  font-size: 20px;
+  margin: 5px;
+  color: white;
+  font-size: 24px;
+}
+
+h2 {
+  color: rgb(42, 68, 99);
+  background: white;
+  max-width: 500px;
+  font-size: 20px;
+  margin-left: 35px;
+  transform: scale(0.9);
+  text-align:left;
 }
 </style>
