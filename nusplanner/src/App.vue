@@ -25,20 +25,6 @@ body {
   margin: 0;
   padding: 0;
 }
-.no-gutters {
-  margin-right: 0;
-  margin-left: 0;
-
-  > [class*="col-"] {
-    padding-right: 0;
-    padding-left: 0;
-  }
-}
-
-#prioritylist {
-  float: right;
-  margin-right: 0;
-}
 
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

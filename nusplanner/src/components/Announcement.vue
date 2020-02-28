@@ -6,7 +6,7 @@
         <h1>
           <strong>Announcements</strong>
         </h1>
-        <txt>[Click to view full]</txt>
+        <txt>Click to view full</txt>
         <p></p>
         <!--first announcement -->
         <v-card>
@@ -16,7 +16,7 @@
               <i>
                 <strong>Prof Thangamani</strong>
               </i>
-              <p>[01/03/20, 16:04]</p>
+              <p>01/03/20, 16:04</p>
             </v-container>
             <v-divider></v-divider>
           </p>
@@ -29,7 +29,7 @@
               <i>
                 <strong>Prof Oh</strong>
               </i>
-              <p>[05/03/20, 12:53]</p>
+              <p>05/03/20, 12:53</p>
             </v-container>
             <v-divider></v-divider>
           </p>
@@ -54,7 +54,7 @@
                   </i>
                   <txt>[01/03/20, 16:04]</txt>
                 </v-container>
-                <v-card-text>The lecture on 17/03/20 will be held at LT19 instead of i3.</v-card-text>
+                <v-card-text>Team "Work" you are the BEST!</v-card-text>
               </p>
             </v-card>
             <!-- second announcement-->
@@ -65,7 +65,7 @@
                   <i>
                     <strong>Prof Oh</strong>
                   </i>
-                  <txt>[05/03/20, 12:53]</txt>
+                  <txt>05/03/20, 12:53</txt>
                 </v-container>
                 <v-card-text>The tutorial on 12th March will be cancelled.</v-card-text>
               </p>

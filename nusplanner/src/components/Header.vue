@@ -4,10 +4,18 @@
 
 		<h1><a href="/">NUS<span>Planner</span></a></h1>
 		<nav>
+			<!--
 			<ul>
 				<li><router-link to="/login" exact>Login</router-link></li>
 				<li><router-link to="/signup" exact>Sign up</router-link></li>
+			</ul>-->
+			<v-toolbar-title class='title'>
+			<ul>
+				<li><v-btn icon small class='btn'><v-icon>mdi-account</v-icon></v-btn>
+				</li><li>Neil Shah</li>
 			</ul>
+			</v-toolbar-title>
+
 			<!--
 			<a href="#">Home</a>
 			<a href="#" class="selected">Blog</a>
@@ -32,6 +40,13 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.btn {
+	background-color: white;
+}
+
+.title {
+	font-size:13px;
+}
 
 .header-login-signup{
 	background-color:#292c2f;

@@ -2,10 +2,14 @@
 <div id="app">
   <body>
     <div class="row no-gutters">
+      <div class="col">
+        <moduleAdding></moduleAdding>
+      </div>
+    </div>
+    <div class="row no-gutters">
       <div class="col-md-2">
         <announcement></announcement>
         <Filters></Filters>
-        <moduleAdding></moduleAdding>
       </div>
       <div class="col-md-7">
         <v-app>
