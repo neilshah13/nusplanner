@@ -370,9 +370,8 @@ export default {
           this.selectedOpen = false
           this.getEvents()
         },*/
-    },
-  }
-}
+      },
+    }
 </script>
 
 <style scoped>
