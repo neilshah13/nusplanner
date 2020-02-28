@@ -2,8 +2,12 @@
   <v-row no-gutters>
     <v-col>
       <v-sheet height="64">
-<!-- add event -->
         <v-toolbar flat color="white">
+          <!-- add groupMembers -->
+          <v-btn color="primary" dark @click.stop="groupMembers = true">
+            Add Group Members
+          </v-btn>
+          <!-- add event -->
           <v-btn color="primary" dark @click.stop="dialog = true">
             New Event
           </v-btn>
@@ -48,12 +52,58 @@
         </v-toolbar>
       </v-sheet>
 
+<!-- add GroupMembers dialog -->
+<v-dialog v-model="groupMembers" fullscreen max-width="550">
+
+  <v-card>
+    <v-card-title primary-title class="justify-center"> 
+      <v-row align = "left">
+      <v-btn icon dark @click="groupMembers = false" color="warning" outlined> <!-- closing button -->
+        <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </v-row>
+    </v-card-title>
+
+    <v-card-text class='menu'> Choose Module :
+      <v-menu>
+        <template v-slot:activator="{ on }">
+        <v-btn outlined color='grey darken-2' v-on="on" class="btn">
+          <span>{{ modules[module] }}</span>
+           <v-icon bottom>mdi-menu-down</v-icon>
+          </v-btn>
+          </template>
+            <v-list>
+              <v-list-item @click="module='module1'">
+                <v-list-item-title>BT1101</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="module='module2'">
+                <v-list-item-title>BT2101</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="module='module3'">
+                <v-list-item-title>BT2102</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="module='module4'">
+                <v-list-item-title>BT3102</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="module='module5'">
+                <v-list-item-title>BT3103</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="module='module6'">
+                <v-list-item-title>IS3103</v-list-item-title>
+              </v-list-item>
+            </v-list>
+      </v-menu>
+    </v-card-text>
+    <Form></Form>
+    </v-card>
+</v-dialog>
+
 <!-- add event dialog -->
 <v-dialog v-model="dialog" max-width="550">
   <v-card>
     <v-container>
       <v-toolbar-title class="cont">
-        <v-btn icon dark @click="dialog = false" large color="white" small outlined> <!-- closing button -->
+        <v-btn icon dark @click="dialog = false" color="white" x-small outlined> <!-- closing button -->
           <v-icon>mdi-close</v-icon>
         </v-btn>
      Type of Event:
@@ -97,7 +147,7 @@
         <v-card-text class='menu'> Saved Group Name:
         <v-menu>
         <template v-slot:activator="{ on }">
-        <v-btn outlined color='grey darken-2' v-on="on" class="btn">
+        <v-btn v-on="on" class="btn">
           <span>{{ groups[group] }}</span>
            <v-icon bottom>mdi-menu-down</v-icon>
           </v-btn>
@@ -187,7 +237,11 @@
 </template>
 
 <script>
+import Form from "./Form.vue"
 export default {
+        components:{
+        Form,
+      },
     data: () => ({
       today: new Date().toISOString().substr(0, 10),
       focus: '',
@@ -201,11 +255,20 @@ export default {
       selectedElement: null,
       selectedOpen: false,
       dialog: false, // for adding event
+      groupMembers: false,
       group: 'teamwork',
       typeToLabel: {
         month: 'Month',
         week: 'Week',
         day: 'Day',
+      },
+      modules: {
+        module1: 'BT1101',
+        module2: 'BT2101',
+        module3: 'BT2102',
+        module4: 'BT3102',
+        module5: 'BT3103',
+        module6: 'IS3103'
       },
       eventTypes: {
         assignment: 'Assignment',
@@ -218,18 +281,11 @@ export default {
       },
       events: [
         {
-          name: 'BT3103 Meeting',
+          name: 'IS4241 Meeting',
           details: 'At tembu',
           start: '2020-02-25 09:00',
           end: '2020-02-25 15:00',
           color: 'orange',
-        },
-        {
-          name: 'BT4222 Midterms',
-          details: 'At computing',
-          start: '2020-02-29 10:00',
-          end: '2020-02-29 12:00',
-          color: 'purple',
         },
         {
           name: 'Computing Career Fair',
@@ -239,17 +295,37 @@ export default {
           color: 'cyan',
         },
         {
-          name: 'DAO Assignment',
-          details: 'Due 1800, submit .csv file',
-          start: '2020-02-28',
-          color: 'indigo',
-        },
-        {
           name: 'IS3103 Essay due',
           details: 'Submit in pdf format, word count 1000',
           start: '2020-02-24',
           color: 'pink',
-        }
+        },
+        {
+          name: 'BT3103 Prototype Due',
+          details: 'A+?? :)',
+          start: '2020-03-02',
+          color: 'red',
+        },
+        {
+          name: 'BT3103 Group Meeting',
+          details: 'Just do work',
+          start: '2020-02-26 12:00',
+          end: '2020-02-26 17:00',
+          color: 'pink',
+        },
+        {
+          name: 'CS1231 Midterms',
+          details: 'At computing SR1',
+          start: '2020-02-29 10:00',
+          end: '2020-02-29 12:00',
+          color: 'purple',
+        },
+        {
+          name: 'BT3102 Midterms',
+          details: 'Due 1800, submit .csv file',
+          start: '2020-02-28',
+          color: 'indigo',
+        },
       ],
     }),
     mounted () {
@@ -412,10 +488,10 @@ export default {
   padding:12px;
 }
 .txt{ 
-  font-size: 10px;
+  font-size: 13px;
 }
 .menu {
-  font-size: 13px;
+  font-size: 15px;
 }
 .btn {
   transform: scale(0.75);

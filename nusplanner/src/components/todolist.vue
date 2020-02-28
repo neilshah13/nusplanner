@@ -40,9 +40,10 @@ export default {
 		return {
         newitem:'',
         sortByStatus: false,
-        todo: [ { id:1, label: "Learn VueJs", done: true },
-            { id:2, label: "Code a todo list", done: false },
-			{ id:3, label: "Learn something else", done: false } ]
+        todo: [ { id:1, label: "IS4241: Learn Gephi", done: true },
+            { id:2, label: "BT3102: Regression", done: false },
+			{ id:3, label: "BT3103: Learn Vue", done: false } 
+			]
 		}
     }, methods: {
     addItem: function() {
@@ -103,7 +104,7 @@ html, body {
 	background:#FF6666;
 	color:#FFF;
 	box-shadow:-20px -20px 0px 0px rgba(100,100,100,.1);
-	transform: scale(0.8); /* scales entire todo-list smaller */
+	transform: scale(0.75); /* scales entire todo-list smaller */
 }
 #todolist h1 {
     /*text-align:center;*/

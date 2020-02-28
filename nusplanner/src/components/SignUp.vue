@@ -60,7 +60,7 @@ a {
     flex-direction: column; 
     justify-content: center;
     width: 100%;
-    min-height: 600px;
+    height: 100vh;
     padding: 20px;
 }
 #formContent {
