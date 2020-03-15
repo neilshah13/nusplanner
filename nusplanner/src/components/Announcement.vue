@@ -112,8 +112,7 @@ p {
   font-size: 13px;
   color: white;
   background: rgb(42, 68, 99);
-  max-width: 320px;
-  max-height: 350px;
+  position: relative;
 }
 .header {
   font-size: 13px;

@@ -4,7 +4,7 @@
       <v-sheet height="64">
         <v-toolbar flat color="white">
           <!-- add groupMembers -->
-          <v-btn color="primary" dark @click.stop="groupMembers = true">
+          <v-btn color="primary" dark @click.stop="groupMembers = true" class="mr-4">
             Add Group Members
           </v-btn>
           <!-- add event -->
@@ -56,7 +56,7 @@
 <v-dialog v-model="groupMembers" fullscreen max-width="550">
 
   <v-card>
-    <v-card-title primary-title class="justify-center"> 
+    <v-card-title primary-title class="justify-center">
       <v-row align = "left">
       <v-btn icon dark @click="groupMembers = false" color="warning" outlined> <!-- closing button -->
         <v-icon>mdi-close</v-icon>
@@ -101,9 +101,9 @@
 <!-- add event dialog -->
 <v-dialog v-model="dialog" max-width="550">
   <v-card>
-    <v-container>
-      <v-toolbar-title class="cont">
-        <v-btn icon dark @click="dialog = false" color="white" x-small outlined> <!-- closing button -->
+    <v-container class='neweventcont'>
+      <v-toolbar-title class="neweventtitle">
+        <v-btn icon dark @click="dialog = false" color="white" x-small outlined class='neweventclose'> <!-- closing button -->
           <v-icon>mdi-close</v-icon>
         </v-btn>
      Type of Event:
@@ -128,22 +128,50 @@
         </v-menu>
       </v-toolbar-title>
 
-      <v-form v-if="eventType == 'event'" @submit.prevent="addEvent" ref="form">
-        <v-text-field class= 'field' v-model="name" type="text" label="Event Name"></v-text-field>
-        <v-text-field class= 'field' v-model="details" type="text" label="Details (e.g. Meet at Jurong East MRT)"></v-text-field>
-        <v-text-field class= 'field' v-model="start" type="date" label="Start Date"></v-text-field>
-        <v-text-field class= 'field' v-model="end" type="date" label="End Date"></v-text-field>
-        <v-text-field class= 'field' v-model="start" type="time" label="Start Time"></v-text-field>
-        <v-text-field class= 'field' v-model="end" type="time" label="End Time"></v-text-field>
-        <v-text-field class= 'field' v-model="color" type="color" label="Color (Click to open color menu)"></v-text-field>
+      <v-form v-if="eventType == 'event'" @submit.prevent="addEvent" ref="form" class="neweventform">
+        <v-text-field class= 'neweventfield' v-model="name" type="text" label="Event Name"></v-text-field>
+        <v-text-field class= 'neweventfield' v-model="details" type="text" label="Details (e.g. Meet at Jurong East MRT)"></v-text-field>
+        <v-text-field class= 'neweventfield' v-model="start" type="date" label="Start Date"></v-text-field>
+        <v-text-field class= 'neweventfield' v-model="end" type="date" label="End Date"></v-text-field>
+        <v-text-field class= 'neweventfield' v-model="start" type="time" label="Start Time"></v-text-field>
+        <v-text-field class= 'neweventfield' v-model="end" type="time" label="End Time"></v-text-field>
+                <div class='colorfieldtitle'>
+          <div class="mr-4">
+          Please choose a color:
+          </div>
+                <swatches
+                v-model="color"
+
+                :colors="colors"
+
+                row-length="6"
+                shapes="circles"
+                show-border
+                popover-to="left"
+              ></swatches>
+            </div>
       </v-form>
-      <v-form v-else-if="eventType == 'assignment'" @submit.prevent="addEvent" ref="form">
-        <v-text-field class= 'field' v-model="name" type="text" label="Assignment Name"></v-text-field>
-        <v-text-field class= 'field' v-model="details" type="text" label="Details (e.g. Due 2359, submit in PDF format)"></v-text-field>
-        <v-text-field class= 'field' v-model="start" type="date" label="Due Date"></v-text-field>
-        <v-text-field class= 'field' v-model="color" type="color" label="Color (Click to open color menu)"></v-text-field>
+      <v-form v-else-if="eventType == 'assignment'" @submit.prevent="addEvent" ref="form" class="neweventform">
+        <v-text-field class= 'neweventfield' v-model="name" type="text" label="Assignment Name"></v-text-field>
+        <v-text-field class= 'neweventfield' v-model="details" type="text" label="Details (e.g. Due 2359, submit in PDF format)"></v-text-field>
+        <v-text-field class= 'neweventfield' v-model="start" type="date" label="Due Date"></v-text-field>
+                <div class='colorfieldtitle'>
+          <div class="mr-4">
+          Please choose a color:
+          </div>
+                <swatches
+                v-model="color"
+
+                :colors="colors"
+
+                row-length="6"
+                shapes="circles"
+                show-border
+                popover-to="left"
+              ></swatches>
+            </div>
       </v-form>
-      <v-form v-else-if="eventType== 'groupMeeting'" @submit.prevent="addEvent" ref="form">
+      <v-form v-else-if="eventType== 'groupMeeting'" @submit.prevent="addEvent" ref="form" class="neweventform">
         <v-card-text class='menu'> Saved Group Name:
         <v-menu>
         <template v-slot:activator="{ on }">
@@ -163,12 +191,27 @@
           </v-menu>
           <v-card-text class='txt'>Haven't saved a group name? Add it <a href='https://google.com'>here</a>!</v-card-text>
           </v-card-text>
-        <v-text-field class= 'field' v-model="details" type="text" label="Details (e.g. Meet at Computing)"></v-text-field>
-        <v-text-field class= 'field' v-model="start" type="date" label="Date"></v-text-field>
-        <v-text-field class= 'field' v-model="start" type="time" label="Start Time"></v-text-field>
-        <v-text-field class= 'field' v-model="end" type="time" label="End Time"></v-text-field>
-        <v-text-field class= 'field' v-model="color" type="color" label="Color (Click to open color menu)"></v-text-field>
+        <v-text-field class= 'neweventfield' v-model="details" type="text" label="Details (e.g. Meet at Computing)"></v-text-field>
+        <v-text-field class= 'neweventfield' v-model="start" type="date" label="Date"></v-text-field>
+        <v-text-field class= 'neweventfield' v-model="start" type="time" label="Start Time"></v-text-field>
+        <v-text-field class= 'neweventfield' v-model="end" type="time" label="End Time"></v-text-field>
+        <div class='colorfieldtitle'>
+          <div class="mr-4">
+          Please choose a color:
+          </div>
+                <swatches
+                v-model="color"
+
+                :colors="colors"
+
+                row-length="6"
+                shapes="circles"
+                show-border
+                popover-to="left"
+              ></swatches>
+            </div>
       </v-form>
+    <br>
     <v-btn type="submit" color="primary" class="mr-4" @click.stop="dialog=false">Create Event</v-btn>
     <v-btn color="error" class="mr-4" @click="reset"> Reset Form </v-btn>
     </v-container>
@@ -238,9 +281,12 @@
 
 <script>
 import Form from "./Form.vue"
+import Swatches from 'vue-swatches'
+
 export default {
         components:{
         Form,
+        Swatches
       },
     data: () => ({
       today: new Date().toISOString().substr(0, 10),
@@ -248,6 +294,7 @@ export default {
       type: 'month', //default
       eventType: 'event', //default
       color: '#1976D2', // default event color
+      colors: ['red', 'pink', 'cyan', 'orange', 'indigo', 'purple'],
       start: null,
       end: null,
       currentlyEditing: null,
@@ -470,24 +517,34 @@ export default {
   float: center;
 /*  flex-direction: row;*/
 }
-.cont{
+.neweventtitle{
   background: rgb(35, 90, 209);
   min-height: 50px;
   color: white;
   padding:10px;
 }
-
-.field {
-  min-width:500px;
-  margin:auto;
+.neweventcont {
+  position: relative;
+}
+.neweventclose {
+  float: left;
+}
+.neweventfield {
   transform: scale(0.75);
+}
+.neweventform {
+  display: block;
+}
+.colorfieldtitle {
+  display:inline-flex;
+  transform: scale(0.80);
 }
 .txtarea {
   font-size: 13px;
   margin: auto;
   padding:12px;
 }
-.txt{ 
+.txt{
   font-size: 13px;
 }
 .menu {
