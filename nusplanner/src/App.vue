@@ -9,6 +9,7 @@
 <script>
 import Header from "./components/Header.vue";
 import Vue from "vue";
+import firebase from "firebase"
 //import { AutoCompletePlugin } from "@syncfusion/ej2-vue-dropdowns";
 
 //Vue.use(AutoCompletePlugin);
@@ -17,6 +18,11 @@ export default Vue.extend({
   components: {
     Header,
   },
+  created() {
+    firebase.auth().onAuthStateChanged(user => {
+        this.user = user;
+    });
+},
 });
 </script>
 
