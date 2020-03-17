@@ -8,7 +8,7 @@
             </div>
 
             <form>
-                <input type="text" id="login" class="fadeIn second" name="login" v-model="input.username" placeholder="Username">
+                <input type="text" id="login" class="fadeIn second" name="login" v-model="input.name" placeholder="Name">
                 <input type="email" id="login" class="fadeIn second" name="login" v-model="input.email" placeholder="Email">
                 <input type="password" id="password" class="fadeIn third" name="login" v-model="input.password" placeholder="Password">
                 <input type="password" id="password" class="fadeIn third" name="login" v-model="input.confirm" placeholder="Confirm Password">
@@ -19,15 +19,32 @@
 </template>
 
 <script>
+import firebase from 'firebase'
+
 export default {
     data() {
       return {
         input: {
-          username: "",
+          name: "",
           email: "",
           password: "",
           confirm: ""
         }
+      }
+    },
+    methods:{
+      submit(){
+        firebase.auth()
+        .createUserWithEmailAndPassword(this.form.email, this.form.password)
+        .then(data => {
+          data.user.updateProfile({
+            displayName: this.form.name
+          })
+          .then(() => {});
+        })
+        .catch(err => {
+          this.error = err.message;
+        })
       }
     }
 }
