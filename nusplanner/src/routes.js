@@ -8,9 +8,9 @@ export default [
         component: Main,
         meta: {
             auth: true
-          }
+        }
     },
-    { 
+    {
         path: '/login',
         name: 'login',
         component: Login,
@@ -29,6 +29,6 @@ export default [
         component: Main,
         meta: {
             auth: true
-          }
+        }
     },
 ]

@@ -13,11 +13,11 @@
       </v-col>
       <v-col md="7">
         <v-app>
-            <Weekly></Weekly>
+          <Weekly></Weekly>
         </v-app>
       </v-col>
       <v-col md="3">
-          <todolist></todolist>
+        <todolist></todolist>
       </v-col>
     </v-row>
   </body>

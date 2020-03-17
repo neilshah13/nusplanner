@@ -22,9 +22,8 @@
         </v-btn>
         <v-btn outlined class="mr-4" color="grey darken-2" @click="viewDay">
             Today
-          </v-btn>
+        </v-btn>
 <!-- to pick the month/week/day view -->
-          <div class="flex-grow-1"></div>
           <v-menu bottom right>
             <template v-slot:activator="{ on }">
               <v-btn outlined v-on="on">
