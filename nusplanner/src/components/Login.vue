@@ -7,12 +7,12 @@
         <img src="https://image.flaticon.com/icons/svg/1077/1077063.svg" id="icon" />
       </div>
 
-      <form>
+      <form action="#" @submit.prevent="submit" name="signup">
         <input
           type="text"
           id="login"
           class="fadeIn second"
-          name="login"
+          name="email"
           v-model="input.email"
           placeholder="Email"
         />
@@ -20,7 +20,7 @@
           type="password"
           id="password"
           class="fadeIn third"
-          name="login"
+          name="password"
           v-model="input.password"
           placeholder="Password"
         />
@@ -47,15 +47,18 @@ export default {
   },
   methods: {
     submit() {
+      var email = document.forms["signup"]["email"].value;
+      var password = document.forms["signup"]["password"].value;
       firebase
         .auth()
-        .signInWithEmailAndPassword(this.form.email, this.form.password)
+        .signInWithEmailAndPassword(email, password)
         .then(data => {
-          data.$router.replace({ name: "" });
+          data.$router.replace({ name: this.user.displayName });
         })
         .catch(err => {
           this.error = err.message;
         });
+      console.log("Succesful login");
     }
   }
 };
