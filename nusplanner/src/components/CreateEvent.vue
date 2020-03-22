@@ -2,7 +2,7 @@
   <v-card>
     <v-container class='neweventcont'>
       <v-toolbar-title class="neweventtitle">
-        <v-btn icon dark @click="dialog = false" color="white" x-small outlined class='neweventclose'> <!-- closing button -->
+        <v-btn icon dark @click="closeDialog" color="white" x-small outlined class='neweventclose'> <!-- closing button -->
           <v-icon>mdi-close</v-icon>
         </v-btn>
      Type of Event:
@@ -126,33 +126,12 @@ export default {
     data: () => ({
       today: new Date().toISOString().substr(0, 10),
       focus: '',
-      type: 'month', //default
-      eventType: 'event', //default
       color: '#1976D2', // default event color
-      colors: ['red', 'pink', 'cyan', 'orange', 'indigo', 'purple'],
+      colors: ['#1976D2', 'red', 'pink', 'cyan', 'orange', 'indigo', 'purple'],
       start: null,
       end: null,
-      currentlyEditing: null,
-      selectedEvent: {},
-      selectedElement: null,
-      selectedOpen: false,
-      dialog: false, // for adding event
-      groupMembers: false,
+      eventType: 'event', //default
       group: 'teamwork',
-
-      typeToLabel: {
-        month: 'Month',
-        week: 'Week',
-        day: 'Day',
-      },
-      modules: {
-        module1: 'BT1101',
-        module2: 'BT2101',
-        module3: 'BT2102',
-        module4: 'BT3102',
-        module5: 'BT3103',
-        module6: 'IS3103'
-      },
       eventTypes: {
         assignment: 'Assignment',
         event: 'Event',
@@ -162,6 +141,43 @@ export default {
         teamwork: 'Team Work (BT3103)',
         teamhustle: 'Team Hustle (IS3103)',
       },
-    })
+    }),
+    methods: {
+      closeDialog() {
+        this.$emit('update-dialog')
+      }
+    },
+    // model: {
+    //   prop: 'dialog',
+    //   event: 'change'
+    // },
+    // props: {
+    //   dialog: Boolean
+    // }
 }
 </script>
+
+<style scoped>
+.neweventtitle{
+  background: rgb(35, 90, 209);
+  min-height: 50px;
+  color: white;
+  padding:10px;
+}
+.neweventcont {
+  position: relative;
+}
+.neweventclose {
+  float: left;
+}
+.neweventfield {
+  transform: scale(0.75);
+}
+.neweventform {
+  display: block;
+}
+.colorfieldtitle {
+  display:inline-flex;
+  transform: scale(0.80);
+}
+</style>
