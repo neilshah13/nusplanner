@@ -294,12 +294,10 @@
 </template>
 
 <script>
-import CreateGroup from "./CreateGroup.vue"
 import CreateEvent from "./CreateEvent.vue"
 
 export default {
         components:{
-        creategroup: CreateGroup,
         createvent: CreateEvent,
       },
     data: () => ({
