@@ -470,6 +470,9 @@ export default {
   float: center;
 /*  flex-direction: row;*/
 }
+.toolbar {
+  margin: auto;
+}
 .cont{
   background: rgb(35, 90, 209);
   min-height: 50px;
