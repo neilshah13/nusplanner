@@ -2,7 +2,7 @@
 <header class="header-login-signup">
   <div class="header-limiter">
 
-		<h1><a href="/">NUS<span>Planner</span></a></h1>
+		<h1><router-link to="/" exact>NUS<span>Planner</span></router-link></h1>
 		<nav>
 			<!--
 			<ul>
@@ -11,8 +11,8 @@
 			</ul>-->
 			<v-toolbar-title class='title'>
 			<ul>
-				<li><v-btn icon small class='btn'><v-icon>mdi-account</v-icon></v-btn></li>
-				<li>Neil Shah</li>
+				<li><v-btn icon small class='btn'><v-icon>mdi-account</v-icon></v-btn>
+				</li><li>Neil</li>
 				<li><router-link to="/groups" exact>Groups</router-link></li>
 			</ul>
 			</v-toolbar-title>
@@ -35,7 +35,18 @@
 </template>
 
 <script>
+import firebase from "firebase"
 export default {
+	data() {
+    return {
+        user: null
+    };
+},
+created() {
+    firebase.auth().onAuthStateChanged(user => {
+        this.user = user;
+    });
+},
 };
 </script>
 

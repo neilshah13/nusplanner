@@ -1,36 +1,91 @@
 <template>
-    <div class="wrapper fadeInDown">
-        <div id="formContent">
-            <h2 class="active">Sign Up</h2>
+  <div class="wrapper fadeInDown">
+    <div id="formContent">
+      <h2 class="active">Sign Up</h2>
 
-            <div class="fadeIn first">
-                <img src="https://image.flaticon.com/icons/svg/684/684831.svg" id="icon"/>
-            </div>
+      <div class="fadeIn first">
+        <img src="https://image.flaticon.com/icons/svg/684/684831.svg" id="icon" />
+      </div>
 
-            <form>
-                <input type="text" id="login" class="fadeIn second" name="login" v-model="input.username" placeholder="Username">
-                <input type="email" id="login" class="fadeIn second" name="login" v-model="input.email" placeholder="Email">
-                <input type="password" id="password" class="fadeIn third" name="login" v-model="input.password" placeholder="Password">
-                <input type="password" id="password" class="fadeIn third" name="login" v-model="input.confirm" placeholder="Confirm Password">
-                <input type="submit" class="fadeIn fourth" value="Create Account">
-            </form>
-        </div>
+      <form action="#" @submit.prevent="submit" name="signup">
+        <input
+          type="text"
+          id="name"
+          class="fadeIn second"
+          name="name"
+          v-model="input.name"
+          placeholder="Name"
+          required
+        />
+        <input
+          type="email"
+          id="login"
+          class="fadeIn second"
+          name="email"
+          v-model="input.email"
+          placeholder="Email"
+          required
+        />
+        <input
+          type="password"
+          id="password"
+          class="fadeIn third"
+          name="password"
+          v-model="input.password"
+          placeholder="Password"
+          required
+        />
+        <input
+          type="password"
+          id="confirm_password"
+          class="fadeIn third"
+          name="confirm_password"
+          v-model="input.confirm"
+          placeholder="Confirm Password"
+          required
+        />
+        <input type="submit" class="fadeIn fourth" value="Create Account" />
+      </form>
     </div>
+  </div>
 </template>
 
 <script>
+import firebase from "firebase";
+
 export default {
-    data() {
-      return {
-        input: {
-          username: "",
-          email: "",
-          password: "",
-          confirm: ""
-        }
+  data() {
+    return {
+      input: {
+        name: "",
+        email: "",
+        password: "",
+        confirm: ""
       }
+    };
+  },
+  methods: {
+    submit() {
+      var email = document.forms["signup"]["email"].value;
+      var password = document.forms["signup"]["password"].value;
+      var name = document.forms["signup"]["name"].value
+      firebase
+        .auth()
+        .createUserWithEmailAndPassword(email, password)
+        .then(data => {
+          data.user
+            .updateProfile({
+              displayName: name
+            })
+            .then(() => {});
+        })
+        .catch(err => {
+          this.error = err.message;
+        });
+      console.log("Succesful creation");
     }
-}
+  }
+};
 </script>
 
 <style scoped>
@@ -39,29 +94,29 @@ h2 {
   font-size: 16px;
   font-weight: 600;
   text-transform: uppercase;
-  display:inline-block;
-  margin: 40px 8px 10px 8px; 
+  display: inline-block;
+  margin: 40px 8px 10px 8px;
   color: #cccccc;
 }
 
 a {
   color: #92badd;
-  display:inline-block;
+  display: inline-block;
   text-decoration: none;
   font-weight: 400;
 }
 
 /* STRUCTURE */
 .wrapper {
-    background-color: #56baed;
-    font-family: normal 16px Cookie, Arial, Helvetica, sans-serif;
-    display: flex;
-    align-items: center;
-    flex-direction: column; 
-    justify-content: center;
-    width: 100%;
-    height: 100vh;
-    padding: 20px;
+  background-color: #56baed;
+  font-family: normal 16px Cookie, Arial, Helvetica, sans-serif;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+  padding: 20px;
 }
 #formContent {
   -webkit-border-radius: 10px 10px 10px 10px;
@@ -72,8 +127,8 @@ a {
   max-width: 450px;
   position: relative;
   padding: 0px;
-  -webkit-box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
-  box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+  -webkit-box-shadow: 0 30px 60px 0 rgba(0, 0, 0, 0.3);
+  box-shadow: 0 30px 60px 0 rgba(0, 0, 0, 0.3);
   text-align: center;
 }
 
@@ -87,7 +142,9 @@ h2.active {
 }
 
 /* FORM TYPOGRAPHY*/
-input[type=button], input[type=submit], input[type=reset]  {
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
   background-color: #56baed;
   border: none;
   color: white;
@@ -97,8 +154,8 @@ input[type=button], input[type=submit], input[type=reset]  {
   display: inline-block;
   text-transform: uppercase;
   font-size: 13px;
-  -webkit-box-shadow: 0 10px 30px 0 rgba(95,186,233,0.4);
-  box-shadow: 0 10px 30px 0 rgba(95,186,233,0.4);
+  -webkit-box-shadow: 0 10px 30px 0 rgba(95, 186, 233, 0.4);
+  box-shadow: 0 10px 30px 0 rgba(95, 186, 233, 0.4);
   -webkit-border-radius: 5px 5px 5px 5px;
   border-radius: 5px 5px 5px 5px;
   margin: 5px 20px 40px 20px;
@@ -108,17 +165,23 @@ input[type=button], input[type=submit], input[type=reset]  {
   -o-transition: all 0.3s ease-in-out;
   transition: all 0.3s ease-in-out;
 }
-input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover  {
+input[type="button"]:hover,
+input[type="submit"]:hover,
+input[type="reset"]:hover {
   background-color: #39ace7;
 }
-input[type=button]:active, input[type=submit]:active, input[type=reset]:active  {
+input[type="button"]:active,
+input[type="submit"]:active,
+input[type="reset"]:active {
   -moz-transform: scale(0.95);
   -webkit-transform: scale(0.95);
   -o-transform: scale(0.95);
   -ms-transform: scale(0.95);
   transform: scale(0.95);
 }
-input[type=text], input[type=email], input[type=password] {
+input[type="text"],
+input[type="email"],
+input[type="password"] {
   background-color: #f6f6f6;
   border: none;
   color: #0d0d0d;
@@ -138,11 +201,15 @@ input[type=text], input[type=email], input[type=password] {
   -webkit-border-radius: 5px 5px 5px 5px;
   border-radius: 5px 5px 5px 5px;
 }
-input[type=text]:focus, input[type=email]:focus, input[type=password]:focus{
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
   background-color: #fff;
   border-bottom: 2px solid #5fbae9;
 }
-input[type=text]:placeholder, input[type=email]:placeholder, input[type=password]:placeholder{
+input[type="text"]:placeholder,
+input[type="email"]:placeholder,
+input[type="password"]:placeholder {
   color: #cccccc;
 }
 
@@ -185,23 +252,44 @@ input[type=text]:placeholder, input[type=email]:placeholder, input[type=password
 }
 
 /* Simple CSS3 Fade-in Animation */
-@-webkit-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-@-moz-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@-webkit-keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@-moz-keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 
 .fadeIn {
-  opacity:0;
-  -webkit-animation:fadeIn ease-in 1;
-  -moz-animation:fadeIn ease-in 1;
-  animation:fadeIn ease-in 1;
+  opacity: 0;
+  -webkit-animation: fadeIn ease-in 1;
+  -moz-animation: fadeIn ease-in 1;
+  animation: fadeIn ease-in 1;
 
-  -webkit-animation-fill-mode:forwards;
-  -moz-animation-fill-mode:forwards;
-  animation-fill-mode:forwards;
+  -webkit-animation-fill-mode: forwards;
+  -moz-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
 
-  -webkit-animation-duration:1s;
-  -moz-animation-duration:1s;
-  animation-duration:1s;
+  -webkit-animation-duration: 1s;
+  -moz-animation-duration: 1s;
+  animation-duration: 1s;
 }
 
 .fadeIn.first {
@@ -244,19 +332,19 @@ input[type=text]:placeholder, input[type=email]:placeholder, input[type=password
   color: #0d0d0d;
 }
 
-.underlineHover:hover:after{
+.underlineHover:hover:after {
   width: 100%;
 }
 
 /* OTHERS */
 
 *:focus {
-    outline: none;
-} 
+  outline: none;
+}
 
 #icon {
-  width:50px;
-  height:50px;
+  width: 50px;
+  height: 50px;
 }
 
 * {

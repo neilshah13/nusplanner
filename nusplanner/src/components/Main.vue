@@ -1,34 +1,32 @@
 <template>
 <div id="app">
   <body>
-    <div class="row no-gutters">
-      <div class="col">
+    <v-row no-gutters>
+      <v-col>
         <moduleAdding></moduleAdding>
-      </div>
-    </div>
-    <div class="row no-gutters">
-      <div class="col-md-2">
+      </v-col>
+    </v-row>
+    <v-row no-gutters>
+      <v-col md="2">
         <announcement></announcement>
         <Filters></Filters>
-      </div>
-      <div class="col-md-7">
+      </v-col>
+      <v-col md="7">
         <v-app>
-          <v-content>
-            <Weekly></Weekly>
-          </v-content>
+          <Weekly></Weekly>
         </v-app>
-      </div>
-      <div class="col-md-3">
-          <todolist></todolist>
-      </div>
-    </div>
+      </v-col>
+      <v-col md="3">
+        <todolist></todolist>
+      </v-col>
+    </v-row>
   </body>
 </div>
 </template>
 
 <script>
 import todolist from "./todolist.vue";
-//import Header from "./components/Header.vue";
+//import Header from "./Header.vue";
 import Weekly from "./Weekly.vue";
 import Vue from "vue";
 //import { AutoCompletePlugin } from "@syncfusion/ej2-vue-dropdowns";
@@ -58,10 +56,12 @@ body {
 .no-gutters {
   margin-right: 0;
   margin-left: 0;
+  margin-bottom: 0;
 
   > [class*="col-"] {
     padding-right: 0;
     padding-left: 0;
+    padding-bottom: 0;
   }
 }
 

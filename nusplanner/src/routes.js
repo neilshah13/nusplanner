@@ -6,18 +6,34 @@ import Groups from './components/Groups.vue';
 export default [
     {
         path: '/',
-        component: Main
+        component: Main,
+        meta: {
+            auth: true
+        }
     },
-    { 
+    {
         path: '/login',
-        component: Login
+        name: 'login',
+        component: Login,
+        meta: {
+            guest: true
+        }
     },
     {
         path: '/signup',
+        name: 'signup',
         component: SignUp
     },
     {
         path: '/groups',
         component: Groups
+    },
+    {
+        path: '/dashboard',
+        name: 'dashboard',
+        component: Main,
+        meta: {
+            auth: true
+        }
     }
 ]
