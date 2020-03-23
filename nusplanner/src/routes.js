@@ -6,6 +6,13 @@ import Groups from './components/Groups.vue';
 export default [
     {
         path: '/',
+        redirect: '/home',
+        meta: {
+            auth: true
+        }
+    },
+    {
+        path: '/home',
         component: Main,
         meta: {
             auth: true
