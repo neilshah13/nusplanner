@@ -8,7 +8,7 @@ export default{
             {
               label: 'Sales',
               data: [0.3, 0.7],
-              backgroundColor:['aqua','lightgreen','red','orange'],
+              backgroundColor:['green', 'red'],
               borderWidth:0.5,
             }
           ]

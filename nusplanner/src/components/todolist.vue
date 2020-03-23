@@ -91,10 +91,10 @@ export default {
   methods: {
     fetchItems: function() {
       let item={}
-      firebase.firestore().collection('todo').get().then((querySnapShot) => {
+      firebase.firestore().collection('user').get().then((querySnapShot) => {
         querySnapShot.forEach(doc=>{
           item=doc.data()
-          item.done=false
+          item.id=doc.id
           this.todo.push(item)
         })
       })

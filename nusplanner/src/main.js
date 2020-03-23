@@ -7,8 +7,8 @@ import Routes from './routes';
 Vue.use(VueRouter);
 
 const router = new VueRouter({
-  routes: Routes,
-  mode: 'history'
+    routes: Routes,
+    mode: 'history'
 });
 /*
 router.beforeEach((to, from, next) => {
@@ -47,28 +47,28 @@ Vue.use(VueTextareaAutosize);
 Vue.config.productionTip = false
 
 import firebase from 'firebase';
-
+console.log("Ran this in main.js")
 // const firebaseConfig = {
-//     apiKey: "AIzaSyD3bNy1P9h1SikDscok9ZAxBQazXxi5Xtk",
-//     authDomain: "nusplanner-46ec3.firebaseapp.com",
-//     databaseURL: "https://nusplanner-46ec3.firebaseio.com",
-//     projectId: "nusplanner-46ec3",
-//     storageBucket: "nusplanner-46ec3.appspot.com",
-//     messagingSenderId: "189430397202",
-//     appId: "1:189430397202:web:cbed662fc2367e55bcdbcb",
-//     measurementId: "G-1C1YVZJBZ5"
+//   apiKey: process.env.API_KEY,
+//   authDomain: process.env.AUTH_DOMAIN,
+//   databaseURL: process.env.DB_URL,
+//   projectId: process.env.PROJECT_ID,
+//   storageBucket: process.env.STORAGE_BUCKET,
+//   messagingSenderId: process.env.MSG_SENDER_ID,
+//   appId: process.env.APP_ID,
+//   measurementId: process.env.MEASUREMENT_ID,
 // };
 const firebaseConfig = {
-  apiKey: "AIzaSyCmiJzJJv8FIFKaLZj90BEEF8O-0Lc6rGc",
-  authDomain: "nusplanner-69069.firebaseapp.com",
-  databaseURL: "https://nusplanner-69069.firebaseio.com",
-  projectId: "nusplanner-69069",
-  storageBucket: "nusplanner-69069.appspot.com",
-  messagingSenderId: "693965053775",
-  appId: "1:693965053775:web:ce14458f3f07004f4bef3a",
-  measurementId: "G-B9VE5K633G"
+  apiKey: "AIzaSyDYr2wvDJ7h9JAaM0Z350Ux_4SNEhZaiUo",
+  authDomain: "nusplanner-74bbd.firebaseapp.com",
+  databaseURL: "https://nusplanner-74bbd.firebaseio.com",
+  projectId: "nusplanner-74bbd",
+  storageBucket: "nusplanner-74bbd.appspot.com",
+  messagingSenderId: "613681838416",
+  appId: "1:613681838416:web:72116564d894d2690d1455",
+  measurementId: "G-Q7RHBW61B0"
 };
-  
+console.log(process.env.API_KEY)  
 firebase.initializeApp(firebaseConfig);
 
 const database = firebase.firestore();
@@ -76,7 +76,7 @@ database.settings({ timestampsInSnapshots: true });
 export default database;
 
 new Vue({
-  vuetify,
-  render: h => h(App),
-  router: router
+    vuetify,
+    render: h => h(App),
+    router: router
 }).$mount('#app')

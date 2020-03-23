@@ -44,7 +44,7 @@
           placeholder="Confirm Password"
           required
         />
-        <input type="submit" class="fadeIn fourth" value="Create Account" />
+        <input type="submit" class="fadeIn fourth" value="Create Account"/>
       </form>
     </div>
   </div>
@@ -68,7 +68,7 @@ export default {
     submit() {
       var email = document.forms["signup"]["email"].value;
       var password = document.forms["signup"]["password"].value;
-      var name = document.forms["signup"]["name"].value
+      var name = document.forms["signup"]["name"].value;
       firebase
         .auth()
         .createUserWithEmailAndPassword(email, password)
@@ -83,7 +83,25 @@ export default {
           this.error = err.message;
         });
       console.log("Succesful creation");
-    }
+      var user = firebase.auth().currentUser;
+      console.log(user);
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          // User is signed in.
+        firebase
+          .firestore()
+          .collection("users")
+          .doc(user.uid)
+          .set({
+            name: document.forms["signup"]["name"].value,
+            event_list: [""],
+            group_list: [""],
+            module_list: [""]
+        })
+        console.log("Successful Creation of data for user")
+        }
+      });
+    },
   }
 };
 </script>
