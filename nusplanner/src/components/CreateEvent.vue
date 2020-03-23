@@ -2,7 +2,7 @@
   <v-card>
     <v-container class='neweventcont'>
       <v-toolbar-title class="neweventtitle">
-        <v-btn icon dark @click="closeDialog" color="white" x-small outlined class='neweventclose'> <!-- closing button -->
+        <v-btn icon dark @click="closeDialog" x-small outlined class='neweventclose'> <!-- closing button -->
           <v-icon>mdi-close</v-icon>
         </v-btn>
      Type of Event:
@@ -111,7 +111,7 @@
             </div>
       </v-form>
     <br>
-    <v-btn type="submit" color="primary" class="mr-4" @click.stop="dialog=false">Create Event</v-btn>
+    <v-btn type="submit" color="primary" class="mr-4" @click.stop="submittedEvent">Create Event</v-btn>
     <v-btn color="error" class="mr-4" @click="reset"> Reset Form </v-btn>
     </v-container>
   </v-card>
@@ -130,6 +130,7 @@ export default {
       colors: ['#1976D2', 'red', 'pink', 'cyan', 'orange', 'indigo', 'purple'],
       start: null,
       end: null,
+      snackbar: false,
       eventType: 'event', //default
       group: 'teamwork',
       eventTypes: {
@@ -145,7 +146,14 @@ export default {
     methods: {
       closeDialog() {
         this.$emit('update-dialog')
-      }
+      },
+      reset() {
+        this.$refs.form.reset();
+      },
+      submittedEvent() {
+        this.$emit('update-eventsnack')
+        this.$emit('update-dialog')
+      },
     },
     // model: {
     //   prop: 'dialog',
@@ -179,5 +187,8 @@ export default {
 .colorfieldtitle {
   display:inline-flex;
   transform: scale(0.80);
+}
+.btn {
+  transform: scale(0.75);
 }
 </style>
