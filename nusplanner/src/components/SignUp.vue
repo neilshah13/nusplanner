@@ -44,7 +44,7 @@
           placeholder="Confirm Password"
           required
         />
-        <input type="submit" class="fadeIn fourth" value="Create Account" />
+        <input type="submit" class="fadeIn fourth" value="Create Account"/>
       </form>
     </div>
   </div>
@@ -101,7 +101,7 @@ export default {
         console.log("Successful Creation of data for user")
         }
       });
-    }
+    },
   }
 };
 </script>
