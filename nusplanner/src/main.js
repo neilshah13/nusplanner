@@ -4,8 +4,6 @@ import vuetify from './plugins/vuetify';
 import VueRouter from 'vue-router';
 import Routes from './routes';
 
-require('dotenv').config();
-
 Vue.use(VueRouter);
 
 const router = new VueRouter({
