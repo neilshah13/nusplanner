@@ -1,18 +1,16 @@
 import firebase from 'firebase';
 
+require('dotenv').config();
+console.log("Ran this in firebase.js")
 const firebaseConfig = {
-    apiKey: "",
-    authDomain: "",
-    databaseURL: "",
-    projectId: "",
-    storageBucket: "",
-    messagingSenderId: "",
-    appId: "",
-    measurementId: ""
+  apiKey: process.env.apiKey,
+  authDomain: process.env.authDomain,
+  databaseURL: process.env.databaseURL,
+  projectId: process.env.projectId,
+  storageBucket: process.env.storageBucket,
+  messagingSenderId: process.env.messagingSenderId,
+  appId: process.env.appId,
+  measurementId: process.env.measurementId,
 };
   
 firebase.initializeApp(firebaseConfig);
-
-const database = firebase.firestore();
-database.settings({ timestampsInSnapshots: true });
-export default database;

@@ -4,6 +4,8 @@ import vuetify from './plugins/vuetify';
 import VueRouter from 'vue-router';
 import Routes from './routes';
 
+require('dotenv').config();
+
 Vue.use(VueRouter);
 
 const router = new VueRouter({
@@ -47,18 +49,18 @@ Vue.use(VueTextareaAutosize);
 Vue.config.productionTip = false
 
 import firebase from 'firebase';
-
+console.log("Ran this in main.js")
 const firebaseConfig = {
-    apiKey: "AIzaSyD3bNy1P9h1SikDscok9ZAxBQazXxi5Xtk",
-    authDomain: "nusplanner-46ec3.firebaseapp.com",
-    databaseURL: "https://nusplanner-46ec3.firebaseio.com",
-    projectId: "nusplanner-46ec3",
-    storageBucket: "nusplanner-46ec3.appspot.com",
-    messagingSenderId: "189430397202",
-    appId: "1:189430397202:web:cbed662fc2367e55bcdbcb",
-    measurementId: "G-1C1YVZJBZ5"
+  apiKey: process.env.API_KEY,
+  authDomain: process.env.AUTH_DOMAIN,
+  databaseURL: process.env.DB_URL,
+  projectId: process.env.PROJECT_ID,
+  storageBucket: process.env.STORAGE_BUCKET,
+  messagingSenderId: process.env.MSG_SENDER_ID,
+  appId: process.env.APP_ID,
+  measurementId: process.env.MEASUREMENT_ID,
 };
-  
+console.log(process.env.API_KEY)  
 firebase.initializeApp(firebaseConfig);
 
 new Vue({
