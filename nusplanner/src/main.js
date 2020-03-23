@@ -47,18 +47,18 @@ Vue.use(VueTextareaAutosize);
 Vue.config.productionTip = false
 
 import firebase from 'firebase';
-
+console.log("Ran this in main.js")
 const firebaseConfig = {
-    apiKey: "AIzaSyA2JU6nZgq7jB0euQ0wPi_NdEB5-yv0noc",
-    authDomain: "nusplanner-b0b3c.firebaseapp.com",
-    databaseURL: "https://nusplanner-b0b3c.firebaseio.com",
-    projectId: "nusplanner-b0b3c",
-    storageBucket: "nusplanner-b0b3c.appspot.com",
-    messagingSenderId: "394834114598",
-    appId: "1:394834114598:web:0de502d998702ae3becee7",
-    measurementId: "G-2Q511XR20F"
+  apiKey: process.env.API_KEY,
+  authDomain: process.env.AUTH_DOMAIN,
+  databaseURL: process.env.DB_URL,
+  projectId: process.env.PROJECT_ID,
+  storageBucket: process.env.STORAGE_BUCKET,
+  messagingSenderId: process.env.MSG_SENDER_ID,
+  appId: process.env.APP_ID,
+  measurementId: process.env.MEASUREMENT_ID,
 };
-
+console.log(process.env.API_KEY)  
 firebase.initializeApp(firebaseConfig);
 
 new Vue({
