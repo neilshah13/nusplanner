@@ -160,6 +160,8 @@
 </template>
 
 <script>
+import firebase from "firebase";
+console.log(firebase)
 import CreateEvent from "./CreateEvent.vue"
 import CreateGroup from "./CreateGroup.vue"
 
@@ -195,58 +197,64 @@ export default {
         event: 'Event',
         groupMeeting: 'Group Meeting',
       },
-      events: [
-        {
-          name: 'IS4241 Meeting',
-          details: 'At tembu',
-          start: '2020-02-25 09:00',
-          end: '2020-02-25 15:00',
-          color: 'orange',
-        },
-        {
-          name: 'Computing Career Fair',
-          details: 'Outside SR1',
-          start: '2020-02-24 12:00',
-          end: '2020-02-24 17:00',
-          color: 'cyan',
-        },
-        {
-          name: 'IS3103 Essay due',
-          details: 'Submit in pdf format, word count 1000',
-          start: '2020-02-24',
-          color: 'pink',
-        },
-        {
-          name: 'BT3103 Prototype Due',
-          details: 'A+?? :)',
-          start: '2020-03-02',
-          color: 'red',
-        },
-        {
-          name: 'BT3103 Group Meeting',
-          details: 'Just do work',
-          start: '2020-02-26 12:00',
-          end: '2020-02-26 17:00',
-          color: 'pink',
-        },
-        {
-          name: 'CS1231 Midterms',
-          details: 'At computing SR1',
-          start: '2020-02-29 10:00',
-          end: '2020-02-29 12:00',
-          color: 'purple',
-        },
-        {
-          name: 'BT3102 Midterms',
-          details: 'Due 1800, submit .csv file',
-          start: '2020-02-28',
-          color: 'indigo',
-        },
-      ],
+      events: [],
+
+      // events: [
+      //   {
+      //     name: 'IS4241 Meeting',
+      //     details: 'At tembu',
+      //     start: '2020-02-25 09:00',
+      //     end: '2020-02-25 15:00',
+      //     color: 'orange',
+      //   },
+      //   {
+      //     name: 'Computing Career Fair',
+      //     details: 'Outside SR1',
+      //     start: '2020-02-24 12:00',
+      //     end: '2020-02-24 17:00',
+      //     color: 'cyan',
+      //   },
+      //   {
+      //     name: 'IS3103 Essay due',
+      //     details: 'Submit in pdf format, word count 1000',
+      //     start: '2020-02-24',
+      //     color: 'pink',
+      //   },
+      //   {
+      //     name: 'BT3103 Prototype Due',
+      //     details: 'A+?? :)',
+      //     start: '2020-03-02',
+      //     color: 'red',
+      //   },
+      //   {
+      //     name: 'BT3103 Group Meeting',
+      //     details: 'Just do work',
+      //     start: '2020-02-26 12:00',
+      //     end: '2020-02-26 17:00',
+      //     color: 'pink',
+      //   },
+      //   {
+      //     name: 'CS1231 Midterms',
+      //     details: 'At computing SR1',
+      //     start: '2020-02-29 10:00',
+      //     end: '2020-02-29 12:00',
+      //     color: 'purple',
+      //   },
+      //   {
+      //     name: 'BT3102 Midterms',
+      //     details: 'Due 1800, submit .csv file',
+      //     start: '2020-02-28',
+      //     color: 'indigo',
+      //   },
+      // ],
     }),
     mounted () {
       this.getEvents()
     },
+    created() {
+      this.getEvents()
+    }
+    ,
     /* For group members button */
     watch: {
       isUpdating (val) {
@@ -347,18 +355,19 @@ export default {
           ? `${a.getFullYear()}-${a.getMonth() + 1}-${a.getDate()} ${a.getHours()}:${a.getMinutes()}`
           : `${a.getFullYear()}-${a.getMonth() + 1}-${a.getDate()}`
       },
-      /*
+      
       async getEvents () {
       let snapshot = await firebase.firestore().collection('event').get()
-      const events = []
+      let events = []
       snapshot.forEach(doc => {
+        console.log(doc.data())
         let appData = doc.data()
         appData.id = doc.id
         events.push(appData)
       })
       this.events = events
-      },*/
-      /*
+      },
+      /*  
       async addEvent () {
         if (this.name && this.start && this.end) {
           await db.collection('calEvent').add({
