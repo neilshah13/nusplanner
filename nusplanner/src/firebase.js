@@ -1,16 +1,16 @@
 import firebase from 'firebase';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyD3bNy1P9h1SikDscok9ZAxBQazXxi5Xtk",
-    authDomain: "nusplanner-46ec3.firebaseapp.com",
-    databaseURL: "https://nusplanner-46ec3.firebaseio.com",
-    projectId: "nusplanner-46ec3",
-    storageBucket: "nusplanner-46ec3.appspot.com",
-    messagingSenderId: "189430397202",
-    appId: "1:189430397202:web:cbed662fc2367e55bcdbcb",
-    measurementId: "G-1C1YVZJBZ5"
+    apiKey: "AIzaSyA2JU6nZgq7jB0euQ0wPi_NdEB5-yv0noc",
+    authDomain: "nusplanner-b0b3c.firebaseapp.com",
+    databaseURL: "https://nusplanner-b0b3c.firebaseio.com",
+    projectId: "nusplanner-b0b3c",
+    storageBucket: "nusplanner-b0b3c.appspot.com",
+    messagingSenderId: "394834114598",
+    appId: "1:394834114598:web:0de502d998702ae3becee7",
+    measurementId: "G-2Q511XR20F"
 };
-  
+
 firebase.initializeApp(firebaseConfig);
 
 const database = firebase.firestore();
