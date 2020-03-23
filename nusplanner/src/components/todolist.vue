@@ -69,8 +69,9 @@
 </template>
 
 <script>
+import firebase from "firebase"
 import togglebutton from "./togglebutton.vue";
-//import database from "../firebase.js";
+
 //import func from '../../vue-temp/vue-editor-bridge';
 export default {
   components: {
@@ -81,23 +82,23 @@ export default {
       newitem: "",
       sortByStatus: false,
       todo: [
-        { id: 1, label: "IS4241: Learn Gephi", done: true, edit: false },
+        /*{ id: 1, label: "IS4241: Learn Gephi", done: true, edit: false },
         { id: 2, label: "BT3102: Regression", done: false, edit: false },
-        { id: 3, label: "BT3103: Learn Vue", done: false, edit: false }
+        { id: 3, label: "BT3103: Learn Vue", done: false, edit: false }*/
       ]
     };
   },
   methods: {
-    /*fetchItems: function() {
-      database.collection('todo').get().then(querySnapShot => {
+    fetchItems: function() {
+      let item={}
+      firebase.firestore().collection('todo').get().then((querySnapShot) => {
         querySnapShot.forEach(doc=>{
-          this.todo.push(doc.data())
+          item=doc.data()
+          item.done=false
+          this.todo.push(item)
         })
       })
     },
-    created(){
-      this.fetchItems()
-    },*/
     addItem: function() {
       this.todo.push({
         id: Math.floor(Math.random() * 9999) + 10,
@@ -124,6 +125,9 @@ export default {
       this.sortByStatus = active;
     }
   },
+  created(){
+      this.fetchItems()
+    },
   computed: {
     todoByStatus: function() {
       if (!this.sortByStatus) {
