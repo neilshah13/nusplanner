@@ -66,7 +66,6 @@
 
       <!-- Form start here ******************************-->
       <div id="app">
-  <v-app id="inspire">
     <v-card
       color="blue-grey darken-1"
       dark
@@ -220,7 +219,6 @@
         </v-container>
       </v-form>
     </v-card>
-  </v-app>
 </div>
                 
       <!-- Form end here ******************************-->
@@ -477,7 +475,7 @@ export default {
       groups: {
         teamwork: 'Team Work (BT3103)',
         teamhustle: 'Team Hustle (IS3103)',
-      },
+      }, 
       events: [
         {
           name: 'IS4241 Meeting',
@@ -624,8 +622,9 @@ export default {
           ? `${a.getFullYear()}-${a.getMonth() + 1}-${a.getDate()} ${a.getHours()}:${a.getMinutes()}`
           : `${a.getFullYear()}-${a.getMonth() + 1}-${a.getDate()}`
       },
-      /*async getEvents () {
-      let snapshot = await db.collection('calEvent').get()
+      /*
+      async getEvents () {
+      let snapshot = await firebase.firestore().collection('event').get()
       const events = []
       snapshot.forEach(doc => {
         let appData = doc.data()
