@@ -13,6 +13,7 @@
 			<ul>
 				<li><v-btn icon small class='btn'><v-icon>mdi-account</v-icon></v-btn>
 				</li><li>Neil</li>
+				<li><router-link to="/groups" exact>Groups</router-link></li>
 			</ul>
 			</v-toolbar-title>
 

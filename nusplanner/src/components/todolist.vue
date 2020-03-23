@@ -7,7 +7,10 @@
     </h1>
     <transition-group name="todolist" tag="ul">
       <li v-for="item in todoByStatus" v-bind:class="item.done ? 'done' : ''" v-bind:key="item.id">
-        <span class="label">{{item.label}}</span>
+        <span class="label" v-show="item.edit == false">{{item.label}}</span>
+        <textarea v-show="item.edit == true" 
+          v-model="item.label" 
+          v-on:keyup.enter="doneEditing(item)"/>
         <div class="actions">
           <button
             class="btn-picto"
@@ -15,6 +18,7 @@
             v-on:click="markAsDoneOrUndone(item)"
             v-bind:aria-label="item.done ? 'Undone' : 'Done'"
             v-bind:title="item.done ? 'Undone' : 'Done'"
+            v-show="item.edit == false"
           >
             <i
               aria-hidden="true"
@@ -27,8 +31,29 @@
             v-on:click="deleteItemFromList(item)"
             aria-label="Delete"
             title="Delete"
+            v-show="item.edit == false"
           >
             <i aria-hidden="true" class="material-icons">delete</i>
+          </button>
+          <button
+            class="btn-picto"
+            type="button"
+            v-on:click="editItemFromList(item)"
+            aria-label="Edit"
+            title="Edit"
+            v-show="item.edit == false"
+          >
+            <i aria-hidden="true" class="material-icons">edit</i>
+          </button>
+          <button
+            class="btn-picto"
+            type="button"
+            v-on:click="doneEditing(item)"
+            aria-label="Done Editing"
+            title="Done Editing"
+            v-show="item.edit == true"
+          >
+            <i aria-hidden="true" class="material-icons">done</i>
           </button>
         </div>
       </li>
@@ -45,6 +70,8 @@
 
 <script>
 import togglebutton from "./togglebutton.vue";
+//import database from "../firebase.js";
+//import func from '../../vue-temp/vue-editor-bridge';
 export default {
   components: {
     togglebutton
@@ -54,18 +81,29 @@ export default {
       newitem: "",
       sortByStatus: false,
       todo: [
-        { id: 1, label: "IS4241: Learn Gephi", done: true },
-        { id: 2, label: "BT3102: Regression", done: false },
-        { id: 3, label: "BT3103: Learn Vue", done: false }
+        { id: 1, label: "IS4241: Learn Gephi", done: true, edit: false },
+        { id: 2, label: "BT3102: Regression", done: false, edit: false },
+        { id: 3, label: "BT3103: Learn Vue", done: false, edit: false }
       ]
     };
   },
   methods: {
+    /*fetchItems: function() {
+      database.collection('todo').get().then(querySnapShot => {
+        querySnapShot.forEach(doc=>{
+          this.todo.push(doc.data())
+        })
+      })
+    },
+    created(){
+      this.fetchItems()
+    },*/
     addItem: function() {
       this.todo.push({
         id: Math.floor(Math.random() * 9999) + 10,
         label: this.newitem,
-        done: false
+        done: false,
+        edit: false
       });
       this.newitem = "";
     },
@@ -75,6 +113,12 @@ export default {
     deleteItemFromList: function(item) {
       let index = this.todo.indexOf(item);
       this.todo.splice(index, 1);
+    },
+    editItemFromList: function(item) {
+      item.edit = true;
+    },
+    doneEditing: function(item) {
+      item.edit = false;
     },
     clickontoogle: function(active) {
       this.sortByStatus = active;
@@ -161,18 +205,24 @@ export default {
   align-items: center;
   background: rgba(255, 255, 255, 0.1);
 }
-
+#todolist li:hover{
+  background-color: rgba(255, 255, 255, 0.349);
+}
 #todolist .actions {
   padding-left: 0.7em;
+  display: flex;
 }
 #todolist .label {
   position: relative;
   transition: opacity 0.2s linear;
+  display: flex;
+  animation-name: strike;
 }
 #todolist .done .label {
   opacity: 0.6;
+  text-decoration: line-through;
 }
-#todolist .done .label:before {
+#todolist .done .label::after {
   content: "";
   position: absolute;
   top: 50%;
@@ -181,7 +231,7 @@ export default {
   width: 0%;
   height: 1px;
   background: #fff;
-  animation: strikeitem 0.3s ease-out 0s forwards;
+  /* animation: strikeitem 0.3s ease-out 0s forwards; */
 }
 #todolist .btn-picto {
   border: none;
@@ -189,6 +239,11 @@ export default {
   -webkit-appearance: none;
   cursor: pointer;
   color: #fff;
+}
+#todolist textarea {
+  background: #f7f1f1;
+  color: #ff5e5e;
+  border: none;
 }
 
 /* FORM */
