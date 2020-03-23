@@ -7,8 +7,8 @@ import Routes from './routes';
 Vue.use(VueRouter);
 
 const router = new VueRouter({
-  routes: Routes,
-  mode: 'history'
+    routes: Routes,
+    mode: 'history'
 });
 /*
 router.beforeEach((to, from, next) => {
@@ -49,20 +49,23 @@ Vue.config.productionTip = false
 import firebase from 'firebase';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyD3bNy1P9h1SikDscok9ZAxBQazXxi5Xtk",
-    authDomain: "nusplanner-46ec3.firebaseapp.com",
-    databaseURL: "https://nusplanner-46ec3.firebaseio.com",
-    projectId: "nusplanner-46ec3",
-    storageBucket: "nusplanner-46ec3.appspot.com",
-    messagingSenderId: "189430397202",
-    appId: "1:189430397202:web:cbed662fc2367e55bcdbcb",
-    measurementId: "G-1C1YVZJBZ5"
+  apiKey: "AIzaSyCQH24CqWz0_5DuieM4Nbk8yPBeqlbNELw",
+  authDomain: "fir-tutorial-e4242.firebaseapp.com",
+  databaseURL: "https://fir-tutorial-e4242.firebaseio.com",
+  projectId: "fir-tutorial-e4242",
+  storageBucket: "fir-tutorial-e4242.appspot.com",
+  messagingSenderId: "794243145358",
+  appId: "1:794243145358:web:5c52364fa0e1b55646b3df",
+  measurementId: "G-RC7R98T96M"
 };
-  
+
 firebase.initializeApp(firebaseConfig);
+const database = firebase.firestore();
+database.settings({ timestampsInSnapshots: true });
+export default database;
 
 new Vue({
-  vuetify,
-  render: h => h(App),
-  router: router
+    vuetify,
+    render: h => h(App),
+    router: router
 }).$mount('#app')

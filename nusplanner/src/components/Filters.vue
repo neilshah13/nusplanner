@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import database from '../firebase.js'
+import database from '../main.js'
 export default {  
 
   data: function(){
@@ -52,7 +52,6 @@ export default {
     selectedType: function() {
       let ev = {};
       this.selectedEvents = [];
-      console.log("here")
       database.collection('project-events').get().then((querySnapShot)=>{
         //this.filterEvents();
         querySnapShot.forEach(doc=>{
@@ -63,8 +62,8 @@ export default {
             } else {
               ev.show = false
             }
-            console.log(ev.show)
-            console.log(this.selectedType)
+            //console.log(ev.show)
+            //console.log(this.selectedType)
         }
       )}
     )}
