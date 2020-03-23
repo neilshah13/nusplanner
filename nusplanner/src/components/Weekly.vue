@@ -1,28 +1,24 @@
 <template>
-  <v-row no-gutters>
-    <v-col>
-      <v-sheet height="64">
-        <v-toolbar flat color="white">
+  <v-container>
+    <v-row no-gutters>
+      <v-col>
           <!-- add groupMembers -->
           <v-btn color="primary" dark @click.stop="groupMembers = true" class="mr-4">
             Add Group Members
           </v-btn>
+      </v-col>
+      <v-col>
           <!-- add event -->
           <v-btn color="primary" dark @click.stop="dialog = true">
             New Event
           </v-btn>
-<!-- prev week -->
-        <v-btn fab text small color="grey darken-2" @click="prev">
-            <v-icon text small>mdi-chevron-left</v-icon>
-        </v-btn>
-<!-- title -->{{ title }}
-<!-- next week -->
-        <v-btn fab text small color="grey darken-2" @click="next"> <!-- class mr-4 means to have a margin-->
-            <v-icon small>mdi-chevron-right</v-icon>
-        </v-btn>
+      </v-col>
+      <v-col>
         <v-btn outlined class="mr-4" color="grey darken-2" @click="viewDay">
             Today
           </v-btn>
+      </v-col>
+      <v-col>
 <!-- to pick the month/week/day view -->
           <div class="flex-grow-1"></div>
           <v-menu bottom right>
@@ -49,8 +45,22 @@
               -->
             </v-list>
           </v-menu>
-        </v-toolbar>
-      </v-sheet>
+      </v-col>
+  </v-row>
+
+      <v-row justify="center" no-gutters>
+      <v-col md="auto">
+<!-- prev week -->
+        <v-btn fab text small color="grey darken-2" @click="prev">
+            <v-icon text small>mdi-chevron-left</v-icon>
+        </v-btn>
+<!-- title -->{{ title }}
+<!-- next week -->
+        <v-btn fab text small color="grey darken-2" @click="next"> <!-- class mr-4 means to have a margin-->
+            <v-icon small>mdi-chevron-right</v-icon>
+        </v-btn>
+      </v-col>
+    </v-row>
 
 <!-- add GroupMembers dialog -->
 <v-dialog v-model="groupMembers" max-width="550">
@@ -233,6 +243,8 @@
 </v-dialog>
 
 <!-- calendar -->
+<v-row no-gutters>
+  <v-col>
       <v-sheet height="600">
         <v-calendar
           ref="calendar"
@@ -291,6 +303,7 @@
       </v-sheet>
     </v-col>
   </v-row>
+</v-container>
 </template>
 
 <script>
