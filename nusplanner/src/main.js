@@ -49,7 +49,6 @@ Vue.config.productionTip = false
 import firebase from 'firebase';
 console.log("Ran this in main.js")
 const firebaseConfig = {
-<<<<<<< HEAD
   apiKey: process.env.API_KEY,
   authDomain: process.env.AUTH_DOMAIN,
   databaseURL: process.env.DB_URL,
@@ -60,18 +59,6 @@ const firebaseConfig = {
   measurementId: process.env.MEASUREMENT_ID,
 };
 console.log(process.env.API_KEY)  
-=======
-    apiKey: "AIzaSyA2JU6nZgq7jB0euQ0wPi_NdEB5-yv0noc",
-    authDomain: "nusplanner-b0b3c.firebaseapp.com",
-    databaseURL: "https://nusplanner-b0b3c.firebaseio.com",
-    projectId: "nusplanner-b0b3c",
-    storageBucket: "nusplanner-b0b3c.appspot.com",
-    messagingSenderId: "394834114598",
-    appId: "1:394834114598:web:0de502d998702ae3becee7",
-    measurementId: "G-2Q511XR20F"
-};
-
->>>>>>> master
 firebase.initializeApp(firebaseConfig);
 
 new Vue({
