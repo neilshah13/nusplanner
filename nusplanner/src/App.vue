@@ -1,7 +1,6 @@
 <template>
 <div id="app">
   <Header></Header>
-  <div><chart></chart></div>
   <router-view>
   </router-view>
 </div>
@@ -11,14 +10,13 @@
 import Header from "./components/Header.vue";
 import Vue from "vue";
 import firebase from "firebase"
-import chart from "./doughnut.js"
 //import { AutoCompletePlugin } from "@syncfusion/ej2-vue-dropdowns";
 
 //Vue.use(AutoCompletePlugin);
 export default Vue.extend({
   name: "App",
   components: {
-    Header,chart
+    Header
   },
   created() {
     firebase.auth().onAuthStateChanged(user => {

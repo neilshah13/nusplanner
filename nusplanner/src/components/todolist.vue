@@ -90,14 +90,18 @@ export default {
   },
   methods: {
     fetchItems: function() {
+      var user = firebase.auth().currentUser
+      let todo=[]
       let item={}
-      firebase.firestore().collection('user').get().then((querySnapShot) => {
+      var users = firebase.firestore().collection('users')
+      users.doc(user.uid).collection('todo').orderBy('label').get().then((querySnapShot) => {
         querySnapShot.forEach(doc=>{
           item=doc.data()
           item.id=doc.id
-          this.todo.push(item)
+          todo.push(item)
         })
       })
+      this.todo=todo
     },
     addItem: function() {
       this.todo.push({
@@ -106,13 +110,28 @@ export default {
         done: false,
         edit: false
       });
+      var user = firebase.auth().currentUser
+      var users = firebase.firestore().collection('users')
+      users.doc(user.uid).collection('todo').add({
+        label: this.newitem,
+        done: false,
+        edit: false
+      })
       this.newitem = "";
     },
     markAsDoneOrUndone: function(item) {
       item.done = !item.done;
+      var user = firebase.auth().currentUser
+      var users = firebase.firestore().collection('users')
+      users.doc(user.uid).collection('todo').doc(item.id).update({
+        done:item.done
+      })
     },
     deleteItemFromList: function(item) {
       let index = this.todo.indexOf(item);
+      var user = firebase.auth().currentUser
+      var users = firebase.firestore().collection('users')
+      users.doc(user.uid).collection('todo').doc(item.id).delete()
       this.todo.splice(index, 1);
     },
     editItemFromList: function(item) {
@@ -120,6 +139,11 @@ export default {
     },
     doneEditing: function(item) {
       item.edit = false;
+      var user = firebase.auth().currentUser
+      var users = firebase.firestore().collection('users')
+      users.doc(user.uid).collection('todo').doc(item.id).update({
+        label:item.label
+      })
     },
     clickontoogle: function(active) {
       this.sortByStatus = active;
@@ -147,6 +171,7 @@ export default {
     }
   }
 };
+
 </script>
 
 <style>
