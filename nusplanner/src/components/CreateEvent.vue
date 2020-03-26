@@ -118,6 +118,7 @@
 </template>
 
 <script>
+import firebase from "firebase";
 import Swatches from 'vue-swatches'
 export default {
     components:{
@@ -128,11 +129,16 @@ export default {
       focus: '',
       color: '#1976D2', // default event color
       colors: ['#1976D2', 'red', 'pink', 'cyan', 'orange', 'indigo', 'purple'],
-      start: null,
-      end: null,
+      startdate: null,
+      enddate: null,
+      starttime: '',
+      endtime: '',
       snackbar: false,
+      details: '',
+      name: '',
       eventType: 'event', //default
       group: 'teamwork',
+
       eventTypes: {
         assignment: 'Assignment',
         event: 'Event',
@@ -153,7 +159,49 @@ export default {
       submittedEvent() {
         this.$emit('update-eventsnack')
         this.$emit('update-dialog')
+        this.addEvent()
+        this.$emit('getEventsfromDatabase') //calls the getEvent from Weekly.vue to update the calendar
       },
+       async addEvent () {
+        if (this.name && this.startdate && this.enddate) { //Takes in as long as there is a date
+          if (this.starttime != ''){ //If there is time input, then we input both date and time into database
+            var startinput = this.startdate.concat(" ".concat(this.starttime))
+            var endinput = this.enddate.concat(" ".concat(this.endtime))
+          } else { //if no time input, we just input date into database
+            startinput = this.startdate
+            endinput = this.enddate
+          }
+          var user = firebase.auth().currentUser;
+          //var eventAdded = 
+          await firebase.firestore().collection('event').add({
+            name: this.name,
+            details: this.details,
+            startdate:this.startdate,
+            enddate:this.enddate,
+            starttime: this.starttime,
+            endtime:this.endtime,
+            start: startinput,
+            end: endinput,
+            color: this.color,
+            global: false,
+            group_id: "fofcnxjlqwf", //change this
+            module_id: "jowfnflasdf", //change this
+            type: 1, //change this(?)
+            uid: user.uid, //change this
+          })
+          //console.log("before adding into user eventlist")
+          //console.log(firebase.firestore().collection('users').doc(user.uid).data().event_list)
+          //console.log("after adding into user eventlist")
+          this.name = '',
+          this.details = '',
+          this.startdate = '',
+          this.enddate = '',
+          this.starttime = '',
+          this.endtime = ''
+        } else {
+          alert('You must enter event name, start, and end time')
+        }
+        },
     },
     // model: {
     //   prop: 'dialog',
