@@ -3,6 +3,8 @@ import App from './App.vue'
 import vuetify from './plugins/vuetify';
 import VueRouter from 'vue-router';
 import Routes from './routes';
+import VueTextareaAutosize from 'vue-textarea-autosize'
+
 
 Vue.use(VueRouter);
 
@@ -40,7 +42,6 @@ router.beforeEach((to, from, next) => {
 
 })
 */
-import VueTextareaAutosize from 'vue-textarea-autosize'
 
 Vue.use(VueTextareaAutosize);
 
@@ -48,16 +49,17 @@ Vue.config.productionTip = false
 
 import firebase from 'firebase';
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCQH24CqWz0_5DuieM4Nbk8yPBeqlbNELw",
-  authDomain: "fir-tutorial-e4242.firebaseapp.com",
-  databaseURL: "https://fir-tutorial-e4242.firebaseio.com",
-  projectId: "fir-tutorial-e4242",
-  storageBucket: "fir-tutorial-e4242.appspot.com",
-  messagingSenderId: "794243145358",
-  appId: "1:794243145358:web:5c52364fa0e1b55646b3df",
-  measurementId: "G-RC7R98T96M"
+var firebaseConfig = {
+    apiKey: "AIzaSyDYr2wvDJ7h9JAaM0Z350Ux_4SNEhZaiUo",
+    authDomain: "nusplanner-74bbd.firebaseapp.com",
+    databaseURL: "https://nusplanner-74bbd.firebaseio.com",
+    projectId: "nusplanner-74bbd",
+    storageBucket: "nusplanner-74bbd.appspot.com",
+    messagingSenderId: "613681838416",
+    appId: "1:613681838416:web:72116564d894d2690d1455",
+    measurementId: "G-Q7RHBW61B0"
 };
+
 
 firebase.initializeApp(firebaseConfig);
 const database = firebase.firestore();
