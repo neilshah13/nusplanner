@@ -2,7 +2,7 @@
   <header class="header-login-signup">
     <div class="header-limiter">
       <h1>
-        <router-link to="/" exact>
+        <router-link to="/home" exact>
           NUS
           <span>Planner</span>
         </router-link>

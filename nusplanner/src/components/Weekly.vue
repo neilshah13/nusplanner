@@ -161,7 +161,6 @@
 
 <script>
 import firebase from "firebase";
-console.log(firebase)
 import CreateEvent from "./CreateEvent.vue"
 import CreateGroup from "./CreateGroup.vue"
 
@@ -253,8 +252,7 @@ export default {
     },
     created() {
       this.getEvents()
-    }
-    ,
+    },
     /* For group members button */
     watch: {
       isUpdating (val) {
@@ -360,7 +358,7 @@ export default {
       let snapshot = await firebase.firestore().collection('event').get()
       let events = []
       snapshot.forEach(doc => {
-        console.log(doc.data())
+        //console.log(doc.data())
         let appData = doc.data()
         appData.id = doc.id
         events.push(appData)

@@ -79,12 +79,14 @@
 </template>
 
 <script>
-//import firebase from "firebase";
+import firebase from "firebase";
 
 export default {
-  data: () => ({
-    dialog: false,
-    announcements: [
+  data() {
+    return {
+      dialog: false,
+      announcements: []
+      /*
       {
         coordinator: "Prof Oh",
         date_posted: "13/07/2020",
@@ -99,8 +101,36 @@ export default {
         title: "Test12333",
         module_id: "BT3103"
       }
-    ]
-  })
+    ]*/
+    };
+  },
+  created() {
+    console.log("ARGHHHHHH WHYYYYY");
+    this.getAnnouncements();
+  },
+  methods: {
+    async getAnnouncements() {
+      let snapshot = await firebase
+        .firestore()
+        .collection("announcement")
+        .get();
+      let ancmt_list = [];
+      snapshot.forEach(doc => {
+        console.log(doc.data());
+        let appData = doc.data();
+        let date = appData.date_posted.toDate();
+        appData.date_posted =
+          date.getDate().toString() +
+          "/" +
+          date.getMonth().toString() +
+          "/" +
+          date.getYear().toString();
+        appData.id = doc.id;
+        ancmt_list.push(appData);
+      });
+      this.announcements = ancmt_list;
+    }
+  }
 };
 </script>
 
