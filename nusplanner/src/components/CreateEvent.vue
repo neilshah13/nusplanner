@@ -190,7 +190,7 @@ export default {
             uid: user.uid, //change this
           })
           //console.log("before adding into user eventlist")
-          //console.log(firebase.firestore().collection('users').doc(user.uid).data().event_list)
+          //console.log(firebase.firestore().collection('users').doc(user.uid).collection('todo').data().event_list)
           //console.log("after adding into user eventlist")
           this.name = '',
           this.details = '',
