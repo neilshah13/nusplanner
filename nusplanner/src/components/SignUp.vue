@@ -107,7 +107,6 @@ export default {
             is_completed: false,
             uid: user.uid
           })
-
           console.log("Successful Creation of data for user");
           // this.$router.push({ path : '/' }); This is the code to link hopefully (need to link router to this vue component???)
           //console.log("pushed to home page")
