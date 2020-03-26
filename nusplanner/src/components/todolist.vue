@@ -69,8 +69,9 @@
 </template>
 
 <script>
+import firebase from "firebase"
 import togglebutton from "./togglebutton.vue";
-//import database from "../firebase.js";
+
 //import func from '../../vue-temp/vue-editor-bridge';
 export default {
   components: {
@@ -81,23 +82,27 @@ export default {
       newitem: "",
       sortByStatus: false,
       todo: [
-        { id: 1, label: "IS4241: Learn Gephi", done: true, edit: false },
+        /*{ id: 1, label: "IS4241: Learn Gephi", done: true, edit: false },
         { id: 2, label: "BT3102: Regression", done: false, edit: false },
-        { id: 3, label: "BT3103: Learn Vue", done: false, edit: false }
+        { id: 3, label: "BT3103: Learn Vue", done: false, edit: false }*/
       ]
     };
   },
   methods: {
-    /*fetchItems: function() {
-      database.collection('todo').get().then(querySnapShot => {
+    fetchItems: function() {
+      var user = firebase.auth().currentUser
+      let todo=[]
+      let item={}
+      var users = firebase.firestore().collection('users')
+      users.doc(user.uid).collection('todo').orderBy('label').get().then((querySnapShot) => {
         querySnapShot.forEach(doc=>{
-          this.todo.push(doc.data())
+          item=doc.data()
+          item.id=doc.id
+          todo.push(item)
         })
       })
+      this.todo=todo
     },
-    created(){
-      this.fetchItems()
-    },*/
     addItem: function() {
       this.todo.push({
         id: Math.floor(Math.random() * 9999) + 10,
@@ -105,13 +110,28 @@ export default {
         done: false,
         edit: false
       });
+      var user = firebase.auth().currentUser
+      var users = firebase.firestore().collection('users')
+      users.doc(user.uid).collection('todo').add({
+        label: this.newitem,
+        done: false,
+        edit: false
+      })
       this.newitem = "";
     },
     markAsDoneOrUndone: function(item) {
       item.done = !item.done;
+      var user = firebase.auth().currentUser
+      var users = firebase.firestore().collection('users')
+      users.doc(user.uid).collection('todo').doc(item.id).update({
+        done:item.done
+      })
     },
     deleteItemFromList: function(item) {
       let index = this.todo.indexOf(item);
+      var user = firebase.auth().currentUser
+      var users = firebase.firestore().collection('users')
+      users.doc(user.uid).collection('todo').doc(item.id).delete()
       this.todo.splice(index, 1);
     },
     editItemFromList: function(item) {
@@ -119,11 +139,19 @@ export default {
     },
     doneEditing: function(item) {
       item.edit = false;
+      var user = firebase.auth().currentUser
+      var users = firebase.firestore().collection('users')
+      users.doc(user.uid).collection('todo').doc(item.id).update({
+        label:item.label
+      })
     },
     clickontoogle: function(active) {
       this.sortByStatus = active;
     }
   },
+  created(){
+      this.fetchItems()
+    },
   computed: {
     todoByStatus: function() {
       if (!this.sortByStatus) {
@@ -143,6 +171,7 @@ export default {
     }
   }
 };
+
 </script>
 
 <style>
