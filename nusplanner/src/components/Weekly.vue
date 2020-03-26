@@ -255,15 +255,6 @@ export default {
       this.getEvents()
     }
     ,
-    /* For group members button */
-    watch: {
-      isUpdating (val) {
-        if (val) {
-          setTimeout(() => (this.isUpdating = false), 3000)
-        }
-      },
-    },
-    /* End For group members button */
     computed: {
       title () {
         const { start, end } = this
@@ -355,7 +346,7 @@ export default {
           ? `${a.getFullYear()}-${a.getMonth() + 1}-${a.getDate()} ${a.getHours()}:${a.getMinutes()}`
           : `${a.getFullYear()}-${a.getMonth() + 1}-${a.getDate()}`
       },
-      
+
       async getEvents () {
       let snapshot = await firebase.firestore().collection('event').get()
       let events = []

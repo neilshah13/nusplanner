@@ -28,12 +28,12 @@
       </v-toolbar-title>
 
       <v-form v-if="eventType == 'event'" @submit.prevent="addEvent" ref="form" class="neweventform">
-        <v-text-field class= 'neweventfield' v-model="name" type="text" label="Event Name"></v-text-field>
-        <v-text-field class= 'neweventfield' v-model="details" type="text" label="Details (e.g. Meet at Jurong East MRT)"></v-text-field>
-        <v-text-field class= 'neweventfield' v-model="start" type="date" label="Start Date"></v-text-field>
-        <v-text-field class= 'neweventfield' v-model="end" type="date" label="End Date"></v-text-field>
-        <v-text-field class= 'neweventfield' v-model="start" type="time" label="Start Time"></v-text-field>
-        <v-text-field class= 'neweventfield' v-model="end" type="time" label="End Time"></v-text-field>
+        <v-text-field outlined class= 'neweventfield' v-model="name" type="text" label="Event Name"></v-text-field>
+        <v-text-field outlined class= 'neweventfield' v-model="details" type="text" label="Details (e.g. Meet at Jurong East MRT)"></v-text-field>
+        <v-text-field outlined class= 'neweventfield' v-model="start" type="date" label="Start Date"></v-text-field>
+        <v-text-field outlined class= 'neweventfield' v-model="end" type="date" label="End Date"></v-text-field>
+        <v-text-field outlined class= 'neweventfield' v-model="start" type="time" label="Start Time"></v-text-field>
+        <v-text-field outlined class= 'neweventfield' v-model="end" type="time" label="End Time"></v-text-field>
                 <div class='colorfieldtitle'>
           <div class="mr-4">
           Please choose a color:
@@ -51,9 +51,9 @@
             </div>
       </v-form>
       <v-form v-else-if="eventType == 'assignment'" @submit.prevent="addEvent" ref="form" class="neweventform">
-        <v-text-field class= 'neweventfield' v-model="name" type="text" label="Assignment Name"></v-text-field>
-        <v-text-field class= 'neweventfield' v-model="details" type="text" label="Details (e.g. Due 2359, submit in PDF format)"></v-text-field>
-        <v-text-field class= 'neweventfield' v-model="start" type="date" label="Due Date"></v-text-field>
+        <v-text-field outlined class= 'neweventfield' v-model="name" type="text" label="Assignment Name"></v-text-field>
+        <v-text-field outlined class= 'neweventfield' v-model="details" type="text" label="Details (e.g. Due 2359, submit in PDF format)"></v-text-field>
+        <v-text-field outlined class= 'neweventfield' v-model="start" type="date" label="Due Date"></v-text-field>
                 <div class='colorfieldtitle'>
           <div class="mr-4">
           Please choose a color:
@@ -90,10 +90,10 @@
           </v-menu>
           <v-card-text class='txt'>Haven't saved a group name? Add it <a href='https://google.com'>here</a>!</v-card-text>
           </v-card-text>
-        <v-text-field class= 'neweventfield' v-model="details" type="text" label="Details (e.g. Meet at Computing)"></v-text-field>
-        <v-text-field class= 'neweventfield' v-model="start" type="date" label="Date"></v-text-field>
-        <v-text-field class= 'neweventfield' v-model="start" type="time" label="Start Time"></v-text-field>
-        <v-text-field class= 'neweventfield' v-model="end" type="time" label="End Time"></v-text-field>
+        <v-text-field outlined class= 'neweventfield' v-model="details" type="text" label="Details (e.g. Meet at Computing)"></v-text-field>
+        <v-text-field outlined class= 'neweventfield' v-model="start" type="date" label="Date"></v-text-field>
+        <v-text-field outlined class= 'neweventfield' v-model="start" type="time" label="Start Time"></v-text-field>
+        <v-text-field outlined class= 'neweventfield' v-model="end" type="time" label="End Time"></v-text-field>
         <div class='colorfieldtitle'>
           <div class="mr-4">
           Please choose a color:
