@@ -59,17 +59,6 @@ var firebaseConfig = {
     appId: "1:613681838416:web:72116564d894d2690d1455",
     measurementId: "G-Q7RHBW61B0"
 };
-/*
-const firebaseConfig = {
-  apiKey: "AIzaSyCmiJzJJv8FIFKaLZj90BEEF8O-0Lc6rGc",
-  authDomain: "nusplanner-69069.firebaseapp.com",
-  databaseURL: "https://nusplanner-69069.firebaseio.com",
-  projectId: "nusplanner-69069",
-  storageBucket: "nusplanner-69069.appspot.com",
-  messagingSenderId: "693965053775",
-  appId: "1:693965053775:web:ce14458f3f07004f4bef3a",
-  measurementId: "G-B9VE5K633G"
-};*/
 
 
 firebase.initializeApp(firebaseConfig);
@@ -77,9 +66,6 @@ const database = firebase.firestore();
 database.settings({ timestampsInSnapshots: true });
 export default database;
 
-const database = firebase.firestore();
-database.settings({ timestampsInSnapshots: true });
-export default database;
 
 new Vue({
     vuetify,
