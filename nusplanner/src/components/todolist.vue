@@ -89,12 +89,14 @@ export default {
     };
   },
   methods: {
-    fetchItems: function() {
+    async fetchItems() {
       var user = firebase.auth().currentUser
+      console.log("HELLO USER")
+      console.log(user.uid)
       let todo=[]
       let item={}
-      var users = firebase.firestore().collection('users')
-      users.doc(user.uid).collection('todo').orderBy('label').get().then((querySnapShot) => {
+      await firebase.firestore().collection('users').doc(user.uid)
+      .collection('todo').orderBy('label').get().then((querySnapShot) => {
         querySnapShot.forEach(doc=>{
           item=doc.data()
           item.id=doc.id
@@ -103,45 +105,47 @@ export default {
       })
       this.todo=todo
     },
-    addItem: function() {
-      this.todo.push({
-        id: Math.floor(Math.random() * 9999) + 10,
-        label: this.newitem,
-        done: false,
-        edit: false
-      });
+    async addItem() {
+      // this.todo.push({
+      //   id: Math.floor(Math.random() * 9999) + 10,
+      //   label: this.newitem,
+      //   done: false,
+      //   edit: false
+      // });
       var user = firebase.auth().currentUser
-      var users = firebase.firestore().collection('users')
-      users.doc(user.uid).collection('todo').add({
+      await firebase.firestore().collection('users').doc(user.uid)
+      .collection('todo').add({
         label: this.newitem,
         done: false,
-        edit: false
+        edit: false,
+        uid: user.uid
       })
       this.newitem = "";
+      this.fetchItems()
     },
-    markAsDoneOrUndone: function(item) {
+    async markAsDoneOrUndone(item) {
       item.done = !item.done;
       var user = firebase.auth().currentUser
-      var users = firebase.firestore().collection('users')
-      users.doc(user.uid).collection('todo').doc(item.id).update({
+      await firebase.firestore().collection('users').doc(user.uid)
+      .collection('todo').doc(item.id).update({
         done:item.done
       })
     },
-    deleteItemFromList: function(item) {
+    async deleteItemFromList(item) {
       let index = this.todo.indexOf(item);
       var user = firebase.auth().currentUser
-      var users = firebase.firestore().collection('users')
-      users.doc(user.uid).collection('todo').doc(item.id).delete()
+      await firebase.firestore().collection('users').doc(user.uid)
+      .collection('todo').doc(item.id).delete()
       this.todo.splice(index, 1);
     },
     editItemFromList: function(item) {
       item.edit = true;
     },
-    doneEditing: function(item) {
+    async doneEditing(item) {
       item.edit = false;
       var user = firebase.auth().currentUser
-      var users = firebase.firestore().collection('users')
-      users.doc(user.uid).collection('todo').doc(item.id).update({
+      await firebase.firestore().collection('users').doc(user.uid)
+      .collection('todo').doc(item.id).update({
         label:item.label
       })
     },
@@ -151,7 +155,7 @@ export default {
   },
   created(){
       this.fetchItems()
-    },
+  },
   computed: {
     todoByStatus: function() {
       if (!this.sortByStatus) {
