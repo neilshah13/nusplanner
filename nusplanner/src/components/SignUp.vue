@@ -103,8 +103,9 @@ export default {
             .doc(user.uid)
             .collection("todo")
           todoref.doc().set({
-            title:"Testing",
-            is_completed: false,
+            label:"Testing",
+            done: false,
+            edit: false,
             uid: user.uid
           })
           console.log("Successful Creation of data for user");
