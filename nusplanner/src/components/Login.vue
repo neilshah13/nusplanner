@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import firebase from "firebase"
+import firebase from "firebase";
 export default {
   data() {
     return {
@@ -59,6 +59,8 @@ export default {
           this.error = err.message;
         });
       console.log("Succesful login");
+      this.$router.push({ path: "/home" });
+      console.log("pushed to home page");
     }
   }
 };
