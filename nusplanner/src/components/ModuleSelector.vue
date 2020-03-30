@@ -41,6 +41,7 @@
 </template>
 // 
 <script>
+import firebase from "firebase"
   export default {
     data () {
       return {
@@ -49,14 +50,7 @@
         search: null,
         select: null,
         moduleList: [],
-        modules: [
-          'BT2102',
-          'BT2101',
-          'BT3101',
-          'BT3102',
-          'BT3103',
-          'BT4101',
-        ],
+        modules: [],
       }
     },
     watch: {
@@ -65,6 +59,20 @@
       },
     },
     methods: {
+      fetchUserModules: function() {
+      var user = firebase.auth().currentUser;
+      console.log(user);
+      firebase.auth().onAuthStateChanged(function(user)){
+        if (user) {
+          this.modules = 
+          firebase
+            .firestore()
+            .collection("users")
+            .doc(user.uid)
+            .data().module_list
+        }
+      }
+    },
       querySelections (v) {
         this.loading = true
         // Simulated ajax query
@@ -75,11 +83,17 @@
           this.loading = false
         }, 500)
       },
-        displayMod(v){
+      displayMod(v){
+        if(this.moduleList.includes(v) == false){
           this.moduleList.push(v)
-      }
+        }
+      },
     },
+    created() {
+      this.fetchUserModules()
+    }
   }
+
 </script> 
 
 <style scoped>

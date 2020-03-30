@@ -16,7 +16,7 @@ import firebase from "firebase"
 export default Vue.extend({
   name: "App",
   components: {
-    Header,
+    Header
   },
   created() {
     firebase.auth().onAuthStateChanged(user => {

@@ -12,36 +12,39 @@ const router = new VueRouter({
     routes: Routes,
     mode: 'history'
 });
+
 /*
 router.beforeEach((to, from, next) => {
 
-  if (to.matched.some(record => record.meta.auth)) {
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        next()
-      } else {
-        next({
-          path: "/login",
+    if (to.matched.some(record => record.meta.auth)) {
+        firebase.auth().onAuthStateChanged(user => {
+            if (user) {
+                next()
+            } else {
+                next({
+                    path: "/login",
+                })
+            }
         })
-      }
-    })
-  } else if (to.matched.some(record => record.meta.guest)) {
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        next({
-          path: "/",
+    } else if (to.matched.some(record => record.meta.guest)) {
+        firebase.auth().onAuthStateChanged(user => {
+            if (user) {
+                next({
+                    path: "/",
+                })
+            } else {
+                next()
+            }
         })
-      } else {
-        next()
-      }
-    })
 
-  } else {
-    next()
-  }
+    } else {
+        next()
+    }
 
 })
 */
+
+
 
 Vue.use(VueTextareaAutosize);
 
@@ -60,8 +63,10 @@ var firebaseConfig = {
     measurementId: "G-Q7RHBW61B0"
 };
 
-
 firebase.initializeApp(firebaseConfig);
+const database = firebase.firestore();
+database.settings({ timestampsInSnapshots: true });
+export default database;
 
 new Vue({
     vuetify,

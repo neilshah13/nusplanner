@@ -6,13 +6,14 @@ import Groups from './components/Groups.vue';
 export default [
     {
         path: '/',
-        redirect: '/home',
+        redirect: '/login',
         meta: {
-            auth: true
+            guest: true
         }
     },
     {
         path: '/home',
+        name: 'home',
         component: Main,
         meta: {
             auth: true
@@ -33,7 +34,11 @@ export default [
     },
     {
         path: '/groups',
-        component: Groups
+        name: 'groups',
+        component: Groups,
+        meta: {
+            auth: true
+        }
     },
     {
         path: '/dashboard',

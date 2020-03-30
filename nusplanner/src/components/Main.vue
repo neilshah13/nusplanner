@@ -2,7 +2,11 @@
 <div id="app">
   <body>
     <v-row no-gutters>
+<<<<<<< HEAD
       <v-col md= "12">
+=======
+      <v-col md= "5">
+>>>>>>> upstream/master
         <moduleAdding></moduleAdding>
       </v-col>
     </v-row>

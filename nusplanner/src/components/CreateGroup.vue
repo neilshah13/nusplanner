@@ -106,12 +106,13 @@
               cols="12"
             >
               <v-text-field
-                class="groupname"
-                v-model= "name"
+                :class="group-name"
+                v-model= "grpName"
                 :disabled="isUpdating"
                 outlined
                 color="blue-grey lighten-2"
                 label="Group Name"
+                light
               ></v-text-field>
             </v-col>
             <v-col
@@ -122,29 +123,35 @@
             <v-col cols="12">
               <v-autocomplete
                 class = "groupmembers"
-                v-model="friends"
+                v-model = grp
                 :disabled="isUpdating"
                 :items="people"
-                filled
+                outlined
                 dense
                 chips
                 color="blue-grey lighten-2"
+                light
                 label="Select"
                 item-text="name"
                 item-value="name"
                 multiple
               >
-                <template v-slot:selection="data" >
-                  <v-chip
-                    v-bind="data.attrs"
-                    :input-value="data.selected"
-                    close
-                    @click="data.select"
-                    @click:close="remove(data.item)"
-                  >
+                <template v-slot:selection="data"
+                  :itemscope="addUser(data.item.name)"
+                >
+                <!-- @click="selectchip"> -->
+                <v-chip
+                  v-bind="data.attrs"
+                  :input-value="data.selected"
+                  close
+                  @click:close="remove(data.item)"
+                >
+                <!-- v-model="data" -->
+                <!-- input value to highlight the item  -->
                     {{ data.item.name }}
                   </v-chip>
                 </template>
+
                 <template v-slot:item="data">
                   <template v-if="typeof data.item !== 'object'">
                     <v-list-item-content v-text="data.item"></v-list-item-content>
@@ -152,7 +159,7 @@
                   <template v-else>
                     <v-list-item-content>
                       <v-list-item-title v-html="data.item.name"></v-list-item-title>
-                      <v-list-item-subtitle v-html="data.item.group"></v-list-item-subtitle>
+                      <!-- <v-list-item-subtitle v-html="data.item.group"></v-list-item-subtitle> -->
                     </v-list-item-content>
                   </template>
                 </template>
@@ -161,21 +168,22 @@
           </v-row>
         </v-container>
       </v-form>
-      <v-btn type="submit" color="primary" class="mr-4" @click.stop="submittedGroup">Save</v-btn>
+      <v-btn type="submit" color="primary" class="mr-4" @click.stop="addGroups">Save</v-btn>
       <v-btn color="error" @click="reset">Reset</v-btn>
     </v-card>
 </div>
-      <!-- Form end here ******************************-->
     </v-card>
 </template>
 
 <script>
+import firebase from "firebase";
+
 export default {
   data: () => ({
-        /* for the group project button */
     autoUpdate: true,
-    friends: ['Gerald Tan', 'Neil Shah'],
     isUpdating: false,
+    grp: [],
+    grpName: "",
     module: '',
     snackbar: false,
     name: 'Teamwork Makes the Dream Work!',
@@ -197,7 +205,6 @@ export default {
       { name: 'Phillip'},
       { divider: true },
       { name: 'Holgate'},
-      { divider: true },
     ],
     modules: {
       module1: 'BT1101',
@@ -213,16 +220,30 @@ export default {
     closeGroupMembers() {
       this.$emit('update-grp')
     },
-    submittedGroup() {
-      this.$emit('update-grpsnack')
-      this.$emit('update-grp')
-    },
     reset() {
       this.$refs.form.reset();
     },
-    remove (item) {
-      const index = this.friends.indexOf(item.name)
-      if (index >= 0) this.friends.splice(index, 1)
+    addUser(username) {
+      this.grp.push(username)
+    },
+    remove (username) {
+      let index = this.grp.indexOf(username)
+      this.grp.splice(index, 1);
+    },
+    addGroups() {
+      console.log("saved")
+      this.$emit('update-grpsnack')
+      this.$emit('update-grp')
+      firebase.firestore().collection('group').add({
+        name: this.grpName,
+        module_id: this.module,
+        user_list: this.grp,
+      })
+      //clear out inputs after a submission
+      
+      this.grpName = "";
+      this.grp = "";
+      this.module = "";
     },
   },
   watch: {
@@ -236,8 +257,8 @@ export default {
 </script>
 
 <style scoped>
-  .groupname >>> .v-text-field__slot input {
-    color:black
+  .group-name >>> .v-text-field__slot input {
+    color: black;
   }
   .btn {
   transform: scale(0.75);
