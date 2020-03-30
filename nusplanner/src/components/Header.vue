@@ -28,6 +28,9 @@
               <router-link to="/groups" exact>Groups</router-link>
             </li>
             <li>
+              <router-link to="/dashboard" exact>Dashboard</router-link>
+            </li>
+            <li>
               <a @click="logout">Log out</a>
             </li>
           </ul>
