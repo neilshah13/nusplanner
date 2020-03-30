@@ -240,6 +240,7 @@ export default {
         user_list: this.grp,
       })
       //clear out inputs after a submission
+      
       this.grpName = "";
       this.grp = "";
       this.module = "";
