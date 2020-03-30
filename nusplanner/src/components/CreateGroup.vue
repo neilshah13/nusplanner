@@ -10,7 +10,6 @@
 
       <!-- Form start here ******************************-->
       <div id="app">
-  <v-app id="inspire">
     <v-card
       color="blue-grey darken-1"
       dark
@@ -165,7 +164,6 @@
       <v-btn type="submit" color="primary" class="mr-4" @click.stop="submittedGroup">Save</v-btn>
       <v-btn color="error" @click="reset">Reset</v-btn>
     </v-card>
-  </v-app>
 </div>
       <!-- Form end here ******************************-->
     </v-card>

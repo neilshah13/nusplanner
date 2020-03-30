@@ -2,7 +2,7 @@
 <div id="app">
   <body>
     <v-row no-gutters>
-      <v-col>
+      <v-col md= "12">
         <moduleAdding></moduleAdding>
       </v-col>
     </v-row>
@@ -30,7 +30,7 @@ import todolist from "./todolist.vue";
 import Weekly from "./Weekly.vue";
 import Vue from "vue";
 //import { AutoCompletePlugin } from "@syncfusion/ej2-vue-dropdowns";
-import ModuleAdding from "./ModuleAdding.vue";
+import ModuleAdding from "./ModuleSelector.vue";
 import Filters from "./Filters.vue";
 import Announcement from "./Announcement.vue";
 

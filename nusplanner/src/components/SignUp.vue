@@ -44,7 +44,7 @@
           placeholder="Confirm Password"
           required
         />
-        <input type="submit" class="fadeIn fourth" value="Create Account"/>
+        <input type="submit" class="fadeIn fourth" value="Create Account" />
       </form>
     </div>
   </div>
@@ -82,26 +82,38 @@ export default {
         .catch(err => {
           this.error = err.message;
         });
-      console.log("Succesful creation");
       var user = firebase.auth().currentUser;
       console.log(user);
       firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
           // User is signed in.
-        firebase
-          .firestore()
-          .collection("users")
-          .doc(user.uid)
-          .set({
-            name: document.forms["signup"]["name"].value,
-            event_list: [""],
-            group_list: [""],
-            module_list: [""]
-        })
-        console.log("Successful Creation of data for user")
+          firebase
+            .firestore()
+            .collection("users")
+            .doc(user.uid)
+            .set({
+              name: document.forms["signup"]["name"].value,
+              event_list: [""],
+              group_list: [""],
+              module_list: [""]
+            });
+          var todoref = firebase
+            .firestore()
+            .collection("users")
+            .doc(user.uid)
+            .collection("todo")
+          todoref.doc().set({
+            title:"Testing",
+            is_completed: false,
+            uid: user.uid
+          })
+
+          console.log("Successful Creation of data for user");
+          // this.$router.push({ path : '/' }); This is the code to link hopefully (need to link router to this vue component???)
+          //console.log("pushed to home page")
         }
       });
-    },
+    }
   }
 };
 </script>
