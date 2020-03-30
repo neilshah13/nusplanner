@@ -30,8 +30,8 @@ export default{
         fetchItems: function() {
           firebase.firestore().collection('module').get().then(querySnapShot => {
             querySnapShot.forEach(doc => {
-              this.chartdata.labels.push(doc.data().module_id)
-              //console.log(doc.data().module_id)
+              this.chartdata.labels.push(doc.data().module_code)
+              //console.log(doc.data().module_code)
               this.chartdata.datasets[0].data.push(doc.data().event_list.length)
               //console.log(doc.data().event_list.length)
             })

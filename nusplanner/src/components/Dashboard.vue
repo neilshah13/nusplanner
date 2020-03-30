@@ -1,15 +1,22 @@
 <template>
-    <div>
-        <div id="chart">
-            <doughnut></doughnut>
-        </div>
-        <div id="chart">
-            <radar></radar>
-        </div>
-        <div id="chart">
-            <linechart></linechart>
-        </div>
-    </div>
+    <v-container>
+            <v-app-bar dark>
+                <v-toolbar-title>DashBoard</v-toolbar-title>
+            </v-app-bar>
+        <v-container>
+            <v-row no-gutters>
+                <v-col md= "4">
+                    <doughnut></doughnut>
+                </v-col>
+                <v-col md= "4">
+                    <radar></radar>
+                </v-col>
+                <v-col md= "4">
+                    <linechart></linechart>
+                </v-col>
+            </v-row>
+        </v-container>
+    </v-container>
 </template>
 
 <script>
