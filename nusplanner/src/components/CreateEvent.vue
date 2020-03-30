@@ -193,7 +193,7 @@ export default {
           firebase.firestore().collection('users').doc(user.uid).get().then(function(doc) {
               eventlist = doc.data().event_list
               eventlist.push(eventAdded.id)
-              //eventlist = eventlist.filter(item => item)
+              eventlist = eventlist.filter(item => item)
               console.log(eventlist)
               firebase.firestore().collection('users').doc(user.uid).update({event_list:eventlist})
           }) //.update({event_list:eventAdded.id})
