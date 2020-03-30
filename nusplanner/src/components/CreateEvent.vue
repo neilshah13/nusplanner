@@ -30,10 +30,10 @@
       <v-form v-if="eventType == 'event'" @submit.prevent="addEvent" ref="form" class="neweventform">
         <v-text-field outlined class= 'neweventfield' v-model="name" type="text" label="Event Name"></v-text-field>
         <v-text-field outlined class= 'neweventfield' v-model="details" type="text" label="Details (e.g. Meet at Jurong East MRT)"></v-text-field>
-        <v-text-field outlined class= 'neweventfield' v-model="start" type="date" label="Start Date"></v-text-field>
-        <v-text-field outlined class= 'neweventfield' v-model="end" type="date" label="End Date"></v-text-field>
-        <v-text-field outlined class= 'neweventfield' v-model="start" type="time" label="Start Time"></v-text-field>
-        <v-text-field outlined class= 'neweventfield' v-model="end" type="time" label="End Time"></v-text-field>
+        <v-text-field outlined class= 'neweventfield' v-model="startdate" type="date" label="Start Date"></v-text-field>
+        <v-text-field outlined class= 'neweventfield' v-model="enddate" type="date" label="End Date"></v-text-field>
+        <v-text-field outlined class= 'neweventfield' v-model="starttime" type="time" label="Start Time (Optional)"></v-text-field>
+        <v-text-field outlined class= 'neweventfield' v-model="endtime" type="time" label="End Time (Optional)"></v-text-field>
                 <div class='colorfieldtitle'>
           <div class="mr-4">
           Please choose a color:
@@ -172,8 +172,7 @@ export default {
             endinput = this.enddate
           }
           var user = firebase.auth().currentUser;
-          //var eventAdded = 
-          await firebase.firestore().collection('event').add({
+          var eventAdded = await firebase.firestore().collection('event').add({
             name: this.name,
             details: this.details,
             startdate:this.startdate,
@@ -189,9 +188,14 @@ export default {
             type: 1, //change this(?)
             uid: user.uid, //change this
           })
-          //console.log("before adding into user eventlist")
-          //console.log(firebase.firestore().collection('users').doc(user.uid).collection('todo').data().event_list)
-          //console.log("after adding into user eventlist")
+          console.log("before adding into user eventlist")
+          var eventlist;
+          firebase.firestore().collection('users').doc(user.uid).get().then(function(doc) {
+              eventlist = doc.data().event_list
+              eventlist.push(eventAdded.id)
+              firebase.firestore().collection('users').doc(user.uid).update({event_list:eventlist})
+          }) //.update({event_list:eventAdded.id})
+          console.log("after adding into user eventlist")
           this.name = '',
           this.details = '',
           this.startdate = '',
