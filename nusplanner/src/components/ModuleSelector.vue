@@ -7,35 +7,39 @@
     src = "https://lh3.googleusercontent.com/proxy/6_4hiPG1zpcr-h5C4h8M0pGIqQYxp1hUCoWJXaf_E2gk_MmGWsMtzNHPPBuYg_PdxPnK4DR5Cdm8AoaWa4UiXZdOThEJZDoXXSECzyFHedCLWdgTWTVLpMCGhBQ4LuLeM6_0IoXcYZxsqMTmsa5R"
     dense
   >
-  <v-toolbar-title > Missing a module?</v-toolbar-title>
+  <v-toolbar-title class = "col-sm-2"> Missing a module ?</v-toolbar-title>
+  <div class="col-sm-3">
     <v-autocomplete
       v-model="select"
       :loading="loading"
       :items="items"
       :search-input.sync="search"
       cache-items
-      class="mx-auto"
       flat
       hide-no-data
       hide-details
       label="Select Module"
       solo-inverted
       dense
+      clearable="clear-icon"
     ></v-autocomplete> 
-    <v-btn icon>
+    </div>
+    <v-btn icon @click = "displayMod(select)">
           <v-icon>mdi-magnify</v-icon>
     </v-btn>
     </v-toolbar>
+    <div class = "col-sm-7">
     <h1>
-    <v-layout row wrap class="whitebox">
-    <v-flex xs2 v-for="mod in moduleList" :key="mod">
-    <v-checkbox :label="mod" v-model="selectedModules" :value="mod" class="labels"></v-checkbox>
-    </v-flex>        
-    </v-layout>   
+      <v-layout class="whitebox" >
+      <v-flex class="d-flex justify-content-between bg-secondary mb-3" v-for="mod in moduleList" :key="mod">
+       <v-checkbox :label="mod" v-model="selectedModules" :value="mod" class="labels"></v-checkbox>
+      </v-flex>        
+      </v-layout>   
     </h1>
+    </div>
     </div>  
 </template>
-
+// 
 <script>
   export default {
     data () {
@@ -44,8 +48,7 @@
         items: [],
         search: null,
         select: null,
-        selectedModules: [],
-        moduleList: [ 'CS1231', 'BT3102', 'IS3103', 'IS4241', 'BT3103'],
+        moduleList: [],
         modules: [
           'BT2102',
           'BT2101',
@@ -72,6 +75,9 @@
           this.loading = false
         }, 500)
       },
+        displayMod(v){
+          this.moduleList.push(v)
+      }
     },
   }
 </script> 

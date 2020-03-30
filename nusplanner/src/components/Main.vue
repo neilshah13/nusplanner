@@ -2,7 +2,7 @@
 <div id="app">
   <body>
     <v-row no-gutters>
-      <v-col md= "4">
+      <v-col md= "12">
         <moduleAdding></moduleAdding>
       </v-col>
     </v-row>
