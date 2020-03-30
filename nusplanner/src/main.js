@@ -12,7 +12,7 @@ const router = new VueRouter({
     routes: Routes,
     mode: 'history'
 });
-/*
+
 router.beforeEach((to, from, next) => {
 
   if (to.matched.some(record => record.meta.auth)) {
@@ -41,7 +41,7 @@ router.beforeEach((to, from, next) => {
   }
 
 })
-*/
+
 
 Vue.use(VueTextareaAutosize);
 
