@@ -364,7 +364,17 @@ export default {
         },
         
         async deleteEvent (ev) {
-          await firebase.firestore().collection('event').doc(ev.id).delete()
+          var user = firebase.auth().currentUser;
+          var eventlist;
+          await firebase.firestore().collection('event').doc(ev.id).delete();
+          firebase.firestore().collection('users').doc(user.uid).get().then(function(doc) {
+          eventlist = doc.data().event_list
+          var index = eventlist.indexOf(ev.id);
+          if (index !== -1) eventlist.splice(index, 1); //removing event from users' event_list
+          eventlist = eventlist.filter(item => item)
+          console.log(eventlist)
+          firebase.firestore().collection('users').doc(user.uid).update({event_list:eventlist})
+      }) 
           this.selectedOpen = false
           this.getEvents()
         },
