@@ -146,19 +146,35 @@
                 <v-text-field class= 'neweventfield' v-model="selectedEvent.enddate" type="date" label="End Date"></v-text-field>
                 <v-text-field class= 'neweventfield' v-model="selectedEvent.starttime" type="time" label="Start Time (Optional)"></v-text-field>
                 <v-text-field class= 'neweventfield' v-model="selectedEvent.endtime" type="time" label="End Time (Optional)"></v-text-field>
+                
                 <div class='colorfieldtitle'>
-                <div class="mr-4">
-                Please choose a color:
-                </div>
-                      <swatches
-                      v-model="selectedEvent.color"
-                      :colors="colors"
-                      row-length="6"
-                      shapes="circles"
-                      show-border
-                      popover-to="left"
-                    ></swatches>
+                  <div class="mr-4">
+                  Please choose a color:
                   </div>
+                    <v-btn
+                      v-bind:color="selectedEvent.color"
+                      dark
+                      @click.stop="colorpickerdialog = true"
+                    >
+                      Color
+                    </v-btn>
+                
+                    <v-dialog
+                      v-model="colorpickerdialog"
+                      max-width="290"
+                    >
+                    <ColorPicker v-model = "selectedEvent.color"> </ColorPicker>
+
+                          <v-btn
+                            v-bind:color="selectedEvent.color"
+                            dark
+                            @click="colorpickerdialog = false"
+                          >
+                            Choose
+                          </v-btn>
+                    </v-dialog>
+                    </div>
+
                  <!-- (old one) <textarea-autosize
                   v-model="selectedEvent.details"
                   class = "txtarea"
@@ -182,13 +198,13 @@
 import firebase from "firebase";
 import CreateEvent from "./CreateEvent.vue"
 import CreateGroup from "./CreateGroup.vue"
-import Swatches from 'vue-swatches'
+import ColorPicker from 'vue-color-picker-wheel';
 
 export default {
         components:{
         createvent: CreateEvent,
         creategroup: CreateGroup,
-        swatches: Swatches
+        ColorPicker
       },
     data: () => ({
       today: new Date().toISOString().substr(0, 10),
@@ -204,6 +220,7 @@ export default {
       selectedElement: null,
       selectedOpen: false,
       dialog: false, // for adding event
+      colorpickerdialog: false,
       groupMembers: false, // for adding groups
       eventsnack: false, // snackbar for added events
       grpsnack: false, // snackbar for added groups
