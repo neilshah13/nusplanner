@@ -14,7 +14,7 @@
           </v-btn>
           </template>
             <v-list>
-              <v-list-item @click="eventType = 'event'">
+              <v-list-item @click="eventType = 'event'"> <!--/change this assign some value that is used in submittedevent (ifelse) -->
                 <v-list-item-title>Event</v-list-item-title>
               </v-list-item>
               <v-list-item @click="eventType = 'assignment'">
@@ -53,7 +53,7 @@
       <v-form v-else-if="eventType == 'assignment'" @submit.prevent="addEvent" ref="form" class="neweventform">
         <v-text-field outlined class= 'neweventfield' v-model="name" type="text" label="Assignment Name"></v-text-field>
         <v-text-field outlined class= 'neweventfield' v-model="details" type="text" label="Details (e.g. Due 2359, submit in PDF format)"></v-text-field>
-        <v-text-field outlined class= 'neweventfield' v-model="start" type="date" label="Due Date"></v-text-field>
+        <v-text-field outlined class= 'neweventfield' v-model="enddate" type="date" label="Due Date"></v-text-field>
                 <div class='colorfieldtitle'>
           <div class="mr-4">
           Please choose a color:
@@ -94,6 +94,7 @@
         <v-text-field outlined class= 'neweventfield' v-model="start" type="date" label="Date"></v-text-field>
         <v-text-field outlined class= 'neweventfield' v-model="start" type="time" label="Start Time"></v-text-field>
         <v-text-field outlined class= 'neweventfield' v-model="end" type="time" label="End Time"></v-text-field>
+            <v-btn type="submit" color="primary" class="mr-4" @click.stop="submittedEvent">Create Event</v-btn> <!-- this one --> 
         <div class='colorfieldtitle'>
           <div class="mr-4">
           Please choose a color:
@@ -185,7 +186,7 @@ export default {
             global: false,
             group_id: "fofcnxjlqwf", //change this
             module_id: "jowfnflasdf", //change this
-            type: 1, //change this(?)
+            type: 1, //1 == Event
             uid: user.uid, //change this
           })
           console.log("before adding into user eventlist")
@@ -208,7 +209,7 @@ export default {
           alert('You must enter event name, start, and end time')
         }
         },
-    },
+    }
     // model: {
     //   prop: 'dialog',
     //   event: 'change'
