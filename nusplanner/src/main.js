@@ -77,10 +77,6 @@ const database = firebase.firestore();
 database.settings({ timestampsInSnapshots: true });
 export default database;
 
-const database = firebase.firestore();
-database.settings({ timestampsInSnapshots: true });
-export default database;
-
 new Vue({
     vuetify,
     render: h => h(App),

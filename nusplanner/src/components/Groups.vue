@@ -48,14 +48,32 @@ import firebase from "firebase";
     }),
     methods: {
       async getGroups() {
-          let snapshot = await firebase.firestore().collection('group').get()
-          let groups = []
-          snapshot.forEach(doc => {
-            let groupInfo = doc.data()
-            groupInfo.id = doc.id
-            groups.push(groupInfo)
-            console.log(groups)
+          var user = firebase.auth().currentUser; //current user
+          console.log("Current user is " + user)
+          let userdb = await firebase.firestore().collection('users').get()
+          let groupids = [] // store list of group ids
+          let groups = [] // store group name and module and members list
+          // get the groupid
+          let index = userdb.indexOf(user)
+          groupids = userdb[index].data().group_list
+          let groupdb = await firebase.firestore().collection('group').get()
+            groupdb.forEach(doc => {
+              for(var i = 0; i < groupids.length; i++) {
+                if (doc.id == groupids[i]) {
+                  groups.push(doc.data())
+                }
+              }
+              console.log("Groups are now " + groups)
           })
+          // userdb.forEach(doc => {
+          //   if (doc.id == user) {
+          //     groups = doc.data().group_list
+          //   }
+          //   let groupInfo = doc.data()
+          //   groupInfo.id = doc.id
+          //   groups.push(groupInfo)
+          //   console.log(groups)
+          // })
           this.groups = groups
         // firebase.firestore().collection('group').get().then(querySnapShot => {
         //   querySnapShot.forEach(doc => {
