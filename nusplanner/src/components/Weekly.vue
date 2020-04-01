@@ -103,7 +103,7 @@
   >
     Event not created! 
     <br>
-    You must enter Event name, Start, and End time
+    You must enter Event name, Start, and End Date
     <v-btn
       color="error"
       text
