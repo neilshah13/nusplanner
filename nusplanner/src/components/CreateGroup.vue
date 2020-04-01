@@ -155,7 +155,7 @@
       <v-btn type="submit" color="primary" class="mr-4" @click.stop="addGroups">Save</v-btn>
       <v-btn color="error" @click="reset">Reset</v-btn>
     </v-card>
-</div>
+  </div>
     </v-card>
 </template>
 

@@ -28,23 +28,14 @@
               <router-link to="/groups" exact>Groups</router-link>
             </li>
             <li>
+              <router-link to="/dashboard" exact>Dashboard</router-link>
+            </li>
+            <li>
               <a @click="logout">Log out</a>
             </li>
           </ul>
         </v-toolbar-title>
-
-        <!--
-			<a href="#">Home</a>
-			<a href="#" class="selected">Blog</a>
-			<a href="#">Pricing</a>
-        -->
       </nav>
-      <!--
-		<ul>
-			<li><a href="#">Login</a></li>
-			<li><a href="#">Sign up</a></li>
-		</ul>
-      -->
     </div>
   </header>
 </template>
