@@ -49,7 +49,7 @@
   
       <v-dialog
         v-model="dialog"
-        max-width="290"
+        max-width="300"
       >
       <ColorPicker v-model = "color"> </ColorPicker>
 
@@ -86,7 +86,7 @@
       
           <v-dialog
             v-model="dialog"
-            max-width="290"
+            max-width="300"
           >
           <ColorPicker v-model = "color"> </ColorPicker>
 
@@ -145,34 +145,6 @@
               
               </v-card-text> 
           </v-card-text>
-<!--          
-                          <div class='colorfieldtitle'>
-                  <div class="mr-4">
-                  Please choose a color:
-                  </div>
-                    <v-btn
-                      v-bind:color="selectedEvent.color"
-                      dark
-                      @click.stop="colorpickerdialog = true"
-                    >
-                      Color
-                    </v-btn>
-                
-                    <v-dialog
-                      v-model="colorpickerdialog"
-                      max-width="290"
-                    >
-                    <ColorPicker v-model = "selectedEvent.color"> </ColorPicker>
-
-                          <v-btn
-                            v-bind:color="selectedEvent.color"
-                            dark
-                            @click="colorpickerdialog = false"
-                          >
-                            Choose
-                          </v-btn>
-                    </v-dialog>
-                    </div> -->
 
         <v-text-field outlined class= 'neweventfield' v-model="details" type="text" label="Details (e.g. Meet at Computing)"></v-text-field>
         <v-text-field outlined class= 'neweventfield' v-model="start" type="date" label="Date"></v-text-field>
@@ -192,7 +164,7 @@
         
             <v-dialog
               v-model="dialog"
-              max-width="290"
+              max-width="300"
             >
             <ColorPicker v-model = "color"> </ColorPicker>
 
@@ -268,18 +240,29 @@ export default {
         this.$refs.form.reset();
       },
       submittedEvent() {
-        this.$emit('update-eventsnack')
+        if (this.name && this.startdate && this.enddate) {  //somewhere here
+          this.$emit('update-eventsnack')
+        } else {
+          this.$emit('update-ifEventFalse')
+        }
         this.$emit('update-dialog')
         this.addEvent()
         this.$emit('getEventsfromDatabase') //calls the getEvent from Weekly.vue to update the calendar
       },
       submittedAssignment() {
-        this.$emit('update-eventsnack')
+        console.log("hi")
+        console.log(this.name && this.enddate)
+        if (this.name && this.enddate) { //Takes in as long as there is a date
+          this.$emit('update-eventsnack')
+        } else {
+          this.$emit('update-ifAssignmentFalse')
+        }
         this.$emit('update-dialog')
         this.addAssignment()
         this.$emit('getEventsfromDatabase') //calls the getEvent from Weekly.vue to update the calendar
       }, 
-      submittedGroupMEeting() {
+      submittedGroupMeeting() {
+        //add if condition once done to make sure "event successfully added" is not shown when event not actually created (requirements not satisfied)
         this.$emit('update-eventsnack')
         this.$emit('update-dialog')
         this.addGroupMeeting()
@@ -327,8 +310,6 @@ export default {
           this.enddate = '',
           this.starttime = '',
           this.endtime = ''
-        } else {
-          alert('You must enter event name, start, and end time')
         }
       },
           async addAssignment () {
@@ -369,8 +350,6 @@ export default {
               this.enddate = '',
               this.starttime = '',
               this.endtime = ''
-            } else {
-              alert('You must enter event name, start, and end time')
             }
           },
           async addGroupMeeting () { //must put in all members event_list
