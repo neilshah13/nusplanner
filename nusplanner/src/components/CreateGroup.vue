@@ -228,14 +228,19 @@ export default {
     },
     async addGroups() {
       console.log("saved")
-      this.$emit('update-grpsnack')
-      this.$emit('update-grp')
+      this.$emit('update-dialog')
       //add to group collection
-      var groupadded = await firebase.firestore().collection('group').add({
-        name: this.grpName,
-        module_id: this.module,
-        user_list: this.members, // list of uids
-      })
+      if (this.grpName && this.module_id && this.user_list) {
+        this.$emit('update-grpsnack')
+        this.$emit('update-grp')
+        var groupadded = await firebase.firestore().collection('group').add({
+          name: this.grpName,
+          module_id: this.module,
+          user_list: this.members, // list of uids
+        })
+      } else {
+        alert("Please make sure all fields are filled!")
+      }
       //add to user collection's group_list
       for(var i=0; i < this.members.length; i++) {
         let uid = this.members[i]
