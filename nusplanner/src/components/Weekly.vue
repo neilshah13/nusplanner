@@ -80,9 +80,11 @@
 
 <!-- add event dialog -->
 <v-dialog v-model="dialog" max-width="550">
-  <createvent @update-dialog='updateDialog' @update-eventsnack='updateSnackEvent'  @getEventsfromDatabase ='getEvents'></createvent>
+  <createvent @update-dialog='updateDialog' @update-ifEventFalse='updateEventFalse' @update-ifAssignmentFalse='updateAssignmentFalse' @update-eventsnack='updateSnackEvent'  @getEventsfromDatabase ='getEvents'></createvent>
 </v-dialog>
-  <v-snackbar
+
+<!-- For Successful Event/Assignment/GroupMeeting -->
+  <v-snackbar 
     v-model="eventsnack"
   >
     Event successfully created! 
@@ -94,6 +96,40 @@
       Close
     </v-btn>
   </v-snackbar>
+
+<!-- For Event Failure -->
+  <v-snackbar
+    v-model="eventfalse"
+  >
+    Event not created! 
+    <br>
+    You must enter Event name, Start, and End time
+    <v-btn
+      color="error"
+      text
+      @click="eventfalse = false"
+    >
+      Close
+    </v-btn>
+  </v-snackbar>
+
+<!-- For Assignment Failure -->
+  <v-snackbar
+    v-model="assignmentfalse"
+  >
+    Assignment not created! 
+    <br>
+    You must enter Assignment name, and Due Date
+    <v-btn
+      color="error"
+      text
+      @click="assignmentfalse = false"
+    >
+      Close
+    </v-btn>
+  </v-snackbar>
+
+  <!-- Need to create the above for groupmeeting too! and create a emit for it! -->
 
 <!-- calendar -->
 <v-row no-gutters>
@@ -161,7 +197,7 @@
                 
                     <v-dialog
                       v-model="colorpickerdialog"
-                      max-width="290"
+                      max-width="300"
                     >
                     <ColorPicker v-model = "selectedEvent.color"> </ColorPicker>
 
@@ -223,6 +259,8 @@ export default {
       colorpickerdialog: false,
       groupMembers: false, // for adding groups
       eventsnack: false, // snackbar for added events
+      eventfalse: false,
+      assignmentfalse: false,
       grpsnack: false, // snackbar for added groups
       typeToLabel: {
         month: 'Month',
@@ -282,6 +320,12 @@ export default {
       updateSnackEvent() {
         this.eventsnack = true;
       },
+      updateEventFalse() {
+        this.eventfalse = true;
+      },updateAssignmentFalse() {
+        this.assignmentfalse = true;
+      },
+
       updateSnackGrp() {
         this.grpsnack = true;
       },
@@ -376,7 +420,6 @@ export default {
           })
           this.selectedOpen = false
           this.currentlyEditing = null
-          console.log("before this.getEvents()")
           this.getEvents()
         },
         
@@ -389,7 +432,6 @@ export default {
           var index = eventlist.indexOf(ev.id);
           if (index !== -1) eventlist.splice(index, 1); //removing event from users' event_list
           eventlist = eventlist.filter(item => item)
-          console.log(eventlist)
           firebase.firestore().collection('users').doc(user.uid).update({event_list:eventlist})
       }) 
           this.selectedOpen = false
