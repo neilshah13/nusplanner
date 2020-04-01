@@ -122,8 +122,58 @@
               </v-list-item>
             </v-list>
           </v-menu>
-          <v-card-text class='txt'>Haven't saved a group name? Add it <a href='https://google.com'>here</a>!</v-card-text>
+          <v-card-text class='txt'>Haven't saved a group name? Add it 
+            <v-btn    
+              color = "#1976D2"
+              @click.stop="groupMembers = true"> here! </v-btn> 
+
+              <v-dialog v-model = "groupMembers" max-width="550"> 
+                <CreateGroup @update-grp='updateGrp' @update-grpsnack='updateSnackGrp'></CreateGroup>
+              </v-dialog>
+              <v-snackbar
+                v-model="grpsnack"
+              >
+                Group successfully created! 
+                <v-btn
+                  color="error"
+                  text
+                  @click="grpsnack = false"
+                >
+                  Close
+                </v-btn>  
+              </v-snackbar>
+              
+              </v-card-text> 
           </v-card-text>
+<!--          
+                          <div class='colorfieldtitle'>
+                  <div class="mr-4">
+                  Please choose a color:
+                  </div>
+                    <v-btn
+                      v-bind:color="selectedEvent.color"
+                      dark
+                      @click.stop="colorpickerdialog = true"
+                    >
+                      Color
+                    </v-btn>
+                
+                    <v-dialog
+                      v-model="colorpickerdialog"
+                      max-width="290"
+                    >
+                    <ColorPicker v-model = "selectedEvent.color"> </ColorPicker>
+
+                          <v-btn
+                            v-bind:color="selectedEvent.color"
+                            dark
+                            @click="colorpickerdialog = false"
+                          >
+                            Choose
+                          </v-btn>
+                    </v-dialog>
+                    </div> -->
+
         <v-text-field outlined class= 'neweventfield' v-model="details" type="text" label="Details (e.g. Meet at Computing)"></v-text-field>
         <v-text-field outlined class= 'neweventfield' v-model="start" type="date" label="Date"></v-text-field>
         <v-text-field outlined class= 'neweventfield' v-model="start" type="time" label="Start Time"></v-text-field>
@@ -170,11 +220,15 @@
 <script>
 import ColorPicker from 'vue-color-picker-wheel';
 import firebase from "firebase";
+import CreateGroup from './CreateGroup.vue'
+
 export default {
     components:{
-        ColorPicker
+        ColorPicker, CreateGroup
     },
     data: () => ({
+      groupMembers: false,
+      grpsnack: false,
       dialog: false,
       today: new Date().toISOString().substr(0, 10),
       focus: '',
@@ -201,6 +255,12 @@ export default {
       },
     }),
     methods: {
+      updateGrp() {
+        this.groupMembers = false;
+      },
+      updateSnackGrp() {
+        this.grpsnack = true;
+      },
       closeDialog() {
         this.$emit('update-dialog')
       },
