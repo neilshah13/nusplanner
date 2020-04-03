@@ -24,25 +24,32 @@ export default{
       }),
       methods: {
         fetchItems: function() {
-          var user = firebase.auth().currentUser
+          var self = this
           var done = 0
           var undone = 0
-          firebase.firestore().collection('users').doc(user.uid)
-          .collection('todo').get().then(querySnapShot => {
-            querySnapShot.forEach(doc => {
-              if (doc.data().done == false) {
-                  undone++
-                  //console.log(doc.data().done)
-                  //console.log(undone)
-              } else {
-                done++
-              }
-            })
-            var total = done+undone
-            this.chartdata.datasets[0].data.push(Math.round(done*100/total))
-            this.chartdata.datasets[0].data.push(Math.round(undone*100/total))
-            this.options.title.text = Math.round(done*100/total) + '% of Tasks Completed'
-            this.renderChart(this.chartdata, this.options)
+          firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+              firebase.firestore().collection('users').doc(user.uid)
+              .collection('todo').get().then(querySnapShot => {
+                querySnapShot.forEach(doc => {
+                  if (doc.data().done == false) {
+                      undone++
+                      //console.log(doc.data().done)
+                      //console.log(undone)
+                  } else {
+                   done++
+                  }
+                })
+              var total = done+undone
+              console.log("DONE HERE")
+              // console.log(undone)
+              // console.log(total)
+              self.chartdata.datasets[0].data.push(Math.round(done*100/total))
+              self.chartdata.datasets[0].data.push(Math.round(undone*100/total))
+              self.options.title.text = Math.round(done*100/total) + '% of Tasks Completed'
+              self.renderChart(self.chartdata, self.options)
+               })
+            }
           })
         }
       },
