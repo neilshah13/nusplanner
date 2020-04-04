@@ -1,79 +1,164 @@
 <template>
-<div>
-  <v-toolbar
-    dark
-    color="teal"
-    class="mx-auto"
-    src = "https://lh3.googleusercontent.com/proxy/6_4hiPG1zpcr-h5C4h8M0pGIqQYxp1hUCoWJXaf_E2gk_MmGWsMtzNHPPBuYg_PdxPnK4DR5Cdm8AoaWa4UiXZdOThEJZDoXXSECzyFHedCLWdgTWTVLpMCGhBQ4LuLeM6_0IoXcYZxsqMTmsa5R"
-    dense
-  >
-  <v-toolbar-title > Missing a module?</v-toolbar-title>
-    <v-autocomplete
-      v-model="select"
-      :loading="loading"
-      :items="items"
-      :search-input.sync="search"
-      cache-items
+  <div>
+    <v-toolbar
+      dark
+      color="teal"
       class="mx-auto"
-      flat
-      hide-no-data
-      hide-details
-      label="Select Module"
-      solo-inverted
+      src="https://lh3.googleusercontent.com/proxy/6_4hiPG1zpcr-h5C4h8M0pGIqQYxp1hUCoWJXaf_E2gk_MmGWsMtzNHPPBuYg_PdxPnK4DR5Cdm8AoaWa4UiXZdOThEJZDoXXSECzyFHedCLWdgTWTVLpMCGhBQ4LuLeM6_0IoXcYZxsqMTmsa5R"
       dense
-    ></v-autocomplete> 
-    <v-btn icon>
-          <v-icon>mdi-magnify</v-icon>
-    </v-btn>
+    >
+      <v-toolbar-title class="col-sm-3">Missing a module ?</v-toolbar-title>
+      <div class="col-sm-4">
+        <v-autocomplete
+          v-model="select"
+          :loading="loading"
+          :items="items"
+          :search-input.sync="search"
+          cache-items
+          flat
+          hide-no-data
+          hide-details
+          label="Select Module"
+          solo-inverted
+          dense
+          clearable="clear-icon"
+        ></v-autocomplete>
+      </div>
+      <v-btn icon @click=" displayNewlyAddedMod(select)">
+        <v-icon>mdi-magnify</v-icon>
+      </v-btn>
     </v-toolbar>
-    <h1>
-    <v-layout row wrap class="whitebox">
-    <v-flex xs2 v-for="mod in moduleList" :key="mod">
-    <v-checkbox :label="mod" v-model="selectedModules" :value="mod" class="labels"></v-checkbox>
-    </v-flex>        
-    </v-layout>   
-    </h1>
-    </div>  
+    <div class="col-sm-7">
+      <h1>
+        <v-layout class="whitebox">
+          <v-flex
+            class="d-flex justify-content-between bg-secondary mb-3"
+            v-for="mod in moduleList"
+            :key="mod"
+          >
+            <v-checkbox :label="mod" v-model="selectedModules" :value="mod" class="labels"></v-checkbox>
+          </v-flex>
+        </v-layout>
+      </h1>
+    </div>
+  </div>
 </template>
-
+// 
 <script>
-  export default {
-    data () {
-      return {
-        loading: false,
-        items: [],
-        search: null,
-        select: null,
-        selectedModules: [],
-        moduleList: [ 'CS1231', 'BT3102', 'IS3103', 'IS4241', 'BT3103'],
-        modules: [
-          'BT2102',
-          'BT2101',
-          'BT3101',
-          'BT3102',
-          'BT3103',
-          'BT4101',
-        ],
+import firebase from "firebase";
+export default {
+  data() {
+    return {
+      loading: false,
+      items: [],
+      search: null,
+      select: null,
+      moduleList: [],
+      modules: []
+    };
+  },
+  watch: {
+    search(val) {
+      val && val !== this.select && this.querySelections(val);
+    }
+  },
+  methods: {
+    querySelections(v) {
+      this.loading = true;
+      // Simulated ajax query
+      setTimeout(() => {
+        this.items = this.modules.filter(e => {
+          return (e || "").toLowerCase().indexOf((v || "").toLowerCase()) > -1;
+        });
+        this.loading = false;
+      }, 500);
+    },
+    async displayNewlyAddedMod(v) {
+      //adding missing modules   v = moduleCode
+      var user = firebase.auth().currentUser;
+      if (this.moduleList.includes(v) == false && v != null) {
+        //if module is not in user's module list
+        this.moduleList.push(v); //adding module_code into moduleList
+        console.log(v);
+        firebase
+          .firestore()
+          .collection("module")
+          .where("module_code", "==", v)
+          .get()
+          .then(function(querySnapshot) {
+            querySnapshot.forEach(function(doc) {
+              console.log(doc.id, " => ", doc.data());
+              var modID = doc.id;
+              firebase
+                .firestore()
+                .collection("users")
+                .doc(user.uid)
+                .get()
+                .then(function(doc) {
+                  var modulelist = doc.data().module_list;
+                  modulelist.push(modID);
+                  firebase
+                    .firestore()
+                    .collection("users")
+                    .doc(user.uid)
+                    .update({ module_list: modulelist });
+                });
+            });
+          });
       }
     },
-    watch: {
-      search (val) {
-        val && val !== this.select && this.querySelections(val)
-      },
+    async fetchModules() {
+      //update available modules from firebase database for autocomplete searchbar
+      firebase
+        .firestore()
+        .collection("module")
+        .get()
+        .then(querySnapShot => {
+          querySnapShot.forEach(doc => {
+            this.modules.push(doc.data().module_code);
+          });
+        });
     },
-    methods: {
-      querySelections (v) {
-        this.loading = true
-        // Simulated ajax query
-        setTimeout(() => {
-          this.items = this.modules.filter(e => {
-            return (e || '').toLowerCase().indexOf((v || '').toLowerCase()) > -1
-          })
-          this.loading = false
-        }, 500)
-      },
-    },
+    async displayCurrentMod() {
+      //retrieve and display existing modules from user's module list
+      var user = firebase.auth().currentUser;
+      let currentmod = [];
+      await firebase
+        .firestore()
+        .collection("users")
+        .doc(user.uid)
+        .get()
+        .then(function(doc) {
+          console.log("Ran this");
+          var user_modules = doc.data().module_list;
+          console.log(user_modules);
+          for (let i in user_modules) {
+            var mod = user_modules[i];
+            console.log(mod);
+            if (mod != "") {
+              firebase
+                .firestore()
+                .collection("module")
+                .doc(mod)
+                .get()
+                .then(function(doc) {
+                  var modcode = doc.data().module_code;
+                  console.log(modcode);
+                  currentmod.push(modcode);
+                });
+            }
+          }
+        });
+      this.moduleList = currentmod;
+      console.log("Reached this code");
+      console.log(this.moduleList);
+    }
+  },
+  created() {
+    this.fetchModules();
+    this.displayCurrentMod();
   }
+};
 </script> 
 
 <style scoped>
@@ -81,7 +166,7 @@
   color: rgb(42, 68, 99);
   background: white;
   font-size: 20px;
-  text-align:center;
+  text-align: center;
   margin: auto;
 }
 </style>
