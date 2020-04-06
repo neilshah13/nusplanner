@@ -395,7 +395,6 @@ export default {
       },
       
       /* addEvent() function moved to CreatEvent.vue */
-
         
         async updateEvent (ev) {
           console.log("just after event called")

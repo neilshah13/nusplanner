@@ -14,7 +14,7 @@
           </v-btn>
           </template>
             <v-list>
-              <v-list-item @click="eventType = 'event'"> <!--/change this assign some value that is used in submittedevent (ifelse) -->
+              <v-list-item @click="eventType = 'event'">
                 <v-list-item-title>Event</v-list-item-title>
               </v-list-item>
               <v-list-item @click="eventType = 'assignment'">
@@ -34,6 +34,30 @@
         <v-text-field outlined class= 'neweventfield' v-model="enddate" type="date" label="End Date"></v-text-field>
         <v-text-field outlined class= 'neweventfield' v-model="starttime" type="time" label="Start Time (Optional)"></v-text-field>
         <v-text-field outlined class= 'neweventfield' v-model="endtime" type="time" label="End Time (Optional)"></v-text-field>
+
+
+      <v-card-text class='menu'> Module:
+        <v-menu>
+        <template v-slot:activator="{ on }">
+        <v-btn v-on="on" class="btn">
+          <span>{{ groups[group] }}</span>
+           <v-icon bottom>mdi-menu-down</v-icon>
+          </v-btn>
+          </template>
+            <v-list>
+              <v-list-item @click="group='teamwork'">
+                <v-list-item-title>Team Work (BT3103)</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="group='teamhustle'">
+                <v-list-item-title>Team Hustle (IS3103)</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+      </v-card-text>
+
+
+
+        
         <div class='colorfieldtitle'>
           <div class="mr-4">
           Please choose a color:
@@ -124,6 +148,7 @@
           </v-menu>
           <v-card-text class='txt'>Haven't saved a group name? Add it 
             <v-btn    
+              small
               color = "#1976D2"
               @click.stop="groupMembers = true"> here! </v-btn> 
 
@@ -268,7 +293,25 @@ export default {
         this.addGroupMeeting()
         this.$emit('getEventsfromDatabase') //calls the getEvent from Weekly.vue to update the calendar
       },
-       async addEvent () {
+     pushEventintoUsersFirebase(id) {
+      var eventlist;
+      var user = firebase.auth().currentUser;
+      firebase.firestore().collection('users').doc(user.uid).get().then(function(doc) {
+          eventlist = doc.data().event_list
+          eventlist.push(id)
+          eventlist = eventlist.filter(item => item)
+          console.log(eventlist)
+          firebase.firestore().collection('users').doc(user.uid).update({event_list:eventlist})
+        }) 
+        console.log("Added event into user's event_list!")
+        this.name = '',
+        this.details = '',
+        this.startdate = '',
+        this.enddate = '',
+        this.starttime = '',
+        this.endtime = ''
+      },
+      async addEvent () {
         if (this.name && this.startdate && this.enddate) { //Takes in as long as there is a date
           if (this.starttime != ''){ //If there is time input, then we input both date and time into database
             var startinput = this.startdate.concat(" ".concat(this.starttime))
@@ -294,22 +337,7 @@ export default {
             type: 1, //1 == Event
             uid: user.uid, //change this
           })
-          console.log("before adding into user eventlist")
-          var eventlist;
-          firebase.firestore().collection('users').doc(user.uid).get().then(function(doc) {
-              eventlist = doc.data().event_list
-              eventlist.push(eventAdded.id)
-              eventlist = eventlist.filter(item => item)
-              console.log(eventlist)
-              firebase.firestore().collection('users').doc(user.uid).update({event_list:eventlist})
-          }) //.update({event_list:eventAdded.id})
-          console.log("after adding into user eventlist")
-          this.name = '',
-          this.details = '',
-          this.startdate = '',
-          this.enddate = '',
-          this.starttime = '',
-          this.endtime = ''
+        this.pushEventintoUsersFirebase(eventAdded.id);
         }
       },
           async addAssignment () {
@@ -335,21 +363,7 @@ export default {
                 type: 2, //2 == Assignment
                 uid: user.uid, //change this
               })
-              var eventlist;
-              firebase.firestore().collection('users').doc(user.uid).get().then(function(doc) {
-                  eventlist = doc.data().event_list
-                  eventlist.push(eventAdded.id)
-                  eventlist = eventlist.filter(item => item)
-                  console.log(eventlist)
-                  firebase.firestore().collection('users').doc(user.uid).update({event_list:eventlist})
-              }) //.update({event_list:eventAdded.id})
-              console.log("after ASSIGNMENT adding into user eventlist")
-              this.name = '',
-              this.details = '',
-              this.startdate = '',
-              this.enddate = '',
-              this.starttime = '',
-              this.endtime = ''
+              this.pushEventintoUsersFirebase(eventAdded.id);
             }
           },
           async addGroupMeeting () { //must put in all members event_list
