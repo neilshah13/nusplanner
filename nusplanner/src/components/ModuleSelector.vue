@@ -24,7 +24,7 @@
       clearable="clear-icon"
     ></v-autocomplete> 
     </div>
-    <v-btn icon @click = "displayMod(select)">
+    <v-btn icon @click = " displayNewlyAddedMod(select)">
           <v-icon>mdi-magnify</v-icon>
     </v-btn>
     </v-toolbar>
@@ -59,20 +59,6 @@ import firebase from "firebase"
       },
     },
     methods: {
-      fetchUserModules: function() {
-      var user = firebase.auth().currentUser;
-      console.log(user);
-      firebase.auth().onAuthStateChanged(function(user)){
-        if (user) {
-          this.modules = 
-          firebase
-            .firestore()
-            .collection("users")
-            .doc(user.uid)
-            .data().module_list
-        }
-      }
-    },
       querySelections (v) {
         this.loading = true
         // Simulated ajax query
@@ -83,17 +69,41 @@ import firebase from "firebase"
           this.loading = false
         }, 500)
       },
-      displayMod(v){
-        if(this.moduleList.includes(v) == false){
-          this.moduleList.push(v)
+      displayNewlyAddedMod(v){                 //adding missing modules   v = moduleCode        
+        var user = firebase.auth().currentUser;
+        if(this.moduleList.includes(v) == false && v !=null){   //if module is not in user's module list
+          this.moduleList.push(v)                   //adding module_code into moduleList
+          var modID = firebase.firestore().collection('module').forEachwhere("module_code", "==", v )  //retrieve module's id using module code
+          alert(modID)
+          // alert("hellobb")
+          firebase.firestore().collection('users').doc(user.uid).update({module_list: firebase.firestore.FieldValue.arrayUnion(v.id)})   //add module_id into user's firebase module_list
         }
       },
+      async fetchModules() {
+        //update available modules from firebase database for autocomplete searchbar
+        firebase.firestore().collection('module').get().then(querySnapShot => {
+          querySnapShot.forEach(doc => {
+            this.modules.push(doc.data().module_code)
+          })
+        })
+      },
+      async displayCurrentMod() {      //retrieve and display existing modules from user's module list      
+        var user = firebase.auth().currentUser;
+        let currentmod = []
+        await firebase.firestore().collection('users').doc(user.uid).get('module_list').then(querySnapShot => {
+          querySnapShot.forEach(doc => {   //for each mod_id in module_list
+            currentmod.push(firebase.firestore().collection('module').doc(doc).module_code)
+            this.moduleList = currentmod
+            // this.moduleList.push(firebase.firestore().collection('module').doc(doc).module_code)  //using mod_id to retrieve modcode
+          })
+        })
+      }
     },
     created() {
-      this.fetchUserModules()
-    }
+    this.fetchModules()
+    this.displayCurrentMod()
+    },
   }
-
 </script> 
 
 <style scoped>
