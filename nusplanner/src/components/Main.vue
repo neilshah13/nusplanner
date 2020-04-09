@@ -9,7 +9,7 @@
     <v-row no-gutters>
       <v-col md="2">
         <announcement></announcement>
-        <Filters></Filters>
+        <!--<Filters></Filters>-->
       </v-col>
       <v-col md="7">
         <v-app>
@@ -31,7 +31,7 @@ import Weekly from "./Weekly.vue";
 import Vue from "vue";
 //import { AutoCompletePlugin } from "@syncfusion/ej2-vue-dropdowns";
 import ModuleAdding from "./ModuleSelector.vue";
-import Filters from "./Filters.vue";
+//import Filters from "./Filters.vue";
 import Announcement from "./Announcement.vue";
 
 //Vue.use(AutoCompletePlugin);
@@ -41,7 +41,7 @@ export default Vue.extend({
     //Header,
     todolist,
     Weekly,
-    Filters,
+    //Filters,
     moduleAdding: ModuleAdding,
     announcement: Announcement
   }

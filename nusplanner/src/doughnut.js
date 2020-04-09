@@ -1,4 +1,6 @@
 import {Doughnut} from 'vue-chartjs'
+import firebase from "firebase"
+
 export default{
     extends:Doughnut,
     data: () => ({
@@ -6,35 +8,52 @@ export default{
           labels: ['Done', 'Undone'],
           datasets: [
             {
-              label: 'Sales',
-              data: [0.3, 0.7],
-              backgroundColor:['green', 'red'],
-              borderWidth:0.5,
+              data: [],
+              backgroundColor: ["rgba(35,164,89,0.2)","rgba(222,63,63,0.2)"],
+              borderColor: ["rgba(35,164,89,1)","rgba(222,63,63,1)"]
             }
           ]
           
         },
         options: {
-            scales:{
-                yAxes:[{
-                    ticks:{
-                        min:0
-                    }
-
-                }]
-            },
-            layout:{
-              padding:{
-                  left: 5,
-                  right: 0,
-                  top: 0,
-                  bottom: 10
-              }
+          title:{
+            display: true,
+            text: ''
           }
-          
         }
       }),
-    mounted(){
-        this.renderChart(this.chartdata,this.options)
+      methods: {
+        fetchItems: function() {
+          var self = this
+          var done = 0
+          var undone = 0
+          firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+              firebase.firestore().collection('users').doc(user.uid)
+              .collection('todo').get().then(querySnapShot => {
+                querySnapShot.forEach(doc => {
+                  if (doc.data().done == false) {
+                      undone++
+                      //console.log(doc.data().done)
+                      //console.log(undone)
+                  } else {
+                   done++
+                  }
+                })
+              var total = done+undone
+              console.log("DONE HERE")
+              // console.log(undone)
+              // console.log(total)
+              self.chartdata.datasets[0].data.push(Math.round(done*100/total))
+              self.chartdata.datasets[0].data.push(Math.round(undone*100/total))
+              self.options.title.text = Math.round(done*100/total) + '% of Tasks Completed'
+              self.renderChart(self.chartdata, self.options)
+               })
+            }
+          })
+        }
+      },
+    created(){
+        this.fetchItems();
     }
 }

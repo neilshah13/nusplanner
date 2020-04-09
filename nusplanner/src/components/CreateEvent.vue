@@ -14,7 +14,7 @@
           </v-btn>
           </template>
             <v-list>
-              <v-list-item @click="eventType = 'event'">
+              <v-list-item @click="eventType = 'event'"> <!--/change this assign some value that is used in submittedevent (ifelse) -->
                 <v-list-item-title>Event</v-list-item-title>
               </v-list-item>
               <v-list-item @click="eventType = 'assignment'">
@@ -27,50 +27,84 @@
         </v-menu>
       </v-toolbar-title>
 
-      <v-form v-if="eventType == 'event'" @submit.prevent="addEvent" ref="form" class="neweventform">
+      <v-form v-if="eventType == 'event'" @submit.prevent="submittedEvent" ref="form" class="neweventform">
         <v-text-field outlined class= 'neweventfield' v-model="name" type="text" label="Event Name"></v-text-field>
         <v-text-field outlined class= 'neweventfield' v-model="details" type="text" label="Details (e.g. Meet at Jurong East MRT)"></v-text-field>
         <v-text-field outlined class= 'neweventfield' v-model="startdate" type="date" label="Start Date"></v-text-field>
         <v-text-field outlined class= 'neweventfield' v-model="enddate" type="date" label="End Date"></v-text-field>
         <v-text-field outlined class= 'neweventfield' v-model="starttime" type="time" label="Start Time (Optional)"></v-text-field>
         <v-text-field outlined class= 'neweventfield' v-model="endtime" type="time" label="End Time (Optional)"></v-text-field>
-                <div class='colorfieldtitle'>
+        <div class='colorfieldtitle'>
           <div class="mr-4">
           Please choose a color:
           </div>
-                <swatches
-                v-model="color"
 
-                :colors="colors"
+      <v-btn
+        v-bind:color="this.color"
+        dark
+        @click.stop="dialog = true"
+      >
+        Color
+      </v-btn>
+  
+      <v-dialog
+        v-model="dialog"
+        max-width="300"
+      >
+      <ColorPicker v-model = "color"> </ColorPicker>
 
-                row-length="6"
-                shapes="circles"
-                show-border
-                popover-to="left"
-              ></swatches>
+            <v-btn
+              v-bind:color="this.color"
+              dark
+              @click="dialog = false"
+            >
+              Choose
+            </v-btn>
+
+      </v-dialog>
             </div>
+            <br>
+            <br>
+          <v-btn type="submit" color="primary" class="mr-4">Create Event</v-btn>
+          <v-btn color="error" class="mr-4" @click="reset"> Reset Form </v-btn>
       </v-form>
-      <v-form v-else-if="eventType == 'assignment'" @submit.prevent="addEvent" ref="form" class="neweventform">
+      <v-form v-else-if="eventType == 'assignment'" @submit.prevent="submittedAssignment" ref="form" class="neweventform">
         <v-text-field outlined class= 'neweventfield' v-model="name" type="text" label="Assignment Name"></v-text-field>
         <v-text-field outlined class= 'neweventfield' v-model="details" type="text" label="Details (e.g. Due 2359, submit in PDF format)"></v-text-field>
-        <v-text-field outlined class= 'neweventfield' v-model="start" type="date" label="Due Date"></v-text-field>
-                <div class='colorfieldtitle'>
+        <v-text-field outlined class= 'neweventfield' v-model="enddate" type="date" label="Due Date"></v-text-field>
+          <div class='colorfieldtitle'>
           <div class="mr-4">
           Please choose a color:
           </div>
-                <swatches
-                v-model="color"
+          <v-btn
+            v-bind:color="this.color"
+            dark
+            @click.stop="dialog = true"
+          >
+            Color
+          </v-btn>
+      
+          <v-dialog
+            v-model="dialog"
+            max-width="300"
+          >
+          <ColorPicker v-model = "color"> </ColorPicker>
 
-                :colors="colors"
-
-                row-length="6"
-                shapes="circles"
-                show-border
-                popover-to="left"
-              ></swatches>
+                <v-btn
+                  v-bind:color="this.color"
+                  dark
+                  @click="dialog = false"
+                >
+                  Choose
+                </v-btn>
+          </v-dialog>
             </div>
+          <br>
+          <br>
+          <v-btn type="submit" color="primary" class="mr-4">Create Assignment</v-btn>
+          <v-btn color="error" class="mr-4" @click="reset"> Reset Form </v-btn>
       </v-form>
-      <v-form v-else-if="eventType== 'groupMeeting'" @submit.prevent="addEvent" ref="form" class="neweventform">
+      <v-form v-else-if="eventType== 'groupMeeting'" @submit.prevent="submittedGroupMeeting" ref="form" class="neweventform">
         <v-card-text class='menu'> Saved Group Name:
         <v-menu>
         <template v-slot:activator="{ on }">
@@ -88,8 +122,30 @@
               </v-list-item>
             </v-list>
           </v-menu>
-          <v-card-text class='txt'>Haven't saved a group name? Add it <a href='https://google.com'>here</a>!</v-card-text>
+          <v-card-text class='txt'>Haven't saved a group name? Add it 
+            <v-btn    
+              color = "#1976D2"
+              @click.stop="groupMembers = true"> here! </v-btn> 
+
+              <v-dialog v-model = "groupMembers" max-width="550"> 
+                <CreateGroup @update-grp='updateGrp' @update-grpsnack='updateSnackGrp'></CreateGroup>
+              </v-dialog>
+              <v-snackbar
+                v-model="grpsnack"
+              >
+                Group successfully created! 
+                <v-btn
+                  color="error"
+                  text
+                  @click="grpsnack = false"
+                >
+                  Close
+                </v-btn>  
+              </v-snackbar>
+              
+              </v-card-text> 
           </v-card-text>
+
         <v-text-field outlined class= 'neweventfield' v-model="details" type="text" label="Details (e.g. Meet at Computing)"></v-text-field>
         <v-text-field outlined class= 'neweventfield' v-model="start" type="date" label="Date"></v-text-field>
         <v-text-field outlined class= 'neweventfield' v-model="start" type="time" label="Start Time"></v-text-field>
@@ -98,33 +154,54 @@
           <div class="mr-4">
           Please choose a color:
           </div>
-                <swatches
-                v-model="color"
+            <v-btn
+              v-bind:color="this.color"
+              dark
+              @click.stop="dialog = true"
+            >
+              Color
+            </v-btn>
+        
+            <v-dialog
+              v-model="dialog"
+              max-width="300"
+            >
+            <ColorPicker v-model = "color"> </ColorPicker>
 
-                :colors="colors"
-
-                row-length="6"
-                shapes="circles"
-                show-border
-                popover-to="left"
-              ></swatches>
+                  <v-btn
+                    v-bind:color="this.color"
+                    dark
+                    @click="dialog = false"
+                  >
+                    Choose
+                  </v-btn>
+            </v-dialog>
             </div>
+            <br>
+            <br>
+          <v-btn type="submit" color="primary" class="mr-4">Create Group Meeting</v-btn>
+          <v-btn color="error" class="mr-4" @click="reset"> Reset Form </v-btn>
       </v-form>
     <br>
-    <v-btn type="submit" color="primary" class="mr-4" @click.stop="submittedEvent">Create Event</v-btn>
-    <v-btn color="error" class="mr-4" @click="reset"> Reset Form </v-btn>
+    <!-- <v-btn type="submit" color="primary" class="mr-4" @click.stop="submittedEvent">Create Event</v-btn>
+    <v-btn color="error" class="mr-4" @click="reset"> Reset Form </v-btn> -->
     </v-container>
   </v-card>
 </template>
 
 <script>
+import ColorPicker from 'vue-color-picker-wheel';
 import firebase from "firebase";
-import Swatches from 'vue-swatches'
+import CreateGroup from './CreateGroup.vue'
+
 export default {
     components:{
-        Swatches,
+        ColorPicker, CreateGroup
     },
     data: () => ({
+      groupMembers: false,
+      grpsnack: false,
+      dialog: false,
       today: new Date().toISOString().substr(0, 10),
       focus: '',
       color: '#1976D2', // default event color
@@ -150,6 +227,12 @@ export default {
       },
     }),
     methods: {
+      updateGrp() {
+        this.groupMembers = false;
+      },
+      updateSnackGrp() {
+        this.grpsnack = true;
+      },
       closeDialog() {
         this.$emit('update-dialog')
       },
@@ -157,9 +240,32 @@ export default {
         this.$refs.form.reset();
       },
       submittedEvent() {
-        this.$emit('update-eventsnack')
+        if (this.name && this.startdate && this.enddate) {  //somewhere here
+          this.$emit('update-eventsnack')
+        } else {
+          this.$emit('update-ifEventFalse')
+        }
         this.$emit('update-dialog')
         this.addEvent()
+        this.$emit('getEventsfromDatabase') //calls the getEvent from Weekly.vue to update the calendar
+      },
+      submittedAssignment() {
+        console.log("hi")
+        console.log(this.name && this.enddate)
+        if (this.name && this.enddate) { //Takes in as long as there is a date
+          this.$emit('update-eventsnack')
+        } else {
+          this.$emit('update-ifAssignmentFalse')
+        }
+        this.$emit('update-dialog')
+        this.addAssignment()
+        this.$emit('getEventsfromDatabase') //calls the getEvent from Weekly.vue to update the calendar
+      }, 
+      submittedGroupMeeting() {
+        //add if condition once done to make sure "event successfully added" is not shown when event not actually created (requirements not satisfied)
+        this.$emit('update-eventsnack')
+        this.$emit('update-dialog')
+        this.addGroupMeeting()
         this.$emit('getEventsfromDatabase') //calls the getEvent from Weekly.vue to update the calendar
       },
        async addEvent () {
@@ -185,7 +291,7 @@ export default {
             global: false,
             group_id: "fofcnxjlqwf", //change this
             module_id: "jowfnflasdf", //change this
-            type: 1, //change this(?)
+            type: 1, //1 == Event
             uid: user.uid, //change this
           })
           console.log("before adding into user eventlist")
@@ -204,11 +310,92 @@ export default {
           this.enddate = '',
           this.starttime = '',
           this.endtime = ''
-        } else {
-          alert('You must enter event name, start, and end time')
         }
-        },
-    },
+      },
+          async addAssignment () {
+            var startinput;
+            var endinput;
+            if (this.name && this.enddate) { //Takes in as long as there is a date
+                startinput = this.enddate
+                endinput = this.enddate
+              var user = firebase.auth().currentUser;
+              var eventAdded = await firebase.firestore().collection('event').add({
+                name: this.name,
+                details: this.details,
+                startdate:this.enddate,
+                enddate:this.enddate,
+                starttime: this.starttime,
+                endtime:this.endtime,
+                start: startinput,
+                end: endinput,
+                color: this.color,
+                global: false,
+                group_id: "fofcnxjlqwf", //change this
+                module_id: "jowfnflasdf", //change this
+                type: 2, //2 == Assignment
+                uid: user.uid, //change this
+              })
+              var eventlist;
+              firebase.firestore().collection('users').doc(user.uid).get().then(function(doc) {
+                  eventlist = doc.data().event_list
+                  eventlist.push(eventAdded.id)
+                  eventlist = eventlist.filter(item => item)
+                  console.log(eventlist)
+                  firebase.firestore().collection('users').doc(user.uid).update({event_list:eventlist})
+              }) //.update({event_list:eventAdded.id})
+              console.log("after ASSIGNMENT adding into user eventlist")
+              this.name = '',
+              this.details = '',
+              this.startdate = '',
+              this.enddate = '',
+              this.starttime = '',
+              this.endtime = ''
+            }
+          },
+          async addGroupMeeting () { //must put in all members event_list
+            var startinput;
+            var endinput;
+            if (this.name && this.enddate) { //Takes in as long as there is a date
+                startinput = this.enddate
+                endinput = this.enddate
+              var user = firebase.auth().currentUser;
+              var eventAdded = await firebase.firestore().collection('event').add({
+                name: this.name,
+                details: this.details,
+                startdate:this.enddate,
+                enddate:this.enddate,
+                starttime: this.starttime,
+                endtime:this.endtime,
+                start: startinput,
+                end: endinput,
+                color: this.color,
+                global: false,
+                group_id: "fofcnxjlqwf", //change this
+                module_id: "jowfnflasdf", //change this
+                type: 2, //2 == Assignment
+                uid: user.uid, //change this
+              })
+              var eventlist;
+              firebase.firestore().collection('users').doc(user.uid).get().then(function(doc) {
+                  eventlist = doc.data().event_list
+                  eventlist.push(eventAdded.id)
+                  eventlist = eventlist.filter(item => item)
+                  console.log(eventlist)
+                  firebase.firestore().collection('users').doc(user.uid).update({event_list:eventlist})
+              }) //.update({event_list:eventAdded.id})
+              console.log("after ASSIGNMENT adding into user eventlist")
+              this.name = '',
+              this.details = '',
+              this.startdate = '',
+              this.enddate = '',
+              this.starttime = '',
+              this.endtime = ''
+            } else {
+              alert('You must enter event name, start, and end time')
+            }
+          },
+
+    }
     // model: {
     //   prop: 'dialog',
     //   event: 'change'

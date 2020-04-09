@@ -89,19 +89,23 @@ export default {
     };
   },
   methods: {
-    async fetchItems() {
-      var user = firebase.auth().currentUser
+      async fetchItems() {
       console.log("HELLO USER")
-      console.log(user.uid)
       let todo=[]
       let item={}
-      await firebase.firestore().collection('users').doc(user.uid)
-      .collection('todo').orderBy('label').get().then((querySnapShot) => {
-        querySnapShot.forEach(doc=>{
-          item=doc.data()
-          item.id=doc.id
-          todo.push(item)
-        })
+      await firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          console.log("Signed in..")
+          console.log(user.uid)
+          firebase.firestore().collection('users').doc(user.uid)
+          .collection('todo').orderBy('label').get().then((querySnapShot) => {
+            querySnapShot.forEach(doc=>{
+              item=doc.data()
+              item.id=doc.id
+              todo.push(item)
+            })
+          })
+        }
       })
       this.todo=todo
     },
