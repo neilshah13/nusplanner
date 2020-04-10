@@ -109,7 +109,7 @@
   >
     Event not created! 
     <br>
-    You must enter Event name, Start, and End time
+    You must enter Event name, Start, and End Date
     <v-btn
       color="error"
       text
@@ -157,7 +157,39 @@
         ></v-calendar>
         <v-container></v-container>
 <!-- popup after clicking on event -->
-        <v-menu
+<!-- If selecting a global event -->
+        <v-menu v-if = "selectedEvent.global === true" 
+          class="menu"
+          v-model="selectedOpen"
+          :close-on-content-click="false"
+          :activator="selectedElement">
+
+          <v-card color="grey lighten-4" flat>
+            <v-toolbar class="menu" :color="selectedEvent.color" dark>
+              <div align = "left">
+              <textarea
+                v-model= "selectedEvent.name"
+                class='txtarea'
+                type="text"
+                placeholder="Add a title">
+                </textarea>
+                </div>
+            </v-toolbar>
+            <v-card-text>
+              <v-form> {{ selectedEvent.details }} </v-form>
+              <br>
+              <br>
+              <font size="1"> **This is a Global Event and cannot be changed! </font>
+            </v-card-text>
+
+            <v-card-actions>
+              <v-btn text color="secondary" @click="selectedOpen = false, currentlyEditing= null">Close</v-btn>
+            </v-card-actions>
+          </v-card>
+         </v-menu>
+
+<!-- If NOT selecting a global event -->
+        <v-menu v-else
         class="menu"
           v-model="selectedOpen"
           :close-on-content-click="false"
@@ -180,7 +212,8 @@
               </v-btn>
             </v-toolbar>
             <v-card-text>
-              <v-form v-if="currentlyEditing !== selectedEvent.id"> {{ selectedEvent.details }}</v-form>
+              <v-form v-if = "selectedEvent.global == true"> {{ selectedEvent.details }} </v-form>
+              <v-form v-else-if="currentlyEditing !== selectedEvent.id && selectedEvent.global === false"> {{ selectedEvent.details }}</v-form>
               <v-form v-else>
                 <v-text-field class= 'neweventfield' v-model="selectedEvent.name" type="text" label="name"></v-text-field>
                 <v-text-field class= 'neweventfield' v-model="selectedEvent.details" type="text" label="Details (e.g. Meet at Jurong East MRT)"></v-text-field>
@@ -359,9 +392,9 @@ export default {
         }
         nativeEvent.stopPropagation()
       }, onClickSave(ev) {
-        this.updateEvent(ev)
-        this.selectedOpen = false
-        this.currentlyEditing= null
+          this.updateEvent(ev)
+          this.selectedOpen = false
+          this.currentlyEditing= null
       },
       editEvent(ev) {
         this.currentlyEditing = ev.id;
@@ -391,49 +424,54 @@ export default {
           : `${a.getFullYear()}-${a.getMonth() + 1}-${a.getDate()}`
       },
 
-      /*async getEvents () {
+      async getEvents () {
       let snapshot = await firebase.firestore().collection('event').get()
       let events = []
+      var user = firebase.auth().currentUser;
       snapshot.forEach(doc => {
         //console.log(doc.data())
-        let appData = doc.data()
-        appData.id = doc.id
-        events.push(appData)
+        let eventData = doc.data()
+        if (eventData.uid == user.uid || eventData.global == true) {
+          eventData.id = doc.id
+          events.push(eventData)
+        }
       })
       this.events = events
-      }, */
-      getEvents: function() {
-        this.events = []
-        this.allEvents = []
-        this.allEventsList = []
-        var self = this;
-        firebase.auth().onAuthStateChanged(function(user) {
-          if (user) { 
-            console.log('user is signed in')
-            //console.log(user.uid)
-            // user is signed in
-            self.currUser = user;
-            let userRef = database.collection('users').doc(self.currUser.uid)
-            userRef.get().then(doc => {
-              self.allEventsList = doc.data().event_list
-              self.allEventsList.forEach(evID => {
-                let ev = database.collection('event').doc(evID)
-                ev.get().then(doc => {
-                  self.allEvents.push(doc.data())
-                })
-              })
-            })
-            self.events = self.allEvents
-            console.log(self.events)
-          } 
-          else {
-            console.log('user is not signed in')
-            alert("Error! User not found!")
-          }
-        })
-        //console.log("weekly get events")
-        //console.log(self.events)
       }, 
+
+      
+      // getEvents: function() {
+      //   this.events = []
+      //   this.allEvents = []
+      //   this.allEventsList = []
+      //   var self = this;
+      //   firebase.auth().onAuthStateChanged(function(user) {
+      //     if (user) { 
+      //       console.log('user is signed in')
+      //       //console.log(user.uid)so i th
+      //       // user is signed in
+      //       self.currUser = user;
+      //       let userRef = database.collection('users').doc(self.currUser.uid)
+      //       userRef.get().then(doc => {
+      //         self.allEventsList = doc.data().event_list
+      //         self.allEventsList.forEach(evID => {
+      //           let ev = database.collection('event').doc(evID)
+      //           ev.get().then(doc => {
+      //             self.allEvents.push(doc.data())
+      //           })
+      //         })
+      //       })
+      //       self.events = self.allEvents
+      //       console.log(self.events)
+      //     } 
+      //     else {
+      //       console.log('user is not signed in')
+      //       alert("Error! User not found!")  
+      //     }
+      //   })
+      //   //console.log("weekly get events")
+      //   //console.log(self.events)
+      // }, 
 
       getFilteredEvents(ev) {
         this.events = ev;
@@ -441,30 +479,31 @@ export default {
       /* addEvent() function moved to CreatEvent.vue */
   
         async updateEvent (ev) {
-          console.log("just after event called")
-          if (ev.starttime != ''){ //If there is time input, then we input both date and time into database
-            var startinput = ev.startdate.concat(" ".concat(ev.starttime))
-            var endinput = ev.enddate.concat(" ".concat(ev.endtime))
-          } else { //if no time input, we just input date into database
-            startinput = ev.startdate
-            endinput = ev.enddate
-          }
-          await database.collection('event').doc(this.currentlyEditing).update({
-            name: ev.name,
-            details: ev.details,
-            startdate: ev.startdate,
-            enddate: ev.enddate,
-            starttime: ev.starttime,
-            endtime: ev.endtime,
-            start: startinput,
-            end: endinput,
-            color: ev.color
+            console.log("just after event called")
+            if (ev.starttime != ''){ //If there is time input, then we input both date and time into database
+              var startinput = ev.startdate.concat(" ".concat(ev.starttime))
+              var endinput = ev.enddate.concat(" ".concat(ev.endtime))
+            } else { //if no time input, we just input date into database
+              startinput = ev.startdate
+              endinput = ev.enddate
+            }
+            await database.collection('event').doc(this.currentlyEditing).update({
+              name: ev.name,
+              details: ev.details,
+              startdate: ev.startdate,
+              enddate: ev.enddate,
+              starttime: ev.starttime,
+              endtime: ev.endtime,
+              start: startinput,
+              end: endinput,
+              color: ev.color
 
-          })
-          this.selectedOpen = false
-          this.currentlyEditing = null
-          //this.getEvents()
-        },
+            })
+            this.selectedOpen = false
+            this.currentlyEditing = null
+            this.getEvents()
+          }
+        ,
         
         async deleteEvent (ev) {
           var user = firebase.auth().currentUser;
@@ -478,7 +517,7 @@ export default {
           database.collection('users').doc(user.uid).update({event_list:eventlist})
       }) 
           this.selectedOpen = false
-          //this.getEvents()
+          this.getEvents()
         },
       },
     }
