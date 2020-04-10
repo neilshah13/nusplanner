@@ -35,7 +35,6 @@
         <v-text-field outlined class= 'neweventfield' v-model="starttime" type="time" label="Start Time (Optional)"></v-text-field>
         <v-text-field outlined class= 'neweventfield' v-model="endtime" type="time" label="End Time (Optional)"></v-text-field>
 
-
       <v-card-text class='menu'> Module:
         <v-menu>
         <template v-slot:activator="{ on }">
@@ -240,6 +239,7 @@ export default {
       name: '',
       eventType: 'event', //default
       group: 'teamwork',
+      modules: [],
 
       eventTypes: {
         assignment: 'Assignment',
@@ -251,6 +251,42 @@ export default {
         teamhustle: 'Team Hustle (IS3103)',
       },
     }),
+    // created: {
+    //   displayCurrentMod() {
+    //   //retrieve and display existing modules from user's module list
+    //   var user = firebase.auth().currentUser;
+    //   let currentmod = [];
+    //   firebase
+    //     .firestore()
+    //     .collection("users")
+    //     .doc(user.uid)
+    //     .get()
+    //     .then(function(doc) {
+    //       console.log("Ran this");
+    //       var user_modules = doc.data().module_list;
+    //       console.log(user_modules);
+    //       for (let i in user_modules) {
+    //         var mod = user_modules[i];
+    //         console.log(mod);
+    //         if (mod != "") {
+    //           firebase
+    //             .firestore()
+    //             .collection("module")
+    //             .doc(mod)
+    //             .get()
+    //             .then(function(doc) {
+    //               var modcode = doc.data().module_code;
+    //               console.log(modcode);
+    //               currentmod.push(modcode);
+    //             });
+    //         }
+    //       }
+    //     });
+    //   this.modules = currentmod;
+    //   console.log("Reached this code");
+    //   console.log(this.moduleList);
+    // }
+    // },
     methods: {
       updateGrp() {
         this.groupMembers = false;
@@ -337,7 +373,7 @@ export default {
             type: 1, //1 == Event
             uid: user.uid, //change this
           })
-        this.pushEventintoUsersFirebase(eventAdded.id);
+        await this.pushEventintoUsersFirebase(eventAdded.id);
         }
       },
           async addAssignment () {

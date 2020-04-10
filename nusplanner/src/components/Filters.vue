@@ -1,72 +1,85 @@
 <template>
-  <div>
-    <v-container class="container" id="selected" fluid>
+  <div class = "filterbar">
+    <v-container class="container">
+    <v-row justify="space-around">
+      <strong> Filter By: </strong>
+      <v-checkbox value=2 v-model="selectedType" label="Assignment" color="rgb(42, 68, 99)"></v-checkbox>
+      <v-checkbox value=3 v-model="selectedType" label="Meeting" color="rgb(42, 68, 99)"></v-checkbox>
+      <v-checkbox value=4 v-model="selectedType" label="Exam" color="rgb(42, 68, 99)"></v-checkbox>
+      <v-checkbox value=1 v-model="selectedType" label="Others" color="rgb(42, 68, 99)"></v-checkbox>
+    </v-row>
+    </v-container>
+    <!--<v-container class="container" id="selected" fluid>
       <h1>
         <strong>Filter By:</strong>
       </h1>
       <p></p>
       <v-card>
           <h2>
-            <v-checkbox value="1" v-model="selectedType" label="Assignment" dense="False"></v-checkbox>
-            <v-checkbox value="2" v-model="selectedType" label="Meeting" dense="False"></v-checkbox>
-            <v-checkbox value="3" v-model="selectedType" label="Exam" dense="False"></v-checkbox>
-            <v-checkbox value="4" v-model="selectedType" label="Others" dense="False"></v-checkbox>
+            <v-checkbox value=2 v-model="selectedType" label="Assignment"></v-checkbox>
+            <v-checkbox value=3 v-model="selectedType" label="Meeting"></v-checkbox>
+            <v-checkbox value=4 v-model="selectedType" label="Exam"></v-checkbox>
+            <v-checkbox value=1 v-model="selectedType" label="Others"></v-checkbox>
           </h2>
       </v-card>
-    </v-container>
-    <!--{{selectedEvents}} -->
+    </v-container> -->
+    <!--{{userEvents}}
+    {{selectedEvents}}-->
   </div>
 </template>
 
 <script>
-import database from '../main.js'
-export default {  
+import database from '../main.js';
+//import firebase from "firebase";
+//import calendar from '../components/Weekly.vue'
 
+export default {  
+  props: {
+    userEvents: Array
+  },
   data: function(){
     return {
+      //currUser: null,
+      //userEvents: [],
       event: {
         colour: "",
         title: "",
         type: "",
         show: true
       },
-      selectedType: ["1", "2", "3", "4"], //default 
+      selectedType: ["1","2","3","4"], //default 
       selectedEvents: []
     }
   },
   methods: {
-    /*filterEvents: function() {
-      let ev={};
-      database.collection('project-events').get().then((querySnapShot)=>{
-        querySnapShot.forEach(doc=>{
-            ev=doc.data()
-            ev.show = false
-            if (this.selectedType.includes(ev.type)) {
-              ev.show = true
+    updateEvents() {
+      this.selectedEvents = []
+      var self = this;
+      self.$props.userEvents.forEach(evID => {  
+        let ev = database.collection('event').doc(evID)
+        
+        ev.get().then(doc => {
+          if(self.selectedType.includes(doc.data().type.toString())) {
+            if (!self.selectedEvents.includes(evID)) {
+              self.selectedEvents.push(doc.data())
+              console.log(doc.data().name, "pushed")
             }
+          } else {
+            console.log(doc.data().name, "removed")
+          }
         })
-      })   
-    }, */
+      })
+    }
+  }, 
+  mounted() {
+    this.updateEvents()
   },
+
   watch: {
     selectedType: function() {
-      let ev = {};
-      this.selectedEvents = [];
-      database.collection('project-events').get().then((querySnapShot)=>{
-        //this.filterEvents();
-        querySnapShot.forEach(doc=>{
-            ev=doc.data()
-            if (this.selectedType.includes(ev.type)) {
-              ev.show = true
-              this.selectedEvents.push(ev.title)
-            } else {
-              ev.show = false
-            }
-            //console.log(ev.show)
-            //console.log(this.selectedType)
-        }
-      )}
-    )}
+    this.updateEvents()
+    this.$emit('update-filtered-events', this.selectedEvents)
+    }
   }
 };
 </script>
@@ -74,10 +87,13 @@ export default {
 <style scoped>
 
 .container {
-  background-color:rgb(42, 68, 99);
-  max-width: 250px;
+  background-color:aliceblue;
+  max-width: 2000px;
+  max-height: 70px;
+  color:rgb(42, 68, 99);
 }
 
+/*
 h1 {
   font-size: 20px;
   margin: 5px;
@@ -96,8 +112,9 @@ h2 {
 }
 
 .container{
-  transform: scale(0.7);
   margin: 0;
   font-size: 25px;
-}
+} */
+
+
 </style>
