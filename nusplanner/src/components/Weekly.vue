@@ -50,7 +50,7 @@
     <v-row justify="center" no gutters>
       <v-col>
        <!-- filter bar -->
-      <filterbar :userEvents = "allEventsList" @update-filtered-events='getFilteredEvents'/>
+      <filterbar :userEvents = "allEvents" @update-filtered-events='getFilteredEvents'/>
       </v-col>
     </v-row>
 
@@ -285,7 +285,6 @@ export default {
         filterbar
       },
     data: () => ({
-      currUser: null,
       today: new Date().toISOString().substr(0, 10),
       focus: '',
       type: 'month', //default
@@ -315,9 +314,8 @@ export default {
         event: 'Event',
         groupMeeting: 'Group Meeting',
       },
-      allEventsList: [],
-      allEvents:[],
-      events: []
+      events: [],
+      allEvents: []
     }),
     created() {
       this.getEvents()
@@ -364,7 +362,8 @@ export default {
       },
       updateEventFalse() {
         this.eventfalse = true;
-      },updateAssignmentFalse() {
+      },
+      updateAssignmentFalse() {
         this.assignmentfalse = true;
       },
 
@@ -391,7 +390,9 @@ export default {
           open()
         }
         nativeEvent.stopPropagation()
-      }, onClickSave(ev) {
+      }, 
+      
+      onClickSave(ev) {
           this.updateEvent(ev)
           this.selectedOpen = false
           this.currentlyEditing= null
@@ -424,59 +425,26 @@ export default {
           : `${a.getFullYear()}-${a.getMonth() + 1}-${a.getDate()}`
       },
 
+      getFilteredEvents(ev) {
+        this.events = ev;
+      },
+
       async getEvents () {
       let snapshot = await firebase.firestore().collection('event').get()
       let events = []
       var user = firebase.auth().currentUser;
       snapshot.forEach(doc => {
-        //console.log(doc.data())
         let eventData = doc.data()
         if (eventData.uid == user.uid || eventData.global == true) {
           eventData.id = doc.id
           events.push(eventData)
         }
       })
+      this.allEvents = events
       this.events = events
       }, 
 
-      
-      // getEvents: function() {
-      //   this.events = []
-      //   this.allEvents = []
-      //   this.allEventsList = []
-      //   var self = this;
-      //   firebase.auth().onAuthStateChanged(function(user) {
-      //     if (user) { 
-      //       console.log('user is signed in')
-      //       //console.log(user.uid)so i th
-      //       // user is signed in
-      //       self.currUser = user;
-      //       let userRef = database.collection('users').doc(self.currUser.uid)
-      //       userRef.get().then(doc => {
-      //         self.allEventsList = doc.data().event_list
-      //         self.allEventsList.forEach(evID => {
-      //           let ev = database.collection('event').doc(evID)
-      //           ev.get().then(doc => {
-      //             self.allEvents.push(doc.data())
-      //           })
-      //         })
-      //       })
-      //       self.events = self.allEvents
-      //       console.log(self.events)
-      //     } 
-      //     else {
-      //       console.log('user is not signed in')
-      //       alert("Error! User not found!")  
-      //     }
-      //   })
-      //   //console.log("weekly get events")
-      //   //console.log(self.events)
-      // }, 
-
-      getFilteredEvents(ev) {
-        this.events = ev;
-      },
-      /* addEvent() function moved to CreatEvent.vue */
+      /* addEvent() function moved to CreateEvent.vue */
   
         async updateEvent (ev) {
             console.log("just after event called")
@@ -487,7 +455,7 @@ export default {
               startinput = ev.startdate
               endinput = ev.enddate
             }
-            await database.collection('event').doc(this.currentlyEditing).update({
+            await firebase.firestore().collection('event').doc(ev.id).update({
               name: ev.name,
               details: ev.details,
               startdate: ev.startdate,
@@ -499,6 +467,7 @@ export default {
               color: ev.color
 
             })
+            
             this.selectedOpen = false
             this.currentlyEditing = null
             this.getEvents()
@@ -508,8 +477,8 @@ export default {
         async deleteEvent (ev) {
           var user = firebase.auth().currentUser;
           var eventlist;
-          await database.collection('event').doc(ev.id).delete();
-          database.collection('users').doc(user.uid).get().then(function(doc) {
+          await firebase.firestore().collection('event').doc(ev.id).delete();
+          firebase.firestore().collection('users').doc(user.uid).get().then(function(doc) {
           eventlist = doc.data().event_list
           var index = eventlist.indexOf(ev.id);
           if (index !== -1) eventlist.splice(index, 1); //removing event from users' event_list

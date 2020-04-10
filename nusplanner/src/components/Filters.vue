@@ -4,8 +4,8 @@
     <v-row justify="space-around">
       <strong> Filter By: </strong>
       <v-checkbox value=2 v-model="selectedType" label="Assignment" color="rgb(42, 68, 99)"></v-checkbox>
-      <v-checkbox value=3 v-model="selectedType" label="Meeting" color="rgb(42, 68, 99)"></v-checkbox>
       <v-checkbox value=4 v-model="selectedType" label="Exam" color="rgb(42, 68, 99)"></v-checkbox>
+      <v-checkbox value=3 v-model="selectedType" label="Meeting" color="rgb(42, 68, 99)"></v-checkbox>
       <v-checkbox value=1 v-model="selectedType" label="Others" color="rgb(42, 68, 99)"></v-checkbox>
     </v-row>
     </v-container>
@@ -29,9 +29,7 @@
 </template>
 
 <script>
-import database from '../main.js';
-//import firebase from "firebase";
-//import calendar from '../components/Weekly.vue'
+import firebase from "firebase";
 
 export default {  
   props: {
@@ -39,46 +37,36 @@ export default {
   },
   data: function(){
     return {
-      //currUser: null,
-      //userEvents: [],
-      event: {
-        colour: "",
-        title: "",
-        type: "",
-        show: true
-      },
       selectedType: ["1","2","3","4"], //default 
-      selectedEvents: []
+      selectedEvents: [],
     }
   },
   methods: {
     updateEvents() {
-      this.selectedEvents = []
-      var self = this;
-      self.$props.userEvents.forEach(evID => {  
-        let ev = database.collection('event').doc(evID)
-        
+      var selectedEvents = []
+      this.$props.userEvents.forEach(event => {  
+        let ev = firebase.firestore().collection('event').doc(event.id)
         ev.get().then(doc => {
-          if(self.selectedType.includes(doc.data().type.toString())) {
-            if (!self.selectedEvents.includes(evID)) {
-              self.selectedEvents.push(doc.data())
-              console.log(doc.data().name, "pushed")
+          let eventData = doc.data()
+          if(this.selectedType.includes(eventData.type.toString())) {
+            if (!selectedEvents.includes(event)) {
+              eventData.id = doc.id
+              selectedEvents.push(eventData)
             }
-          } else {
-            console.log(doc.data().name, "removed")
-          }
+          } 
         })
       })
+      this.selectedEvents = selectedEvents
     }
-  }, 
+  },
   mounted() {
     this.updateEvents()
   },
 
   watch: {
-    selectedType: function() {
-    this.updateEvents()
-    this.$emit('update-filtered-events', this.selectedEvents)
+    selectedType() {
+      this.updateEvents()
+      this.$emit('update-filtered-events', this.selectedEvents)
     }
   }
 };
