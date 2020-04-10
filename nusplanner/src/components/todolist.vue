@@ -95,8 +95,8 @@ export default {
       let item={}
       await firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
-          console.log("Signed in..")
-          console.log(user.uid)
+          //console.log("Signed in..")
+          //console.log(user.uid)
           firebase.firestore().collection('users').doc(user.uid)
           .collection('todo').orderBy('label').get().then((querySnapShot) => {
             querySnapShot.forEach(doc=>{
