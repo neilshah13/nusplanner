@@ -190,10 +190,22 @@ export default {
       return array.indexOf(item)
     },
     async getMods() {
+      var user = firebase.auth().currentUser; //current user
+      console.log("Current user is " + user.uid)
+      let uid= user.uid
+      let modlist= []
+      firebase.firestore().collection('users').doc(uid).get().then(function(doc) {
+        modlist = doc.data().module_list
+        console.log(modlist)
+      })
       this.modules = []
       let moddb = await firebase.firestore().collection('module').get()
       moddb.forEach(doc => {
-        this.modules.push(doc.data().module_code)
+        for(var i = 0; i < modlist.length; i++) {
+          if (doc.id == modlist[i]) { //finding the module
+            this.modules.push(doc.data().module_code)
+          }
+        }
       })
     },
     async getUsers() {
@@ -224,13 +236,16 @@ export default {
       let membername = this.membernames.indexOf(username)
       this.membernames.splice(membername, 1);
 // let member = this.members.indexOf(this.users[index].id)
+      // const index = this.indexWhere(this.users, item => item.name == membername)
+      // let member = this.users.indexOf(membername)
       this.members.splice(membername, 1);
+      console.log(this.membernames)
+      console.log(this.members)
     },
     async addGroups() {
-      console.log("saved")
       this.$emit('update-dialog')
       //add to group collection
-      if (this.grpName && this.module_id && this.user_list) {
+      if (this.grpName && this.module && this.members) {
         this.$emit('update-grpsnack')
         this.$emit('update-grp')
         var groupadded = await firebase.firestore().collection('group').add({
@@ -238,23 +253,25 @@ export default {
           module_id: this.module,
           user_list: this.members, // list of uids
         })
+        for(var i=0; i < this.members.length; i++) {
+          let uid = this.members[i]
+          firebase.firestore().collection('users').doc(uid).get().then(function(doc) {
+              let grplist = doc.data().group_list
+              grplist.push(groupadded.id)
+              grplist = grplist.filter(item => item)
+              firebase.firestore().collection('users').doc(uid).update({group_list: grplist})
+          })
+        }
+      //clear out inputs after a submission
+        this.grpName = "";
+        this.members = "";
+        this.module = "";
+        console.log("saved members" + this.members)
+        console.log("saved")
       } else {
         alert("Please make sure all fields are filled!")
       }
       //add to user collection's group_list
-      for(var i=0; i < this.members.length; i++) {
-        let uid = this.members[i]
-        firebase.firestore().collection('users').doc(uid).get().then(function(doc) {
-            let grplist = doc.data().group_list
-            grplist.push(groupadded.id)
-            grplist = grplist.filter(item => item)
-            firebase.firestore().collection('users').doc(uid).update({group_list: grplist})
-        })
-      }
-      //clear out inputs after a submission
-      this.grpName = "";
-      this.members = "";
-      this.module = "";
     },
   },
   watch: {
