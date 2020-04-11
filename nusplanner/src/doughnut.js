@@ -27,9 +27,9 @@ export default{
           var self = this
           var done = 0
           var undone = 0
-          firebase.auth().onAuthStateChanged(function(user) {
+          firebase.auth().onAuthStateChanged(async function(user) {
             if (user) {
-              firebase.firestore().collection('users').doc(user.uid)
+              await firebase.firestore().collection('users').doc(user.uid)
               .collection('todo').get().then(querySnapShot => {
                 querySnapShot.forEach(doc => {
                   if (doc.data().done == false) {
@@ -41,7 +41,7 @@ export default{
                   }
                 })
               var total = done+undone
-              console.log("DONE HERE")
+              //console.log("DONE HERE")
               // console.log(undone)
               // console.log(total)
               self.chartdata.datasets[0].data.push(Math.round(done*100/total))

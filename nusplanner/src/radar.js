@@ -31,17 +31,17 @@ export default{
           var self = this;
           firebase.auth().onAuthStateChanged(function(user) {
             if (user) {
-              firebase.firestore().collection('users').doc(user.uid).get().then(function(doc) {
+              firebase.firestore().collection('users').doc(user.uid).get().then(async function(doc) {
                 var mods = doc.data().module_list;
                 for (let i in mods) {
                   var mod = mods[i];
-                  console.log(mod)
+                  //console.log(mod)
                   if (mod != "") {
-                    firebase.firestore().collection('module').doc(mod).get().then(function(doc) {
+                    await firebase.firestore().collection('module').doc(mod).get().then(function(doc) {
                       self.chartdata.labels.push(doc.data().module_code);
-                      console.log(doc.data().module_code)
+                      //console.log(doc.data().module_code)
                       self.chartdata.datasets[0].data.push(doc.data().event_list.length)
-                      console.log(doc.data().event_list.length)
+                      //console.log(doc.data().event_list.length)
                     })
                   }
                 }

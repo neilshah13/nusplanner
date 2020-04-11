@@ -300,6 +300,7 @@ form input {
   background: #f7f1f1;
   padding: 0 1.5em;
   font-size: initial;
+  width: 50%;
 }
 form button {
   padding: 0 1.3rem;
