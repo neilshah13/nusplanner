@@ -191,12 +191,10 @@ export default {
     },
     async getMods() {
       var user = firebase.auth().currentUser; //current user
-      console.log("Current user is " + user.uid)
       let uid= user.uid
       let modlist= []
       firebase.firestore().collection('users').doc(uid).get().then(function(doc) {
         modlist = doc.data().module_list
-        console.log(modlist)
       })
       this.modules = []
       let moddb = await firebase.firestore().collection('module').get()
@@ -262,11 +260,11 @@ export default {
               firebase.firestore().collection('users').doc(uid).update({group_list: grplist})
           })
         }
-      //clear out inputs after a submission
+        console.log("saved members" + this.members)
+        //clear out inputs after a submission
         this.grpName = "";
         this.members = "";
         this.module = "";
-        console.log("saved members" + this.members)
         console.log("saved")
       } else {
         alert("Please make sure all fields are filled!")

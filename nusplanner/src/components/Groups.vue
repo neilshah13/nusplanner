@@ -33,8 +33,13 @@ import firebase from "firebase";
   export default {
     data: () => ({
       groups: [],
-      colors: ['#1F7087',
-      '#952175']
+      colors: [
+        '#900C3F', //prune red
+        '#E4A74D', //mustard yellow
+        '#428071', //dark green
+        '#1F7087', //dark turqoise
+        '#952175' //dark purple
+      ]
     }),
     methods: {
       arrange(namelist) {
@@ -104,10 +109,5 @@ import firebase from "firebase";
 <style scoped>
 .cont {
     width: 50%;
-    /* color:       rgb(43, 130, 165),
-      rgb(129, 90, 160),
-      rgb(124, 53, 65),
-      rgb(201, 142, 55),
-      rgb(54, 129, 76) */
 }
 </style>
