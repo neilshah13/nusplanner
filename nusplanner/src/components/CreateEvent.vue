@@ -35,28 +35,23 @@
         <v-text-field outlined class= 'neweventfield' v-model="starttime" type="time" label="Start Time (Optional)"></v-text-field>
         <v-text-field outlined class= 'neweventfield' v-model="endtime" type="time" label="End Time (Optional)"></v-text-field>
 
+
       <v-card-text class='menu'> Module:
         <v-menu>
         <template v-slot:activator="{ on }">
-        <v-btn v-on="on" class="btn">
-          <span>{{ groups[group] }}</span>
+        <v-btn v-on="on" class="btn"  @click="displayCurrentMod" v-model="module">
+          <span>{{ module }}</span>
            <v-icon bottom>mdi-menu-down</v-icon>
           </v-btn>
           </template>
             <v-list>
-              <v-list-item @click="group='teamwork'">
-                <v-list-item-title>Team Work (BT3103)</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="group='teamhustle'">
-                <v-list-item-title>Team Hustle (IS3103)</v-list-item-title>
+              <v-list-item v-for = "mod in modules" v-bind:key="mod" @click="module = mod">
+                <v-list-item-title> {{ mod }} </v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
       </v-card-text>
 
-
-
-        
         <div class='colorfieldtitle'>
           <div class="mr-4">
           Please choose a color:
@@ -128,20 +123,18 @@
           <v-btn color="error" class="mr-4" @click="reset"> Reset Form </v-btn>
       </v-form>
       <v-form v-else-if="eventType== 'groupMeeting'" @submit.prevent="submittedGroupMeeting" ref="form" class="neweventform">
+
         <v-card-text class='menu'> Saved Group Name:
         <v-menu>
         <template v-slot:activator="{ on }">
-        <v-btn v-on="on" class="btn">
-          <span>{{ groups[group] }}</span>
+        <v-btn v-on="on" class="btn" @click = "displayCurrentGroups">
+          <span>{{ group }}</span>
            <v-icon bottom>mdi-menu-down</v-icon>
           </v-btn>
           </template>
             <v-list>
-              <v-list-item @click="group='teamwork'">
-                <v-list-item-title>Team Work (BT3103)</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="group='teamhustle'">
-                <v-list-item-title>Team Hustle (IS3103)</v-list-item-title>
+              <v-list-item v-for = "grp in groups" v-bind:key="grp" @click="group = grp">
+                <v-list-item-title> {{ grp }} </v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
@@ -238,9 +231,9 @@ export default {
       details: '',
       name: '',
       eventType: 'event', //default
-      group: 'teamwork',
+      group: 'Select Group',
       modules: [],
-
+      module: 'Select Module',
       eventTypes: {
         assignment: 'Assignment',
         event: 'Event',
@@ -251,43 +244,77 @@ export default {
         teamhustle: 'Team Hustle (IS3103)',
       },
     }),
-    // created: {
-    //   displayCurrentMod() {
-    //   //retrieve and display existing modules from user's module list
-    //   var user = firebase.auth().currentUser;
-    //   let currentmod = [];
-    //   firebase
-    //     .firestore()
-    //     .collection("users")
-    //     .doc(user.uid)
-    //     .get()
-    //     .then(function(doc) {
-    //       console.log("Ran this");
-    //       var user_modules = doc.data().module_list;
-    //       console.log(user_modules);
-    //       for (let i in user_modules) {
-    //         var mod = user_modules[i];
-    //         console.log(mod);
-    //         if (mod != "") {
-    //           firebase
-    //             .firestore()
-    //             .collection("module")
-    //             .doc(mod)
-    //             .get()
-    //             .then(function(doc) {
-    //               var modcode = doc.data().module_code;
-    //               console.log(modcode);
-    //               currentmod.push(modcode);
-    //             });
-    //         }
-    //       }
-    //     });
-    //   this.modules = currentmod;
-    //   console.log("Reached this code");
-    //   console.log(this.moduleList);
-    // }
-    // },
     methods: {
+    async displayCurrentMod() {
+      //retrieve and display existing modules from user's module list
+      await firebase.auth().onAuthStateChanged(user => {
+        console.log(user)
+        let currentmod = [];
+        firebase
+        .firestore()
+        .collection("users")
+        .doc(user.uid)
+        .get()
+        .then(function(doc) {
+          console.log("Ran this");
+          var user_modules = doc.data().module_list;
+          console.log(user_modules);
+          for (let i in user_modules) {
+            var mod = user_modules[i];
+            console.log(mod);
+            if (mod != "") {
+              firebase
+                .firestore()
+                .collection("module")
+                .doc(mod)
+                .get()
+                .then(function(doc) {
+                  var modcode = doc.data().module_code;
+                  currentmod.push(modcode);
+                });
+            }
+          }
+        });
+      this.modules = currentmod;
+      console.log("Reached this code");
+      console.log(this.modules);
+      });
+    },
+    async displayCurrentGroups() {
+      //retrieve and display existing modules from user's module list
+      await firebase.auth().onAuthStateChanged(user => {
+        console.log(user)
+        let currentgroups = [];
+        firebase
+        .firestore()
+        .collection("users")
+        .doc(user.uid)
+        .get()
+        .then(function(doc) {
+          console.log("Ran this");
+          var user_groups = doc.data().group_list;
+          console.log(user_groups);
+          for (let i in user_groups) {
+            var group = user_groups[i];
+            console.log(group);
+            if (group != "") {
+              firebase
+                .firestore()
+                .collection("group")
+                .doc(group)
+                .get()
+                .then(function(doc) {
+                  var groupname = doc.data().name + "(" + doc.data().module_id + ")";
+                  currentgroups.push(groupname);
+                });
+            }
+          }
+        });
+      this.groups = currentgroups;
+      console.log("Reached this code");
+      console.log(this.groups);
+      });
+    },
       updateGrp() {
         this.groupMembers = false;
       },
@@ -299,6 +326,12 @@ export default {
       },
       reset() {
         this.$refs.form.reset();
+        this.startdate = ""
+        this.enddate = ""
+        this.starttime = ""
+        this.endtime = ""
+        this.module = "Select Module"
+        this.group = "Select Group"
       },
       submittedEvent() {
         if (this.name && this.startdate && this.enddate) {  //somewhere here
@@ -369,7 +402,7 @@ export default {
             color: this.color,
             global: false,
             group_id: "fofcnxjlqwf", //change this
-            module_id: "jowfnflasdf", //change this
+            module_id: this.module, //change this
             type: 1, //1 == Event
             uid: user.uid, //change this
           })

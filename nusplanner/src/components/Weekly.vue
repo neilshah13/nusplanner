@@ -176,7 +176,11 @@
                 </div>
             </v-toolbar>
             <v-card-text>
-              <v-form> {{ selectedEvent.details }} </v-form>
+              <v-form>                 
+                <div align = "LEFT">
+                Module: {{selectedEvent.module_id}} <br> Details:{{ selectedEvent.details }} 
+                </div>
+              </v-form>
               <br>
               <br>
               <font size="1"> **This is a Global Event and cannot be changed! </font>
@@ -213,7 +217,13 @@
             </v-toolbar>
             <v-card-text>
               <v-form v-if = "selectedEvent.global == true"> {{ selectedEvent.details }} </v-form>
-              <v-form v-else-if="currentlyEditing !== selectedEvent.id && selectedEvent.global === false"> {{ selectedEvent.details }}</v-form>
+              <v-form v-else-if="currentlyEditing !== selectedEvent.id && selectedEvent.global === false">  
+                
+                <div align = "LEFT">
+                Module: {{selectedEvent.module_id}} <br> Details:{{ selectedEvent.details }} 
+                </div>
+                
+                </v-form>
               <v-form v-else>
                 <v-text-field class= 'neweventfield' v-model="selectedEvent.name" type="text" label="name"></v-text-field>
                 <v-text-field class= 'neweventfield' v-model="selectedEvent.details" type="text" label="Details (e.g. Meet at Jurong East MRT)"></v-text-field>
