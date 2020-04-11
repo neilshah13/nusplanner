@@ -80,7 +80,7 @@ export default {
         this.loading = false;
       }, 500);
     },
-    async displayNewlyAddedMod(v) {
+    displayNewlyAddedMod(v) {
       //adding missing modules   v = moduleCode
       var user = firebase.auth().currentUser;
       if (this.moduleList.includes(v) == false && v != null) {
@@ -114,7 +114,7 @@ export default {
           });
       }
     },
-    async deleteModFromList(mod) {
+    deleteModFromList(mod) {
       var user = firebase.auth().currentUser;
       let index = this.moduleList.indexOf(mod);
       this.moduleList.splice(index,1);
@@ -146,7 +146,7 @@ export default {
         })
       },
 
-    async fetchModules() {
+    fetchModules() {
       //update available modules from firebase database for autocomplete searchbar
       firebase
         .firestore()
@@ -158,11 +158,11 @@ export default {
           });
         });
     },
-    async displayCurrentMod() {
+    displayCurrentMod() {
       //retrieve and display existing modules from user's module list
       var user = firebase.auth().currentUser;
       let currentmod = [];
-      await firebase
+       firebase
         .firestore()
         .collection("users")
         .doc(user.uid)
