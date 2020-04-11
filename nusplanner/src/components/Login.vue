@@ -47,6 +47,7 @@ export default {
   },
   methods: {
     submit() {
+      var self = this;
       var email = document.forms["signup"]["email"].value;
       var password = document.forms["signup"]["password"].value;
       firebase
@@ -56,11 +57,23 @@ export default {
           data.$router.replace({ name: this.user.displayName });
         })
         .catch(err => {
-          this.error = err.message;
+          //this.error = err.message;
+          var errorCode = err.code;
+          if (errorCode === 'auth/wrong-password') {
+            alert('Wrong password.');
+          } else if (errorCode === 'auth/invalid-email') {
+            alert('Invalid Email.');
+          } else if (errorCode === 'auth/user-not-found') {
+            alert('User not found.');
+          }
         });
-      console.log("Succesful login");
-      this.$router.push({ path: "/home" });
-      console.log("pushed to home page");
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          console.log("Successful login");
+          self.$router.push({ path: "/home" });
+          console.log("pushed to home page");
+        }
+      })
     }
   }
 };

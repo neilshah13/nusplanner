@@ -48,7 +48,7 @@ export default{
               self.chartdata.datasets[0].data.push(Math.round(undone*100/total))
               self.options.title.text = Math.round(done*100/total) + '% of Tasks Completed'
               self.renderChart(self.chartdata, self.options)
-               })
+              })
             }
           })
         }

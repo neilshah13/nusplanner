@@ -7,8 +7,9 @@
       src="https://lh3.googleusercontent.com/proxy/6_4hiPG1zpcr-h5C4h8M0pGIqQYxp1hUCoWJXaf_E2gk_MmGWsMtzNHPPBuYg_PdxPnK4DR5Cdm8AoaWa4UiXZdOThEJZDoXXSECzyFHedCLWdgTWTVLpMCGhBQ4LuLeM6_0IoXcYZxsqMTmsa5R"
       dense
     >
-      <v-toolbar-title class="col-sm-3">Missing a module ? &nbsp;&nbsp;
-      <v-icon class="col-sm-3"> mdi-magnify</v-icon>
+      <v-toolbar-title class="col-sm-3">
+        Missing a module ? &nbsp;&nbsp;
+        <v-icon class="col-sm-3">mdi-magnify</v-icon>
       </v-toolbar-title>
       <div class="col-sm-4">
         <v-autocomplete
@@ -39,12 +40,12 @@
               v-for="mod in moduleList"
               :key="mod"
             >
-            <v-checkbox :label="mod" v-model="selectedModules" :value="mod" class="labels" > </v-checkbox>
-            <v-btn icon @click="deleteModFromList(mod)">
-            <v-icon>mdi-delete</v-icon>
-            </v-btn>
+              <v-checkbox :label="mod" v-model="selectedModules" :value="mod" class="labels"></v-checkbox>
+              <v-btn icon @click="deleteModFromList(mod)">
+                <v-icon>mdi-delete</v-icon>
+              </v-btn>
             </v-flex>
-        </v-layout>
+          </v-layout>
         </div>
       </h1>
     </div>
@@ -117,34 +118,34 @@ export default {
     deleteModFromList(mod) {
       var user = firebase.auth().currentUser;
       let index = this.moduleList.indexOf(mod);
-      this.moduleList.splice(index,1);
+      this.moduleList.splice(index, 1);
       firebase
         .firestore()
         .collection("module")
         .where("module_code", "==", mod)
         .get()
-        .then(function(querySnapshot){
-        querySnapshot.forEach(function(doc){
-          var modID = doc.id;
-          firebase
-            .firestore()
-            .collection("users")
-            .doc(user.uid)
-            .get()
-            .then(function(doc) {
-          var nmodlist = doc.data().module_list
-          var index = nmodlist.indexOf(modID);
-          if (index !== -1) nmodlist.splice(index, 1);
-          nmodlist = nmodlist.filter(item => item)
-          firebase
-            .firestore()
-            .collection("users")
-            .doc(user.uid)
-            .update({ module_list: nmodlist})
-          })
-          })
-        })
-      },
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
+            var modID = doc.id;
+            firebase
+              .firestore()
+              .collection("users")
+              .doc(user.uid)
+              .get()
+              .then(function(doc) {
+                var nmodlist = doc.data().module_list;
+                var index = nmodlist.indexOf(modID);
+                if (index !== -1) nmodlist.splice(index, 1);
+                nmodlist = nmodlist.filter(item => item);
+                firebase
+                  .firestore()
+                  .collection("users")
+                  .doc(user.uid)
+                  .update({ module_list: nmodlist });
+              });
+          });
+        });
+    },
 
     fetchModules() {
       //update available modules from firebase database for autocomplete searchbar
@@ -160,9 +161,16 @@ export default {
     },
     displayCurrentMod() {
       //retrieve and display existing modules from user's module list
+<<<<<<< HEAD
       var user = firebase.auth().currentUser;
       let currentmod = [];
        firebase
+=======
+      await firebase.auth().onAuthStateChanged(user => {
+        console.log(user)
+        let currentmod = [];
+        firebase
+>>>>>>> upstream/master
         .firestore()
         .collection("users")
         .doc(user.uid)
@@ -191,6 +199,7 @@ export default {
       this.moduleList = currentmod;
       console.log("Reached this code");
       console.log(this.moduleList);
+      });
     }
   },
   created() {
