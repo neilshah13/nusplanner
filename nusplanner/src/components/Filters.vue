@@ -79,6 +79,7 @@ export default {
   max-width: 2000px;
   max-height: 70px;
   color:rgb(42, 68, 99);
+  display: inline-block;
 }
 
 /*
