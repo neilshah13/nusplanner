@@ -123,20 +123,18 @@
           <v-btn color="error" class="mr-4" @click="reset"> Reset Form </v-btn>
       </v-form>
       <v-form v-else-if="eventType== 'groupMeeting'" @submit.prevent="submittedGroupMeeting" ref="form" class="neweventform">
+
         <v-card-text class='menu'> Saved Group Name:
         <v-menu>
         <template v-slot:activator="{ on }">
-        <v-btn v-on="on" class="btn">
-          <span>{{ groups[group] }}</span>
+        <v-btn v-on="on" class="btn" @click = "displayCurrentGroups">
+          <span>{{ group }}</span>
            <v-icon bottom>mdi-menu-down</v-icon>
           </v-btn>
           </template>
             <v-list>
-              <v-list-item @click="group='teamwork'">
-                <v-list-item-title>Team Work (BT3103)</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="group='teamhustle'">
-                <v-list-item-title>Team Hustle (IS3103)</v-list-item-title>
+              <v-list-item v-for = "grp in groups" v-bind:key="grp" @click="group = grp">
+                <v-list-item-title> {{ grp }} </v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
@@ -233,9 +231,9 @@ export default {
       details: '',
       name: '',
       eventType: 'event', //default
-      group: 'teamwork',
+      group: 'Select Group',
       modules: [],
-      module: 'NA',
+      module: 'Select Module',
       eventTypes: {
         assignment: 'Assignment',
         event: 'Event',
@@ -282,6 +280,41 @@ export default {
       console.log(this.modules);
       });
     },
+    async displayCurrentGroups() {
+      //retrieve and display existing modules from user's module list
+      await firebase.auth().onAuthStateChanged(user => {
+        console.log(user)
+        let currentgroups = [];
+        firebase
+        .firestore()
+        .collection("users")
+        .doc(user.uid)
+        .get()
+        .then(function(doc) {
+          console.log("Ran this");
+          var user_groups = doc.data().group_list;
+          console.log(user_groups);
+          for (let i in user_groups) {
+            var group = user_groups[i];
+            console.log(group);
+            if (group != "") {
+              firebase
+                .firestore()
+                .collection("group")
+                .doc(group)
+                .get()
+                .then(function(doc) {
+                  var groupname = doc.data().name + "(" + doc.data().module_id + ")";
+                  currentgroups.push(groupname);
+                });
+            }
+          }
+        });
+      this.groups = currentgroups;
+      console.log("Reached this code");
+      console.log(this.groups);
+      });
+    },
       updateGrp() {
         this.groupMembers = false;
       },
@@ -297,7 +330,8 @@ export default {
         this.enddate = ""
         this.starttime = ""
         this.endtime = ""
-        this.module = "NA"
+        this.module = "Select Module"
+        this.group = "Select Group"
       },
       submittedEvent() {
         if (this.name && this.startdate && this.enddate) {  //somewhere here
