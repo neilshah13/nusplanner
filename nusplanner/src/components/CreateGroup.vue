@@ -237,8 +237,8 @@ export default {
       // const index = this.indexWhere(this.users, item => item.name == membername)
       // let member = this.users.indexOf(membername)
       this.members.splice(membername, 1);
-      console.log(this.membernames)
-      console.log(this.members)
+      // console.log(this.membernames)
+      // console.log(this.members)
     },
     async addGroups() {
       this.$emit('update-dialog')
@@ -260,12 +260,12 @@ export default {
               firebase.firestore().collection('users').doc(uid).update({group_list: grplist})
           })
         }
-        console.log("saved members" + this.members)
+        // console.log("saved members" + this.members)
         //clear out inputs after a submission
         this.grpName = "";
         this.members = "";
         this.module = "";
-        console.log("saved")
+        // console.log("saved")
       } else {
         alert("Please make sure all fields are filled!")
       }

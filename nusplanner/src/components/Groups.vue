@@ -15,11 +15,9 @@
                 <v-card-text align="left">
                   {{ arrange(group.usernames) }}
                 </v-card-text>
-                <!-- <v-card-text v-text="group.usernames" align="left"></v-card-text> -->
               </div>
             </div>
           </v-card>
-          <!-- </v-card> -->
         </v-col>
       </v-row>
     </v-container>
