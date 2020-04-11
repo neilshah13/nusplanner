@@ -172,6 +172,7 @@ txt {
   font-size: 20px;
   padding: 0;
   transform: scale(0.8);
+  cursor: pointer;
 }
 btn {
   background-color: rgb(42, 68, 99);
