@@ -38,7 +38,49 @@ export default {
             // }
 
             let count = new Array(7).fill(0);
-            firebase.firestore().collection('event').get().then(querySnapShot => {
+
+            var self = this;
+            firebase.auth().onAuthStateChanged(function(user) {
+                if (user) {
+                    firebase.firestore().collection('users').doc(user.uid).get().then(async function(doc) {
+                        var events = doc.data().event_list;
+                        for (let i in events) {
+                            var e = events[i];
+                            console.log("EVENTS")
+                            console.log(e)
+                            if (e != "") {
+                                await firebase.firestore().collection('event').doc(e).get().then(function(doc) {
+                                    let deadline = doc.data().enddate
+                                    if (deadline == week[0]) {
+                                        count[0]++
+                                    }
+                                    if (deadline == week[1]) {
+                                        count[1]++
+                                    }
+                                    if (deadline == week[2]) {
+                                        count[2]++
+                                    }
+                                    if (deadline == week[3]) {
+                                        count[3]++
+                                    }
+                                    if (deadline == week[4]) {
+                                        count[4]++
+                                    }
+                                    if (deadline == week[5]) {
+                                        count[5]++
+                                    }
+                                    if (deadline == week[6]) {
+                                        count[6]++
+                                    }
+                                })
+                                self.chartdata.datasets[0].data = count
+                                self.renderChart(self.chartdata, self.options)
+                            }
+                        }
+                    })
+                }
+            })
+            /*firebase.firestore().collection('event').get().then(querySnapShot => {
                 querySnapShot.forEach(doc => {
                     let deadline = doc.data().enddate
                     if (deadline == week[0]) {
@@ -65,7 +107,7 @@ export default {
                 })
                 this.chartdata.datasets[0].data = count
                 this.renderChart(this.chartdata, this.options)
-            })
+            })*/
         }
     },
     created() {

@@ -158,6 +158,9 @@ export default {
   opacity: 1;
 }
 
+.header-login-signup .header-limiter a {
+  cursor: pointer;
+}
 /* The sign up button */
 
 .header-login-signup .header-limiter ul li:last-child {
