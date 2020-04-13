@@ -90,6 +90,23 @@
         <v-text-field outlined class= 'neweventfield' v-model="name" type="text" label="Assignment Name"></v-text-field>
         <v-text-field outlined class= 'neweventfield' v-model="details" type="text" label="Details (e.g. Due 2359, submit in PDF format)"></v-text-field>
         <v-text-field outlined class= 'neweventfield' v-model="enddate" type="date" label="Due Date"></v-text-field>
+
+        <v-card-text class='menu'> Module:
+                <v-menu>
+                <template v-slot:activator="{ on }">
+                <v-btn v-on="on" class="btn"  @click="displayCurrentMod" v-model="module">
+                  <span>{{ module }}</span>
+                  <v-icon bottom>mdi-menu-down</v-icon>
+                  </v-btn>
+                  </template>
+                    <v-list>
+                      <v-list-item v-for = "mod in modules" v-bind:key="mod" @click="module = mod">
+                        <v-list-item-title> {{ mod }} </v-list-item-title>
+                      </v-list-item>
+                    </v-list>
+                  </v-menu>
+              </v-card-text>
+
           <div class='colorfieldtitle'>
           <div class="mr-4">
           Please choose a color:
@@ -378,7 +395,8 @@ export default {
         this.startdate = '',
         this.enddate = '',
         this.starttime = '',
-        this.endtime = ''
+        this.endtime = '',
+        this.module = 'Select Module'
       },
       async addEvent () {
         if (this.name && this.startdate && this.enddate) { //Takes in as long as there is a date
@@ -428,7 +446,7 @@ export default {
                 color: this.color,
                 global: false,
                 group_id: "fofcnxjlqwf", //change this
-                module_id: "jowfnflasdf", //change this
+                module_id: this.module, //change this
                 type: 2, //2 == Assignment
                 uid: user.uid, //change this
               })
