@@ -466,7 +466,7 @@ export default {
       filterEvents() {
         let events = []
         this.allEvents.forEach(eventData => {
-          if (this.selectedType.includes(eventData.type.toString()) && this.selectedModules.includes(eventData.module_id)) {
+          if (this.selectedType.includes(eventData.type.toString()) && (this.selectedModules.includes(eventData.module_id) || eventData.module_id === "Select Module")) {
             events.push(eventData)
           }
         })
