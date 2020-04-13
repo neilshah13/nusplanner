@@ -188,7 +188,11 @@
             <v-card-text>
               <v-form>                 
                 <div align = "LEFT">
-                <b> <u> {{selectedEvent.module_id}} </u> </b> <br> Details:{{ selectedEvent.details }} 
+                <b> <u> {{selectedEvent.module_id}} </u> </b> 
+                <br> 
+                <u> Details </u> 
+                <br> 
+                {{ selectedEvent.details }} 
                 </div>
               </v-form>
               <br>
@@ -230,21 +234,24 @@
               <v-form v-else-if="currentlyEditing !== selectedEvent.id && selectedEvent.global === false">  
                 
                 <div align = "LEFT" v-if="selectedEvent.module_id !== 'Select Module'" >
-                  <b> <u> {{selectedEvent.module_id}} </u> </b> <br> Details:{{ selectedEvent.details }} 
+                  <b> <u> {{selectedEvent.module_id}} </u> </b> 
+                  <br> 
+                  <u> Details </u> 
+                  <br> 
+                  {{ selectedEvent.details }} 
                 </div>
                 <div align = "LEFT" v-else>
                   <b> <u> Personal Event </u> </b> <br> Details:{{ selectedEvent.details }} 
                 </div>
                 
                 </v-form>
-              <v-form v-else>
+              <v-form ref="form" class="neweventform" v-else>
                 <v-text-field class= 'neweventfield' v-model="selectedEvent.name" type="text" label="name"></v-text-field>
                 <v-text-field class= 'neweventfield' v-model="selectedEvent.details" type="text" label="Details (e.g. Meet at Jurong East MRT)"></v-text-field>
                 <v-text-field class= 'neweventfield' v-model="selectedEvent.startdate" type="date" label="Start Date"></v-text-field>
                 <v-text-field class= 'neweventfield' v-model="selectedEvent.enddate" type="date" label="End Date"></v-text-field>
-                <v-text-field class= 'neweventfield' v-model="selectedEvent.starttime" type="time" label="Start Time (Optional)"></v-text-field>
-                <v-text-field class= 'neweventfield' v-model="selectedEvent.endtime" type="time" label="End Time (Optional)"></v-text-field>
-                
+                <v-text-field class= 'neweventfield'  v-model="selectedEvent.starttime" type="time" label="(Optional) Start Time [hh:mm AM/PM] "></v-text-field>
+                <v-text-field class= 'neweventfield' v-model="selectedEvent.endtime" type="time" label="(Optional) End Time [hh:mm AM/PM] "></v-text-field>
                 <div class='colorfieldtitle'>
                   <div class="mr-4">
                   Please choose a color:
@@ -564,5 +571,8 @@ export default {
   max-width: 2000px;
   max-height: 70px;
   color:rgb(42, 68, 99);
+}
+.neweventform {
+  display: block;
 }
 </style>
