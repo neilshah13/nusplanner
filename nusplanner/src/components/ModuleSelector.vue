@@ -72,6 +72,9 @@ export default {
     },
     selectedModules() {
       this.$root.$emit('filter-module', this.selectedModules)
+    },
+    moduleList() {
+      this.$root.$emit('announcement-module', this.moduleList)
     }
   },
   methods: {
