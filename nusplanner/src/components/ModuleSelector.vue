@@ -62,12 +62,16 @@ export default {
       search: null,
       select: null,
       moduleList: [],
-      modules: [],
+      allModules: [],
+      selectedModules: [],
     };
   },
   watch: {
     search(val) {
       val && val !== this.select && this.querySelections(val);
+    },
+    selectedModules() {
+      this.$root.$emit('filter-module', this.selectedModules)
     }
   },
   methods: {
@@ -87,7 +91,7 @@ export default {
       if (this.moduleList.includes(v) == false && v != null) {
         //if module is not in user's module list
         this.moduleList.push(v); //adding module_code into moduleList
-        console.log(v);
+        this.selectedModules.push(v);
         firebase
           .firestore()
           .collection("module")
@@ -95,7 +99,6 @@ export default {
           .get()
           .then(function(querySnapshot) {
             querySnapshot.forEach(function(doc) {
-              console.log(doc.id, " => ", doc.data());
               var modID = doc.id;
               firebase
                 .firestore()
@@ -118,8 +121,10 @@ export default {
     },
     deleteModFromList(mod) {
       var user = firebase.auth().currentUser;
-      let index = this.moduleList.indexOf(mod);
-      this.moduleList.splice(index, 1);
+      let ml_index = this.moduleList.indexOf(mod);
+      let sm_index = this.selectedModules.indexOf(mod)
+      this.moduleList.splice(ml_index, 1);
+      this.selectedModules.splice(sm_index, 1);
       firebase
         .firestore()
         .collection("module")
@@ -156,7 +161,7 @@ export default {
         .get()
         .then(querySnapShot => {
           querySnapShot.forEach(doc => {
-            this.modules.push(doc.data().module_code);
+            this.allModules.push(doc.data().module_code);
           });
         });
     },
@@ -171,12 +176,9 @@ export default {
         .doc(user.uid)
         .get()
         .then(function(doc) {
-          console.log("Ran this");
           var user_modules = doc.data().module_list;
-          console.log(user_modules);
           for (let i in user_modules) {
             var mod = user_modules[i];
-            console.log(mod);
             if (mod != "") {
               firebase
                 .firestore()
@@ -185,15 +187,13 @@ export default {
                 .get()
                 .then(function(doc) {
                   var modcode = doc.data().module_code;
-                  console.log(modcode);
                   currentmod.push(modcode);
                 });
             }
           }
         });
       this.moduleList = currentmod;
-      console.log("Reached this code");
-      console.log(this.moduleList);
+      this.selectedModules = currentmod;
       });
     }
   },

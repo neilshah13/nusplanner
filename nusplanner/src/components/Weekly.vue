@@ -50,7 +50,17 @@
     <v-row justify="center" no gutters>
       <v-col>
        <!-- filter bar -->
-      <filterbar :userEvents = "allEvents" @update-filtered-events='getFilteredEvents'/>
+        <div class = "filterbar">
+          <v-container>
+          <v-row justify="space-around">
+            <strong> Filter By: </strong>
+            <v-checkbox value="2" v-model="selectedType" label="Assignment" color="rgb(42, 68, 99)"></v-checkbox>
+            <v-checkbox value="4" v-model="selectedType" label="Exam" color="rgb(42, 68, 99)"></v-checkbox>
+            <v-checkbox value="3" v-model="selectedType" label="Meeting" color="rgb(42, 68, 99)"></v-checkbox>
+            <v-checkbox value="1" v-model="selectedType" label="Others" color="rgb(42, 68, 99)"></v-checkbox>
+          </v-row>
+          </v-container>
+        </div>
       </v-col>
     </v-row>
 
@@ -287,15 +297,12 @@ import firebase from "firebase";
 import CreateEvent from "./CreateEvent.vue"
 import CreateGroup from "./CreateGroup.vue"
 import ColorPicker from 'vue-color-picker-wheel';
-import database from "../main.js"
-import filterbar from "./Filters.vue"
 
 export default {
         components:{
         createvent: CreateEvent,
         creategroup: CreateGroup,
         ColorPicker,
-        filterbar
       },
     data: () => ({
       today: new Date().toISOString().substr(0, 10),
@@ -328,10 +335,23 @@ export default {
         groupMeeting: 'Group Meeting',
       },
       events: [],
-      allEvents: []
+      allEvents: [],
+      selectedType: ["1", "2", "3", "4"],
+      selectedModules: []
     }),
-    created() {
+    mounted() {
       this.getEvents()
+      this.$root.$on('filter-module', data => {
+        this.filterByModule(data)
+      })
+    },
+    watch: {
+      selectedType() {
+        this.filterEvents()
+      },
+      selectedModules() {
+        this.filterEvents()
+      }
     },
     computed: {
       title () {
@@ -438,8 +458,19 @@ export default {
           : `${a.getFullYear()}-${a.getMonth() + 1}-${a.getDate()}`
       },
 
-      getFilteredEvents(ev) {
-        this.events = ev;
+      filterByModule(arr) {
+        this.selectedModules = arr;
+        this.filterEvents();
+      },
+
+      filterEvents() {
+        let events = []
+        this.allEvents.forEach(eventData => {
+          if (this.selectedType.includes(eventData.type.toString()) && this.selectedModules.includes(eventData.module_id)) {
+            events.push(eventData)
+          }
+        })
+        this.events = events
       },
 
       async getEvents () {
@@ -496,7 +527,7 @@ export default {
           var index = eventlist.indexOf(ev.id);
           if (index !== -1) eventlist.splice(index, 1); //removing event from users' event_list
           eventlist = eventlist.filter(item => item)
-          database.collection('users').doc(user.uid).update({event_list:eventlist})
+          firebase.firestore().collection('users').doc(user.uid).update({event_list:eventlist})
       }) 
           this.selectedOpen = false
           this.getEvents()
@@ -527,5 +558,11 @@ export default {
 }
 .menu {
   font-size: 15px;
+}
+.filterbar {
+  background-color:aliceblue;
+  max-width: 2000px;
+  max-height: 70px;
+  color:rgb(42, 68, 99);
 }
 </style>
