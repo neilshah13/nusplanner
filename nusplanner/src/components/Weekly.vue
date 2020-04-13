@@ -178,7 +178,7 @@
             <v-card-text>
               <v-form>                 
                 <div align = "LEFT">
-                Module: {{selectedEvent.module_id}} <br> Details:{{ selectedEvent.details }} 
+                <b> <u> {{selectedEvent.module_id}} </u> </b> <br> Details:{{ selectedEvent.details }} 
                 </div>
               </v-form>
               <br>
@@ -219,8 +219,11 @@
               <v-form v-if = "selectedEvent.global == true"> {{ selectedEvent.details }} </v-form>
               <v-form v-else-if="currentlyEditing !== selectedEvent.id && selectedEvent.global === false">  
                 
-                <div align = "LEFT">
-                Module: {{selectedEvent.module_id}} <br> Details:{{ selectedEvent.details }} 
+                <div align = "LEFT" v-if="selectedEvent.module_id !== 'Select Module'" >
+                  <b> <u> {{selectedEvent.module_id}} </u> </b> <br> Details:{{ selectedEvent.details }} 
+                </div>
+                <div align = "LEFT" v-else>
+                  <b> <u> Personal Event </u> </b> <br> Details:{{ selectedEvent.details }} 
                 </div>
                 
                 </v-form>
