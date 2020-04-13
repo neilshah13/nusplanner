@@ -79,7 +79,7 @@ export default {
       this.loading = true;
       // Simulated ajax query
       setTimeout(() => {
-        this.items = this.modules.filter(e => {
+        this.items = this.allModules.filter(e => {
           return (e || "").toLowerCase().indexOf((v || "").toLowerCase()) > -1;
         })
         this.loading = false;
@@ -91,7 +91,9 @@ export default {
       if (this.moduleList.includes(v) == false && v != null) {
         //if module is not in user's module list
         this.moduleList.push(v); //adding module_code into moduleList
-        this.selectedModules.push(v);
+        if (!this.selectedModules.includes(v)) {
+          this.selectedModules.push(v)
+        }
         firebase
           .firestore()
           .collection("module")
