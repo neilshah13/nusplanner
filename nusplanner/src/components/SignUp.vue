@@ -109,7 +109,7 @@ export default {
             .doc(user.uid)
             .collection("todo")
           todoref.doc().set({
-            label:"Testing",
+            label:"Add your tasks here!",
             done: false,
             edit: false,
             uid: user.uid
