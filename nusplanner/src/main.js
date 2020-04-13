@@ -13,7 +13,6 @@ const router = new VueRouter({
     mode: 'history'
 });
 
-/*
 router.beforeEach((to, from, next) => {
 
     if (to.matched.some(record => record.meta.auth)) {
@@ -29,9 +28,7 @@ router.beforeEach((to, from, next) => {
     } else if (to.matched.some(record => record.meta.guest)) {
         firebase.auth().onAuthStateChanged(user => {
             if (user) {
-                next({
-                    path: "/",
-                })
+                next()
             } else {
                 next()
             }
@@ -42,7 +39,7 @@ router.beforeEach((to, from, next) => {
     }
 
 })
-*/
+
 
 
 

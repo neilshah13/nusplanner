@@ -78,7 +78,7 @@ export default {
             //console.log(doc.data().name)
             user.displayName = doc.data().name
           })
-          //console.log("pushed to home page");
+          console.log("pushed to home page");
         }
       })
     }
