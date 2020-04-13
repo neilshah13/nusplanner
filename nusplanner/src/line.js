@@ -18,6 +18,14 @@ export default {
             title: {
                 display: true,
                 text: 'Check your deadlines for the week'
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        stepSize: 1
+                    }
+                }]
             }
         }
     }),

@@ -67,10 +67,17 @@ export default {
             alert('User not found.');
           }
         });
-      firebase.auth().onAuthStateChanged(function(user) {
+      firebase.auth().onAuthStateChanged(async function(user) {
         if (user) {
+          user.displayName = null
           console.log("Successful login");
           self.$router.push({ path: "/home" });
+          //console.log(user.uid)
+          await firebase.firestore().collection("users").doc(user.uid).get().then(function(doc) {
+            //console.log("HI I AM")
+            //console.log(doc.data().name)
+            user.displayName = doc.data().name
+          })
           console.log("pushed to home page");
         }
       })

@@ -7,10 +7,7 @@ import Dashboard from './components/Dashboard.vue';
 export default [
     {
         path: '/',
-        redirect: '/login',
-        meta: {
-            guest: true
-        }
+        redirect: '/home'
     },
     {
         path: '/home',
@@ -31,7 +28,10 @@ export default [
     {
         path: '/signup',
         name: 'signup',
-        component: SignUp
+        component: SignUp,
+        meta: {
+            guest: true
+        }
     },
     {
         path: '/groups',
