@@ -242,8 +242,8 @@
                 <v-text-field class= 'neweventfield' v-model="selectedEvent.details" type="text" label="Details (e.g. Meet at Jurong East MRT)"></v-text-field>
                 <v-text-field class= 'neweventfield' v-model="selectedEvent.startdate" type="date" label="Start Date"></v-text-field>
                 <v-text-field class= 'neweventfield' v-model="selectedEvent.enddate" type="date" label="End Date"></v-text-field>
-                <v-text-field class= 'neweventfield' v-model="selectedEvent.starttime" type="time" label="Start Time (Optional)"></v-text-field>
-                <v-text-field class= 'neweventfield' v-model="selectedEvent.endtime" type="time" label="End Time (Optional)"></v-text-field>
+                <v-text-field class= 'neweventfield' v-model="selectedEvent.starttime" type="time" label="(Optional) Start Time [hh:mm AM/PM] "></v-text-field>
+                <v-text-field class= 'neweventfield' v-model="selectedEvent.endtime" type="time" label="(Optional) End Time [hh:mm AM/PM] "></v-text-field>
                 
                 <div class='colorfieldtitle'>
                   <div class="mr-4">
