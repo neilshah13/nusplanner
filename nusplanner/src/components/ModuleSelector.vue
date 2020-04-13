@@ -1,59 +1,59 @@
 <template>
   <div>
+    
     <v-toolbar
       dark
-      color="teal"
-      class="mx-auto"
+      color="blue darken-3"
       src="https://lh3.googleusercontent.com/proxy/6_4hiPG1zpcr-h5C4h8M0pGIqQYxp1hUCoWJXaf_E2gk_MmGWsMtzNHPPBuYg_PdxPnK4DR5Cdm8AoaWa4UiXZdOThEJZDoXXSECzyFHedCLWdgTWTVLpMCGhBQ4LuLeM6_0IoXcYZxsqMTmsa5R"
       dense
     >
-      <v-toolbar-title class="col-sm-3">
-        Missing a module ? &nbsp;&nbsp;
-        <v-icon class="col-sm-3">mdi-magnify</v-icon>
-      </v-toolbar-title>
-      <div class="col-sm-4">
-        <v-autocomplete
-          v-model="select"
-          :loading="loading"
-          :items="items"
-          :search-input.sync="search"
-          cache-items
-          flat
-          hide-no-data
-          hide-details
-          label="Select Module"
-          solo-inverted
-          dense
-          clearable="clear-icon"
-        ></v-autocomplete>
-      </div>
+      <v-toolbar-title class="col-sm-2"> Missing a module ? &nbsp; </v-toolbar-title>      
+      
+      <v-autocomplete
+        v-model="select"
+        :loading="loading"
+        :items="items"
+        :search-input.sync="search"
+        class="col-sm-3"
+        cache-items
+        flat
+        hide-no-data
+        hide-details
+        label: append-icon = mdi-magnify
+        solo-inverted
+        dense
+      ></v-autocomplete>
+  
       <v-btn icon @click=" displayNewlyAddedMod(select)">
         <v-icon>mdi-plus</v-icon>
-      </v-btn>
+      </v-btn> 
+
     </v-toolbar>
-    <div class="col-sm-7">
-      <h1>
-        <div>
-          <v-layout class="whitebox">
-            <v-flex
-              class="d-flex justify-content-between bg-secondary mb-3"
-              v-for="mod in moduleList"
-              :key="mod"
-            >
-              <v-checkbox :label="mod" v-model="selectedModules" :value="mod" class="labels"></v-checkbox>
-              <v-btn icon @click="deleteModFromList(mod)">
-                <v-icon>mdi-delete</v-icon>
-              </v-btn>
-            </v-flex>
-          </v-layout>
-        </div>
-      </h1>
-    </div>
+  
+    <h1>
+      <div class="d-flex">
+        <v-layout class="whitebox">
+          <v-flex
+            class="d-flex bg-secondary col-sm-2 "
+            v-for="mod in moduleList"
+            :key="mod"
+          >
+            <v-checkbox :label="mod" v-model="selectedModules" :value="mod" 
+            append-icon="mdi-delete" class = "ml-auto" @click:append="deleteModFromList(mod)">
+            </v-checkbox>
+          </v-flex>
+        </v-layout>
+      </div>
+    </h1>
+  
   </div>
 </template>
-// 
+
+
 <script>
 import firebase from "firebase";
+// import ClickOutside from 'vue-click-outside'
+
 export default {
   data() {
     return {
@@ -62,7 +62,7 @@ export default {
       search: null,
       select: null,
       moduleList: [],
-      modules: []
+      modules: [],
     };
   },
   watch: {
@@ -77,11 +77,11 @@ export default {
       setTimeout(() => {
         this.items = this.modules.filter(e => {
           return (e || "").toLowerCase().indexOf((v || "").toLowerCase()) > -1;
-        });
+        })
         this.loading = false;
       }, 500);
     },
-    async displayNewlyAddedMod(v) {
+    displayNewlyAddedMod(v) {
       //adding missing modules   v = moduleCode
       var user = firebase.auth().currentUser;
       if (this.moduleList.includes(v) == false && v != null) {
@@ -111,11 +111,12 @@ export default {
                     .doc(user.uid)
                     .update({ module_list: modulelist });
                 });
+              this.loading = false
             });
           });
       }
     },
-    async deleteModFromList(mod) {
+    deleteModFromList(mod) {
       var user = firebase.auth().currentUser;
       let index = this.moduleList.indexOf(mod);
       this.moduleList.splice(index, 1);
@@ -147,7 +148,7 @@ export default {
         });
     },
 
-    async fetchModules() {
+    fetchModules() {
       //update available modules from firebase database for autocomplete searchbar
       firebase
         .firestore()
@@ -159,9 +160,9 @@ export default {
           });
         });
     },
-    async displayCurrentMod() {
+    displayCurrentMod() {
       //retrieve and display existing modules from user's module list
-      await firebase.auth().onAuthStateChanged(user => {
+      firebase.auth().onAuthStateChanged(user => {
         console.log(user)
         let currentmod = [];
         firebase
