@@ -421,7 +421,7 @@ export default {
             group_id: "fofcnxjlqwf", //change this
             module_id: this.module, //change this
             type: 1, //1 == Event
-            uid: user.uid, //change this
+            uid: user.uid,
           })
         await this.pushEventintoUsersFirebase(eventAdded.id);
         }
@@ -447,7 +447,7 @@ export default {
                 group_id: "fofcnxjlqwf", //change this
                 module_id: this.module, //change this
                 type: 2, //2 == Assignment
-                uid: user.uid, //change this
+                uid: user.uid, 
               })
               this.pushEventintoUsersFirebase(eventAdded.id);
             }
@@ -473,7 +473,7 @@ export default {
                 group_id: "fofcnxjlqwf", //change this
                 module_id: "jowfnflasdf", //change this
                 type: 2, //2 == Assignment
-                uid: user.uid, //change this
+                uid: user.uid,
               })
               var eventlist;
               firebase.firestore().collection('users').doc(user.uid).get().then(function(doc) {
