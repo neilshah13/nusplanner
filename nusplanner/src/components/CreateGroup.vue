@@ -202,16 +202,14 @@ export default {
         let users = [];
         let usernames = [];
         let module_id = "";
-        console.log(this.module);
         await firebase
           .firestore()
-          .collection("modules")
+          .collection("module")
           .where("module_code", "==", this.module)
           .get()
           .then(function(qs) {
-            console.log(qs);
             qs.forEach(function(document) {
-              console.log(document.id, " => ", document.data());
+              module_id = document.id;
               firebase
                 .firestore()
                 .collection("users")
@@ -225,6 +223,7 @@ export default {
                     if (user.name != "") {
                       users.push(user);
                       usernames.push(user.name);
+                      console.log(user.name);
                     }
                   });
                 });
@@ -232,8 +231,6 @@ export default {
           });
         this.users = users;
         this.usernames = usernames;
-        //console.log("userids are: " + this.users);
-        //console.log("usernames are: " + this.usernames);
       }
     },
     addUser(username) {
