@@ -23,13 +23,13 @@
         solo-inverted
         dense
       ></v-autocomplete>
-  
+
       <v-btn icon @click=" displayNewlyAddedMod(select)">
         <v-icon>mdi-plus</v-icon>
-      </v-btn> 
+      </v-btn>
 
     </v-toolbar>
-  
+
     <h1>
       <div class="d-flex">
         <v-layout class="whitebox">
@@ -38,14 +38,14 @@
             v-for="mod in moduleList"
             :key="mod"
           >
-            <v-checkbox :label="mod" v-model="selectedModules" :value="mod" 
+            <v-checkbox :label="mod" v-model="selectedModules" :value="mod"
             append-icon="mdi-delete" class = "ml-auto" @click:append="deleteModFromList(mod)">
             </v-checkbox>
           </v-flex>
         </v-layout>
       </div>
     </h1>
-  
+
   </div>
 </template>
 
@@ -72,6 +72,9 @@ export default {
     },
     selectedModules() {
       this.$root.$emit('filter-module', this.selectedModules)
+    },
+    moduleList() {
+      this.$root.$emit('announcement-module', this.moduleList)
     }
   },
   methods: {

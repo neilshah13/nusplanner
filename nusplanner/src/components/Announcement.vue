@@ -8,7 +8,7 @@
         </h1>
         <txt>Click to view full</txt>
         <p></p>
-        <!--first announcement -->
+        <!--minimised view of announcement -->
         <div v-for="announcement in announcements" v-bind:key="announcement.coordinator">
           <v-card>
             <p>
@@ -33,7 +33,7 @@
           </h2>
           <div>
             <div v-for="announcement in announcements" v-bind:key="announcement.coordinator">
-              <!--first announcement -->
+              <!--detailed view of announcement -->
               <v-card>
                 <p>
                   <v-container class="header">
@@ -50,19 +50,6 @@
                 </p>
               </v-card>
             </div>
-            <!-- second announcement
-            <v-card>
-              <p>
-                <v-container class="header">
-                  IS3103:
-                  <i>
-                    <strong>Prof Oh</strong>
-                  </i>
-                  <txt>05/03/20, 12:53</txt>
-                </v-container>
-                <v-card-text>The tutorial on 12th March will be cancelled.</v-card-text>
-              </p>
-            </v-card>-->
             <v-divider></v-divider>
             <btn
               class="btn"
@@ -85,30 +72,21 @@ export default {
   data() {
     return {
       dialog: false,
-      announcements: []
-      /*
-      {
-        coordinator: "Prof Oh",
-        date_posted: "13/07/2020",
-        description: "Lorem Ipsum all the way",
-        title: "Test12",
-        module_id: "IS3103"
-      },
-      {
-        coordinator: "Prof Rama",
-        date_posted: "13/07/2021",
-        description: "Lorem Ipsum all the way",
-        title: "Test12333",
-        module_id: "BT3103"
-      }
-    ]*/
+      announcements: [],
+      modules: []
     };
   },
-  created() {
-    console.log("ARGHHHHHH WHYYYYY");
-    this.getAnnouncements();
+  mounted() {
+    //console.log("Ran Announcement Code");
+    this.$root.$on('announcement-module', data => {
+      this.runAnnouncements(data);
+    })
   },
   methods: {
+    runAnnouncements(data){
+      this.modules = data;
+      this.getAnnouncements()
+    },
     async getAnnouncements() {
       let snapshot = await firebase
         .firestore()
@@ -116,20 +94,23 @@ export default {
         .get();
       let ancmt_list = [];
       snapshot.forEach(doc => {
-        console.log(doc.data());
-        let appData = doc.data();
-        let date = appData.date_posted.toDate();
-        appData.date_posted =
-          date.getDate().toString() +
-          "/" +
-          date.getMonth().toString() +
-          "/" +
-          date.getYear().toString();
-        appData.id = doc.id;
-        ancmt_list.push(appData);
+        if (this.modules.includes(doc.data().module_id)) {
+          let appData = doc.data();
+          let date = appData.date_posted.toDate();
+          var day = date.getDate().toString()
+          var mth = (date.getMonth() + 1).toString()
+          var year = date.getUTCFullYear()
+          if (mth.length == 1) {
+            appData.date_posted = day + "/0" + mth + "/" + year;
+          } else {
+            appData.date_posted = day + "/" + mth + "/" + year;
+          }
+          appData.id = doc.id;
+          ancmt_list.push(appData);
+        }
       });
       this.announcements = ancmt_list;
-    }
+    },
   }
 };
 </script>

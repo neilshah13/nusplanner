@@ -85,26 +85,29 @@
   <v-snackbar
     v-model="grpsnack"
   >
-    Group successfully created! 
+    Group successfully created!
     <v-btn
       color="error"
       text
       @click="grpsnack = false"
     >
       Close
-    </v-btn>  
+    </v-btn>
   </v-snackbar>
 
 <!-- add event dialog -->
 <v-dialog v-model="dialog" max-width="550">
-  <createvent @update-dialog='updateDialog' @update-ifEventFalse='updateEventFalse' @update-ifAssignmentFalse='updateAssignmentFalse' @update-eventsnack='updateSnackEvent'  @getEventsfromDatabase ='getEvents'></createvent>
+  <createvent @update-dialog='updateDialog'
+              @update-eventsnack='updateSnackEvent'
+              @getEventsfromDatabase ='getEvents'>
+  </createvent>
 </v-dialog>
 
 <!-- For Successful Event/Assignment/GroupMeeting -->
-  <v-snackbar 
+  <v-snackbar
     v-model="eventsnack"
   >
-    Event successfully created! 
+    Event successfully created!
     <v-btn
       color="error"
       text
@@ -113,39 +116,6 @@
       Close
     </v-btn>
   </v-snackbar>
-<!-- For Event Failure -->
-  <v-snackbar
-    v-model="eventfalse"
-  >
-    Event not created! 
-    <br>
-    You must enter Event name, Start, and End Date
-    <v-btn
-      color="error"
-      text
-      @click="eventfalse = false"
-    >
-      Close
-    </v-btn>
-  </v-snackbar>
-
-<!-- For Assignment Failure -->
-  <v-snackbar
-    v-model="assignmentfalse"
-  >
-    Assignment not created! 
-    <br>
-    You must enter Assignment name, and Due Date
-    <v-btn
-      color="error"
-      text
-      @click="assignmentfalse = false"
-    >
-      Close
-    </v-btn>
-  </v-snackbar>
-
-  <!-- Need to create the above for groupmeeting too! and create a emit for it! -->
 
 <!-- calendar -->
 <v-row no-gutters>
@@ -168,7 +138,7 @@
         <v-container></v-container>
 <!-- popup after clicking on event -->
 <!-- If selecting a global event -->
-        <v-menu v-if = "selectedEvent.global === true" 
+        <v-menu v-if = "selectedEvent.global === true"
           class="menu"
           v-model="selectedOpen"
           :close-on-content-click="false"
@@ -186,13 +156,11 @@
                 </div>
             </v-toolbar>
             <v-card-text>
-              <v-form>                 
+              <v-form>
                 <div align = "LEFT">
-                <b> <u> {{selectedEvent.module_id}} </u> </b> 
-                <br> 
-                <u> Details </u> 
-                <br> 
-                {{ selectedEvent.details }} 
+                <b> <u> {{selectedEvent.module_id}} </u> </b>
+                <br>
+                Details: {{ selectedEvent.details }}
                 </div>
               </v-form>
               <br>
@@ -225,25 +193,32 @@
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
               <v-btn text v-else @click="onClickSave(selectedEvent)">Save</v-btn>
-              <v-btn icon @click="deleteEvent(selectedEvent)">
+              <v-btn icon @click="deletepopup = true">
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
+              <v-dialog v-model="deletepopup" max-width="300">
+                <v-card min-height='120'>
+                <v-toolbar-title class='deletetitle'>
+                    Confirm delete?
+                </v-toolbar-title>
+                <v-btn color='primary' class= 'mr-4' @click="deleteEvent(selectedEvent)"> Confirm </v-btn>
+                <v-btn @click='deletepopup = false'> Cancel </v-btn>
+                </v-card>
+              </v-dialog>
             </v-toolbar>
             <v-card-text>
               <v-form v-if = "selectedEvent.global == true"> {{ selectedEvent.details }} </v-form>
-              <v-form v-else-if="currentlyEditing !== selectedEvent.id && selectedEvent.global === false">  
-                
+              <v-form v-else-if="currentlyEditing !== selectedEvent.id && selectedEvent.global === false">
+
                 <div align = "LEFT" v-if="selectedEvent.module_id !== 'Select Module'" >
-                  <b> <u> {{selectedEvent.module_id}} </u> </b> 
-                  <br> 
-                  <u> Details </u> 
-                  <br> 
-                  {{ selectedEvent.details }} 
+                  <b> <u> {{selectedEvent.module_id}} </u> </b>
+                  <br>
+                  Details: {{ selectedEvent.details }}
                 </div>
                 <div align = "LEFT" v-else>
-                  <b> <u> Personal Event </u> </b> <br> Details:{{ selectedEvent.details }} 
+                  <b> <u> Personal Event </u> </b> <br> Details: {{ selectedEvent.details }}
                 </div>
-                
+
                 </v-form>
               <v-form ref="form" class="neweventform" v-else>
                 <v-text-field class= 'neweventfield' v-model="selectedEvent.name" type="text" label="name"></v-text-field>
@@ -263,7 +238,7 @@
                     >
                       Color
                     </v-btn>
-                
+
                     <v-dialog
                       v-model="colorpickerdialog"
                       max-width="300"
@@ -330,7 +305,10 @@ export default {
       eventsnack: false, // snackbar for added events
       eventfalse: false,
       assignmentfalse: false,
+      grpmeetingfalse: false,
       grpsnack: false, // snackbar for added groups
+      deleteconfirm: false,
+      deletepopup: false,
       typeToLabel: {
         month: 'Month',
         week: 'Week',
@@ -400,13 +378,6 @@ export default {
       updateSnackEvent() {
         this.eventsnack = true;
       },
-      updateEventFalse() {
-        this.eventfalse = true;
-      },
-      updateAssignmentFalse() {
-        this.assignmentfalse = true;
-      },
-
       updateSnackGrp() {
         this.grpsnack = true;
       },
@@ -430,8 +401,7 @@ export default {
           open()
         }
         nativeEvent.stopPropagation()
-      }, 
-      
+      },
       onClickSave(ev) {
           this.updateEvent(ev)
           this.selectedOpen = false
@@ -493,10 +463,10 @@ export default {
       })
       this.allEvents = events
       this.events = events
-      }, 
+      },
 
       /* addEvent() function moved to CreateEvent.vue */
-  
+
         async updateEvent (ev) {
             console.log("just after event called")
             if (ev.starttime != ''){ //If there is time input, then we input both date and time into database
@@ -518,24 +488,25 @@ export default {
               color: ev.color
 
             })
-            
+
             this.selectedOpen = false
             this.currentlyEditing = null
             this.getEvents()
           }
         ,
-        
+
         async deleteEvent (ev) {
+          this.deletepopup = false;
           var user = firebase.auth().currentUser;
           var eventlist;
           await firebase.firestore().collection('event').doc(ev.id).delete();
           firebase.firestore().collection('users').doc(user.uid).get().then(function(doc) {
-          eventlist = doc.data().event_list
-          var index = eventlist.indexOf(ev.id);
-          if (index !== -1) eventlist.splice(index, 1); //removing event from users' event_list
-          eventlist = eventlist.filter(item => item)
-          firebase.firestore().collection('users').doc(user.uid).update({event_list:eventlist})
-      }) 
+            eventlist = doc.data().event_list
+            var index = eventlist.indexOf(ev.id);
+            if (index !== -1) eventlist.splice(index, 1); //removing event from users' event_list
+            eventlist = eventlist.filter(item => item)
+            firebase.firestore().collection('users').doc(user.uid).update({event_list:eventlist})
+          })
           this.selectedOpen = false
           this.getEvents()
         },
@@ -574,5 +545,8 @@ export default {
 }
 .neweventform {
   display: block;
+}
+.deletetitle {
+  padding: 12px;
 }
 </style>
