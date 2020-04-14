@@ -41,15 +41,6 @@
             <v-checkbox :label="mod" v-model="selectedModules" :value="mod"
             append-icon="mdi-delete" class = "ml-auto" @click:append="deleteModFromList(mod)">
             </v-checkbox>
-              <v-dialog v-model="deletepopup" max-width="300">
-                <v-card min-height='120'>
-                <v-toolbar-title class='deletetitle'>
-                    Confirm delete?
-                </v-toolbar-title>
-                <v-btn color='primary' class= 'mr-4' @click="deletemod = true"> Confirm </v-btn>
-                <v-btn @click='deletepopup = false'> Cancel </v-btn>
-                </v-card>
-              </v-dialog>
           </v-flex>
         </v-layout>
       </div>
@@ -73,8 +64,6 @@ export default {
       moduleList: [],
       allModules: [],
       selectedModules: [],
-      deletepopup: false,
-      deletemod: false
     };
   },
   watch: {
@@ -132,46 +121,41 @@ export default {
                 });
               this.loading = false
             });
-         });
+          });
       }
     },
-    async deleteModFromList(mod) {
-      this.deletepopup = true;
-      if (this.deletemod == true) {
-        this.deletepopup = false;
-        this.deletemod = false;
-        var user = firebase.auth().currentUser;
-        let ml_index = this.moduleList.indexOf(mod);
-        let sm_index = this.selectedModules.indexOf(mod)
-        this.moduleList.splice(ml_index, 1);
-        this.selectedModules.splice(sm_index, 1);
-        await firebase
-          .firestore()
-          .collection("module")
-          .where("module_code", "==", mod)
-          .get()
-          .then(function(querySnapshot) {
-            querySnapshot.forEach(function(doc) {
-              var modID = doc.id;
-              firebase
-                .firestore()
-                .collection("users")
-                .doc(user.uid)
-                .get()
-                .then(function(doc) {
-                  var nmodlist = doc.data().module_list;
-                  var index = nmodlist.indexOf(modID);
-                  if (index !== -1) nmodlist.splice(index, 1);
-                  nmodlist = nmodlist.filter(item => item);
-                  firebase
-                    .firestore()
-                    .collection("users")
-                    .doc(user.uid)
-                    .update({ module_list: nmodlist });
-                });
-            });
-         });
-      }
+    deleteModFromList(mod) {
+      var user = firebase.auth().currentUser;
+      let ml_index = this.moduleList.indexOf(mod);
+      let sm_index = this.selectedModules.indexOf(mod)
+      this.moduleList.splice(ml_index, 1);
+      this.selectedModules.splice(sm_index, 1);
+      firebase
+        .firestore()
+        .collection("module")
+        .where("module_code", "==", mod)
+        .get()
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
+            var modID = doc.id;
+            firebase
+              .firestore()
+              .collection("users")
+              .doc(user.uid)
+              .get()
+              .then(function(doc) {
+                var nmodlist = doc.data().module_list;
+                var index = nmodlist.indexOf(modID);
+                if (index !== -1) nmodlist.splice(index, 1);
+                nmodlist = nmodlist.filter(item => item);
+                firebase
+                  .firestore()
+                  .collection("users")
+                  .doc(user.uid)
+                  .update({ module_list: nmodlist });
+              });
+          });
+        });
     },
 
     fetchModules() {
@@ -232,8 +216,5 @@ export default {
   font-size: 20px;
   text-align: center;
   margin: auto;
-}
-.deletetitle {
-  padding: 12px;
 }
 </style>
