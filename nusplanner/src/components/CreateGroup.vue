@@ -119,6 +119,13 @@
                 @click="getUsers"
                 @change="addUser"
               >
+                <v-snackbar v-model='modulenotselected'>
+                You must select a module!
+                <v-btn color="error" text @click="modulenotselected = false">
+                  Close
+                </v-btn>
+                </v-snackbar>
+
                 <template v-slot:selection="data"
                 >
                 <!-- @click="addUser(data.item)" -->
@@ -170,7 +177,8 @@ export default {
     membernames: [], //stores names of group members
     members: [], //stores uid of group members
     grpName: "",
-    module: '',
+    module: 'Select Module',
+    modulenotselected: false,
     text: "Select Group Members",
     snackbar: false,
     name: 'Teamwork Makes the Dream Work!',
@@ -206,19 +214,30 @@ export default {
         }
       })
     },
-    async getUsers() {
-      let users= []
-      let usernames = []
-      let userdb = await firebase.firestore().collection('users').get()
-      userdb.forEach(doc => {
-        let user= {name: "", id: ""}
-        user.name = doc.data().name
-        user.id = doc.id
-        users.push(user)
-        usernames.push(user.name)
-      })
-      this.users = users
-      this.usernames = usernames
+    async getUsers() { // should only get users in the module
+      if (this.module == 'Select Module') {
+        this.modulenotselected = true;
+      } else {
+        let users= []
+        let usernames = []
+        await firebase.firestore().collection('users')
+        .where('module_list', 'array-contains', this.module)
+        .get()
+        .then(function(querySnapshot) {
+        querySnapshot.forEach(function(doc) {
+            console.log("now doc is " + doc.id)
+            let user= {name: "", id: ""}
+            user.name = doc.data().name
+            user.id = doc.id
+            users.push(user)
+            usernames.push(user.name)
+          })
+        })
+        this.users = users
+        this.usernames = usernames
+        console.log("userids are: " + this.users)
+        console.log("usernames are: " + this.usernames)
+      }
     },
     addUser(username) { // find from array of name and id
       let user = username

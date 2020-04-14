@@ -97,12 +97,14 @@ export default {
         if (this.modules.includes(doc.data().module_id)) {
           let appData = doc.data();
           let date = appData.date_posted.toDate();
-          appData.date_posted =
-            date.getDate().toString() +
-            "/" +
-            date.getMonth().toString() +
-            "/" +
-            date.getYear().toString();
+          var day = date.getDate().toString()
+          var mth = (date.getMonth() + 1).toString()
+          var year = date.getUTCFullYear()
+          if (mth.length == 1) {
+            appData.date_posted = day + "/0" + mth + "/" + year;
+          } else {
+            appData.date_posted = day + "/" + mth + "/" + year;
+          }
           appData.id = doc.id;
           ancmt_list.push(appData);
         }
