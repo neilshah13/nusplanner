@@ -2,8 +2,8 @@
 <div id="app">
   <body>
     <v-app>
-      <v-row no-gutters >
-        <v-col md= "12">
+      <v-row no-gutters>
+        <v-col md="12">
           <moduleAdding></moduleAdding>
         </v-col>
       </v-row>

@@ -1,60 +1,53 @@
 <template>
   <div>
-    
     <v-toolbar
       dark
       color="blue darken-3"
       src="https://lh3.googleusercontent.com/proxy/6_4hiPG1zpcr-h5C4h8M0pGIqQYxp1hUCoWJXaf_E2gk_MmGWsMtzNHPPBuYg_PdxPnK4DR5Cdm8AoaWa4UiXZdOThEJZDoXXSECzyFHedCLWdgTWTVLpMCGhBQ4LuLeM6_0IoXcYZxsqMTmsa5R"
       dense
     >
-      <v-toolbar-title class="col-sm-2"> Missing a module ? &nbsp; </v-toolbar-title>      
-      
-      <v-autocomplete
-        v-model="select"
-        :loading="loading"
-        :items="items"
-        :search-input.sync="search"
-        class="col-sm-3"
-        cache-items
-        flat
-        hide-no-data
-        hide-details
-        label: append-icon = mdi-magnify
-        solo-inverted
-        dense
+      <v-toolbar-title class="col-sm-2">Missing a module ? &nbsp;</v-toolbar-title><v-autocomplete
+      v-model="select"
+      :loading="loading"
+      :items="items"
+      :search-input.sync="search"
+      class="col-sm-3"
+      cache-items
+      flat
+      hide-no-data
+      hide-details
+      label: append-icon = mdi-magnify
+      solo-inverted
+      dense
       ></v-autocomplete>
-
       <v-btn icon @click=" displayNewlyAddedMod(select)">
         <v-icon>mdi-plus</v-icon>
       </v-btn>
-
     </v-toolbar>
 
     <h1>
       <div class="d-flex">
         <v-layout class="whitebox">
-          <v-flex
-            class="d-flex bg-secondary col-sm-2 "
-            v-for="mod in moduleList"
-            :key="mod"
-          >
-            <v-checkbox :label="mod" v-model="selectedModules" :value="mod"
-            append-icon="mdi-delete" class = "ml-auto" @click:append="deleteModFromList(mod)">
-            </v-checkbox>
-              <v-dialog v-model="deletepopup" max-width="300">
-                <v-card min-height='120'>
-                <v-toolbar-title class='deletetitle'>
-                    Confirm delete?
-                </v-toolbar-title>
-                <v-btn color='primary' class= 'mr-4' @click="deletemod = true"> Confirm </v-btn>
-                <v-btn @click='deletepopup = false'> Cancel </v-btn>
-                </v-card>
-              </v-dialog>
+          <v-flex class="d-flex bg-secondary col-sm-2" v-for="mod in moduleList" :key="mod">
+            <v-checkbox
+              :label="mod"
+              v-model="selectedModules"
+              :value="mod"
+              append-icon="mdi-delete"
+              class="ml-auto"
+              @click:append="deleteModFromList(mod)"
+            ></v-checkbox>
+            <v-dialog v-model="deletepopup" max-width="300">
+              <v-card min-height="120">
+                <v-toolbar-title class="deletetitle">Confirm delete?</v-toolbar-title>
+                <v-btn color="primary" class="mr-4" @click="deletemod = true">Confirm</v-btn>
+                <v-btn @click="deletepopup = false">Cancel</v-btn>
+              </v-card>
+            </v-dialog>
           </v-flex>
         </v-layout>
       </div>
     </h1>
-
   </div>
 </template>
 
@@ -82,10 +75,10 @@ export default {
       val && val !== this.select && this.querySelections(val);
     },
     selectedModules() {
-      this.$root.$emit('filter-module', this.selectedModules)
+      this.$root.$emit("filter-module", this.selectedModules);
     },
     moduleList() {
-      this.$root.$emit('announcement-module', this.moduleList)
+      this.$root.$emit("announcement-module", this.moduleList);
     }
   },
   methods: {
@@ -95,7 +88,7 @@ export default {
       setTimeout(() => {
         this.items = this.allModules.filter(e => {
           return (e || "").toLowerCase().indexOf((v || "").toLowerCase()) > -1;
-        })
+        });
         this.loading = false;
       }, 500);
     },
@@ -106,7 +99,7 @@ export default {
         //if module is not in user's module list
         this.moduleList.push(v); //adding module_code into moduleList
         if (!this.selectedModules.includes(v)) {
-          this.selectedModules.push(v)
+          this.selectedModules.push(v);
         }
         firebase
           .firestore()
@@ -130,9 +123,9 @@ export default {
                     .doc(user.uid)
                     .update({ module_list: modulelist });
                 });
-              this.loading = false
+              this.loading = false;
             });
-         });
+          });
       }
     },
     async deleteModFromList(mod) {
@@ -142,7 +135,7 @@ export default {
         this.deletemod = false;
         var user = firebase.auth().currentUser;
         let ml_index = this.moduleList.indexOf(mod);
-        let sm_index = this.selectedModules.indexOf(mod)
+        let sm_index = this.selectedModules.indexOf(mod);
         this.moduleList.splice(ml_index, 1);
         this.selectedModules.splice(sm_index, 1);
         await firebase
@@ -170,7 +163,7 @@ export default {
                     .update({ module_list: nmodlist });
                 });
             });
-         });
+          });
       }
     },
 
@@ -189,32 +182,32 @@ export default {
     displayCurrentMod() {
       //retrieve and display existing modules from user's module list
       firebase.auth().onAuthStateChanged(user => {
-        console.log(user)
+        console.log(user);
         let currentmod = [];
         firebase
-        .firestore()
-        .collection("users")
-        .doc(user.uid)
-        .get()
-        .then(function(doc) {
-          var user_modules = doc.data().module_list;
-          for (let i in user_modules) {
-            var mod = user_modules[i];
-            if (mod != "") {
-              firebase
-                .firestore()
-                .collection("module")
-                .doc(mod)
-                .get()
-                .then(function(doc) {
-                  var modcode = doc.data().module_code;
-                  currentmod.push(modcode);
-                });
+          .firestore()
+          .collection("users")
+          .doc(user.uid)
+          .get()
+          .then(function(doc) {
+            var user_modules = doc.data().module_list;
+            for (let i in user_modules) {
+              var mod = user_modules[i];
+              if (mod != "") {
+                firebase
+                  .firestore()
+                  .collection("module")
+                  .doc(mod)
+                  .get()
+                  .then(function(doc) {
+                    var modcode = doc.data().module_code;
+                    currentmod.push(modcode);
+                  });
+              }
             }
-          }
-        });
-      this.moduleList = currentmod;
-      this.selectedModules = currentmod;
+          });
+        this.moduleList = currentmod;
+        this.selectedModules = currentmod;
       });
     }
   },

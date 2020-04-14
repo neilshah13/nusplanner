@@ -1,169 +1,139 @@
 <template>
-  <v-card color="blue-grey" >
+  <v-card color="blue-grey">
     <v-card-title primary-title class="justify-center">
       <v-row>
-      <!-- <v-row align = "left"> -->
-        <v-btn class='btn' icon dark @click="closeGroupMembers" color="warning" outlined> <!-- closing button -->
+        <!-- <v-row align = "left"> -->
+        <v-btn class="btn" icon dark @click="closeGroupMembers" color="warning" outlined>
+          <!-- closing button -->
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-row>
     </v-card-title>
 
-      <!-- Form start here ******************************-->
-      <div id="app">
-    <v-card
-      color="blue-grey darken-1"
-      dark
-      :loading="isUpdating"
-    >
-      <v-img
-        height="200"
-        src="../..//public/teamwork.jpg"
-      >
-        <v-row>
-          <v-col
-            class="text-right"
-            cols="12"
-          >
-            <v-menu
-              bottom
-              left
-              transition="slide-y-transition"
-            >
-              <template v-slot:activator="{ on }">
-                <v-btn
-                  icon
-                  v-on="on"
-                >
-                  <v-icon>mdi-dots-vertical</v-icon>
-                </v-btn>
-              </template>
-              <v-list>
-                <v-list-item @click="isUpdating = true">
-                  <v-list-item-action>
-                    <v-icon dark>mdi-settings</v-icon>
-                  </v-list-item-action>
-                  <v-list-item-content>
-                    <v-list-item-title>Update</v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list>
-            </v-menu>
-          </v-col>
-          <v-row
-            class="pa-4"
-            align="center"
-            justify="center"
-          >
-            <v-col class="text-center">
-              <h3 class="headline">{{ name }}</h3>
-            </v-col>
-          </v-row>
-        </v-row>
-      </v-img>
-      <v-form ref='form'>
-        <v-container>
+    <!-- Form start here ******************************-->
+    <div id="app">
+      <v-card color="blue-grey darken-1" dark :loading="isUpdating">
+        <v-img height="200" src="../..//public/teamwork.jpg">
           <v-row>
-              <v-card-text class='menu' > Choose Module :
-      <v-menu>
-        <template v-slot:activator="{ on }">
-        <v-btn v-on="on" class="btn" @click="getMods">
-          <span>{{ module }}</span>
-           <v-icon bottom>mdi-menu-down</v-icon>
-          </v-btn>
-          </template>
-            <v-list>
-              <v-list-item v-for="mod in modules" :key="mod" @click="module=mod">
-                <v-list-item-title>
-                  {{ mod }}
-                </v-list-item-title>
-              </v-list-item>
-            </v-list>
-      </v-menu>
-    </v-card-text>
-
-            <v-col
-              cols="12"
-            >
-              <v-text-field
-                class="groupname"
-                v-model= "grpName"
-                :disabled="isUpdating"
-                outlined
-                color="blue-grey lighten-2"
-                label="Group Name"
-                light
-              ></v-text-field>
-            </v-col>
-            <v-col
-              cols="12"
-              md="6"
-            >
-            </v-col>
-            <v-col cols="12">
-              <v-autocomplete
-                class = "groupmembers"
-                :disabled="isUpdating"
-                :items="usernames"
-                outlined
-                dense
-                v-model="membernames"
-                chips
-                color="blue-grey lighten-2"
-                light
-                label="Select Group Members"
-                item-text="name"
-                item-value="name"
-                multiple
-                :placeholder="text"
-                @click="getUsers"
-                @change="addUser"
-              >
-                <v-snackbar v-model='modulenotselected'>
-                You must select a module!
-                <v-btn color="error" text @click="modulenotselected = false">
-                  Close
-                </v-btn>
-                </v-snackbar>
-
-                <template v-slot:selection="data"
-                >
-                <!-- @click="addUser(data.item)" -->
-                  <!-- itemscope="addUser(data.item)" -->
-                <!-- @click="selectchip"> -->
-                <v-chip
-                  v-bind="data.attrs"
-                  :input-value="data.selected"
-                  close
-                  @click:close="remove(data.item)"
-                >
-                <!-- v-model="data" -->
-                <!-- input value to highlight the item  -->
-                    {{ data.item }}
-                  </v-chip>
+            <v-col class="text-right" cols="12">
+              <v-menu bottom left transition="slide-y-transition">
+                <template v-slot:activator="{ on }">
+                  <v-btn icon v-on="on">
+                    <v-icon>mdi-dots-vertical</v-icon>
+                  </v-btn>
                 </template>
-
-                <template v-slot:item="data">
-                  <template v-if="typeof data.item !== 'object'">
-                    <v-list-item-content v-text="data.item"></v-list-item-content>
-                  </template>
-                  <template v-else>
+                <v-list>
+                  <v-list-item @click="isUpdating = true">
+                    <v-list-item-action>
+                      <v-icon dark>mdi-settings</v-icon>
+                    </v-list-item-action>
                     <v-list-item-content>
-                      <v-list-item-title v-html="data.item.name"></v-list-item-title>
-                      <!-- <v-list-item-subtitle v-html="data.item.group"></v-list-item-subtitle> -->
+                      <v-list-item-title>Update</v-list-item-title>
                     </v-list-item-content>
-                  </template>
-                </template>
-              </v-autocomplete>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
             </v-col>
+            <v-row class="pa-4" align="center" justify="center">
+              <v-col class="text-center">
+                <h3 class="headline">{{ name }}</h3>
+              </v-col>
+            </v-row>
           </v-row>
-        </v-container>
-      </v-form>
-      <v-btn type="submit" color="primary" class="mr-4" @click.stop="addGroups">Save</v-btn>
-      <v-btn color="error" @click="reset">Reset</v-btn>
-    </v-card>
-  </div>
-    </v-card>
+        </v-img>
+        <v-form ref="form">
+          <v-container>
+            <v-row>
+              <v-card-text class="menu">
+                Choose Module :
+                <v-menu>
+                  <template v-slot:activator="{ on }">
+                    <v-btn v-on="on" class="btn" @click="getMods">
+                      <span>{{ module }}</span>
+                      <v-icon bottom>mdi-menu-down</v-icon>
+                    </v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-item v-for="mod in modules" :key="mod" @click="module=mod">
+                      <v-list-item-title>{{ mod }}</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </v-card-text>
+
+              <v-col cols="12">
+                <v-text-field
+                  class="groupname"
+                  v-model="grpName"
+                  :disabled="isUpdating"
+                  outlined
+                  color="blue-grey lighten-2"
+                  label="Group Name"
+                  light
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" md="6"></v-col>
+              <v-col cols="12">
+                <v-autocomplete
+                  class="groupmembers"
+                  :disabled="isUpdating"
+                  :items="usernames"
+                  outlined
+                  dense
+                  v-model="membernames"
+                  chips
+                  color="blue-grey lighten-2"
+                  light
+                  label="Select Group Members"
+                  item-text="name"
+                  item-value="name"
+                  multiple
+                  :placeholder="text"
+                  @click="getUsers"
+                  @change="addUser"
+                >
+                  <v-snackbar v-model="modulenotselected">
+                    You must select a module!
+                    <v-btn color="error" text @click="modulenotselected = false">Close</v-btn>
+                  </v-snackbar>
+
+                  <template v-slot:selection="data">
+                    <!-- @click="addUser(data.item)" -->
+                    <!-- itemscope="addUser(data.item)" -->
+                    <!-- @click="selectchip"> -->
+                    <v-chip
+                      v-bind="data.attrs"
+                      :input-value="data.selected"
+                      close
+                      @click:close="remove(data.item)"
+                    >
+                      <!-- v-model="data" -->
+                      <!-- input value to highlight the item  -->
+                      {{ data.item }}
+                    </v-chip>
+                  </template>
+
+                  <template v-slot:item="data">
+                    <template v-if="typeof data.item !== 'object'">
+                      <v-list-item-content v-text="data.item"></v-list-item-content>
+                    </template>
+                    <template v-else>
+                      <v-list-item-content>
+                        <v-list-item-title v-html="data.item.name"></v-list-item-title>
+                        <!-- <v-list-item-subtitle v-html="data.item.group"></v-list-item-subtitle> -->
+                      </v-list-item-content>
+                    </template>
+                  </template>
+                </v-autocomplete>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-form>
+        <v-btn type="submit" color="primary" class="mr-4" @click.stop="addGroups">Save</v-btn>
+        <v-btn color="error" @click="reset">Reset</v-btn>
+      </v-card>
+    </div>
+  </v-card>
 </template>
 
 <script>
@@ -177,82 +147,111 @@ export default {
     membernames: [], //stores names of group members
     members: [], //stores uid of group members
     grpName: "",
-    module: 'Select Module',
+    module: "Select Module",
     modulenotselected: false,
     text: "Select Group Members",
     snackbar: false,
-    name: 'Teamwork Makes the Dream Work!',
+    name: "Teamwork Makes the Dream Work!",
     usernames: [],
     users: [],
-    modules: [],
+    modules: []
   }),
   methods: {
     closeGroupMembers() {
-      this.$emit('update-grp')
+      this.$emit("update-grp");
     },
     reset() {
       this.$refs.form.reset();
     },
     indexWhere: function(array, conditionFn) {
-      const item = array.find(conditionFn)
-      return array.indexOf(item)
+      const item = array.find(conditionFn);
+      return array.indexOf(item);
     },
     async getMods() {
       var user = firebase.auth().currentUser; //current user
-      let uid= user.uid
-      let modlist= []
-      firebase.firestore().collection('users').doc(uid).get().then(function(doc) {
-        modlist = doc.data().module_list
-      })
-      this.modules = []
-      let moddb = await firebase.firestore().collection('module').get()
+      let uid = user.uid;
+      let modlist = [];
+      firebase
+        .firestore()
+        .collection("users")
+        .doc(uid)
+        .get()
+        .then(function(doc) {
+          modlist = doc.data().module_list;
+        });
+      this.modules = [];
+      let moddb = await firebase
+        .firestore()
+        .collection("module")
+        .get();
       moddb.forEach(doc => {
-        for(var i = 0; i < modlist.length; i++) {
-          if (doc.id == modlist[i]) { //finding the module
-            this.modules.push(doc.data().module_code)
+        for (var i = 0; i < modlist.length; i++) {
+          if (doc.id == modlist[i]) {
+            //finding the module
+            this.modules.push(doc.data().module_code);
           }
         }
-      })
+      });
     },
-    async getUsers() { // should only get users in the module
-      if (this.module == 'Select Module') {
+    async getUsers() {
+      // should only get users in the module
+      if (this.module == "Select Module") {
         this.modulenotselected = true;
       } else {
-        let users= []
-        let usernames = []
-        await firebase.firestore().collection('users')
-        .where('module_list', 'array-contains', this.module)
-        .get()
-        .then(function(querySnapshot) {
-        querySnapshot.forEach(function(doc) {
-            console.log("now doc is " + doc.id)
-            let user= {name: "", id: ""}
-            user.name = doc.data().name
-            user.id = doc.id
-            users.push(user)
-            usernames.push(user.name)
-          })
-        })
-        this.users = users
-        this.usernames = usernames
-        console.log("userids are: " + this.users)
-        console.log("usernames are: " + this.usernames)
+        console.log("Getting the users");
+        let users = [];
+        let usernames = [];
+        let module_id = "";
+        console.log(this.module);
+        await firebase
+          .firestore()
+          .collection("modules")
+          .where("module_code", "==", this.module)
+          .get()
+          .then(function(qs) {
+            console.log(qs);
+            qs.forEach(function(document) {
+              console.log(document.id, " => ", document.data());
+              firebase
+                .firestore()
+                .collection("users")
+                .where("module_list", "array-contains", module_id)
+                .get()
+                .then(function(querySnapshot) {
+                  querySnapshot.forEach(function(doc) {
+                    let user = { name: "", id: "" };
+                    user.name = doc.data().name;
+                    user.id = doc.id;
+                    if (user.name != "") {
+                      users.push(user);
+                      usernames.push(user.name);
+                    }
+                  });
+                });
+            });
+          });
+        this.users = users;
+        this.usernames = usernames;
+        //console.log("userids are: " + this.users);
+        //console.log("usernames are: " + this.usernames);
       }
     },
-    addUser(username) { // find from array of name and id
-      let user = username
+    addUser(username) {
+      // find from array of name and id
+      let user = username;
       if (username.length > 1) {
-        user = username[username.length - 1]
+        user = username[username.length - 1];
       }
-// let index = this.usernames.indexOf(username)
-      const index = this.indexWhere(this.users, item => item.name == user)
-      let userid = this.users[index].id
-      this.members.push(userid)
+      // let index = this.usernames.indexOf(username)
+      const index = this.indexWhere(this.users, item => item.name == user);
+      let userid = this.users[index].id;
+      this.members.push(userid);
     },
-    remove (username) { // find from array of name and id
-      let membername = this.membernames.indexOf(username)
+    remove(username) {
+      // find from array of name and id
+      let membername = this.membernames.indexOf(username);
       this.membernames.splice(membername, 1);
-// let member = this.members.indexOf(this.users[index].id)
+      // let member = this.members.indexOf(this.users[index].id)
       // const index = this.indexWhere(this.users, item => item.name == membername)
       // let member = this.users.indexOf(membername)
       this.members.splice(membername, 1);
@@ -260,24 +259,36 @@ export default {
       // console.log(this.members)
     },
     async addGroups() {
-      this.$emit('update-dialog')
+      this.$emit("update-dialog");
       //add to group collection
       if (this.grpName && this.module && this.members) {
-        this.$emit('update-grpsnack')
-        this.$emit('update-grp')
-        var groupadded = await firebase.firestore().collection('group').add({
-          name: this.grpName,
-          module_id: this.module,
-          user_list: this.members, // list of uids
-        })
-        for(var i=0; i < this.members.length; i++) {
-          let uid = this.members[i]
-          firebase.firestore().collection('users').doc(uid).get().then(function(doc) {
-              let grplist = doc.data().group_list
-              grplist.push(groupadded.id)
-              grplist = grplist.filter(item => item)
-              firebase.firestore().collection('users').doc(uid).update({group_list: grplist})
-          })
+        this.$emit("update-grpsnack");
+        this.$emit("update-grp");
+        var groupadded = await firebase
+          .firestore()
+          .collection("group")
+          .add({
+            name: this.grpName,
+            module_id: this.module,
+            user_list: this.members // list of uids
+          });
+        for (var i = 0; i < this.members.length; i++) {
+          let uid = this.members[i];
+          firebase
+            .firestore()
+            .collection("users")
+            .doc(uid)
+            .get()
+            .then(function(doc) {
+              let grplist = doc.data().group_list;
+              grplist.push(groupadded.id);
+              grplist = grplist.filter(item => item);
+              firebase
+                .firestore()
+                .collection("users")
+                .doc(uid)
+                .update({ group_list: grplist });
+            });
         }
         // console.log("saved members" + this.members)
         //clear out inputs after a submission
@@ -286,36 +297,41 @@ export default {
         this.module = "";
         // console.log("saved")
       } else {
-        alert("Please make sure all fields are filled!")
+        alert("Please make sure all fields are filled!");
       }
       //add to user collection's group_list
-    },
+    }
   },
   watch: {
-    isUpdating (val) {
+    isUpdating(val) {
       if (val) {
-        setTimeout(() => (this.isUpdating = false), 3000)
+        setTimeout(() => (this.isUpdating = false), 3000);
       }
-    },
+    }
   },
   async beforeMount() {
-      var current = firebase.auth().currentUser;
-      let userid = current.uid
-      this.members.push(current.uid)
-      var username
-      await firebase.firestore().collection('users').doc(userid).get().then(function(doc) {
-        username = doc.data().name
-      })
-      this.membernames.push(username)
+    var current = firebase.auth().currentUser;
+    let userid = current.uid;
+    this.members.push(current.uid);
+    var username;
+    await firebase
+      .firestore()
+      .collection("users")
+      .doc(userid)
+      .get()
+      .then(function(doc) {
+        username = doc.data().name;
+      });
+    this.membernames.push(username);
   }
-}
+};
 </script>
 
 <style scoped>
-  .groupname >>> .v-text-field__slot input {
-    color: black;
-  }
-  .btn {
+.groupname >>> .v-text-field__slot input {
+  color: black;
+}
+.btn {
   transform: scale(0.75);
 }
 </style>
