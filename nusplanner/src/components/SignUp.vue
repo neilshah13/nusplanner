@@ -65,11 +65,12 @@ export default {
     };
   },
   methods: {
-    submit() {
+    async submit() {
       var email = document.forms["signup"]["email"].value;
       var password = document.forms["signup"]["password"].value;
       var name = document.forms["signup"]["name"].value;
-      firebase
+      var self = this
+      await firebase
         .auth()
         .createUserWithEmailAndPassword(email, password)
         .then(data => {
@@ -82,11 +83,16 @@ export default {
         .catch(err => {
           this.error = err.message;
         });
-      var user = firebase.auth().currentUser;
-      console.log(user);
+        firebase.auth().signInWithEmailAndPassword(email, password)
+        var user = firebase.auth().currentUser
+        console.log(user)
       firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
           // User is signed in.
+          //console.log(user)
+          //console.log(user.uid)
+          user.displayName = name
+          //console.log(user.displayName)
           firebase
             .firestore()
             .collection("users")
@@ -103,14 +109,14 @@ export default {
             .doc(user.uid)
             .collection("todo")
           todoref.doc().set({
-            title:"Testing",
-            is_completed: false,
+            label:"Add your tasks here!",
+            done: false,
+            edit: false,
             uid: user.uid
           })
-
           console.log("Successful Creation of data for user");
-          // this.$router.push({ path : '/' }); This is the code to link hopefully (need to link router to this vue component???)
-          //console.log("pushed to home page")
+          self.$router.push({ path : '/home' });
+          console.log("pushed to home page")
         }
       });
     }

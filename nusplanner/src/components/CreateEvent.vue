@@ -27,112 +27,229 @@
         </v-menu>
       </v-toolbar-title>
 
-      <v-form v-if="eventType == 'event'" @submit.prevent="addEvent" ref="form" class="neweventform">
-        <v-text-field class= 'neweventfield' v-model="name" type="text" label="Event Name"></v-text-field>
-        <v-text-field class= 'neweventfield' v-model="details" type="text" label="Details (e.g. Meet at Jurong East MRT)"></v-text-field>
-        <v-text-field class= 'neweventfield' v-model="start" type="date" label="Start Date"></v-text-field>
-        <v-text-field class= 'neweventfield' v-model="end" type="date" label="End Date"></v-text-field>
-        <v-text-field class= 'neweventfield' v-model="start" type="time" label="Start Time"></v-text-field>
-        <v-text-field class= 'neweventfield' v-model="end" type="time" label="End Time"></v-text-field>
-                <div class='colorfieldtitle'>
-          <div class="mr-4">
-          Please choose a color:
-          </div>
-                <swatches
-                v-model="color"
+      <v-form v-if="eventType == 'event'" @submit.prevent="submittedEvent" ref="form" class="neweventform">
+        <v-text-field outlined class= 'neweventfield' v-model="name" type="text" label="Event Name"></v-text-field>
+        <v-text-field outlined class= 'neweventfield' v-model="details" type="text" label="Details (e.g. Meet at Jurong East MRT)"></v-text-field>
+        <v-text-field outlined class= 'neweventfield' v-model="startdate" type="date" label="Start Date"></v-text-field>
+        <v-text-field outlined class= 'neweventfield' v-model="enddate" type="date" label="End Date"></v-text-field>
+        <v-text-field outlined class= 'neweventfield' v-model="starttime" type="time" label="(Optional) Start Time [hh:mm AM/PM] "></v-text-field>
+        <v-text-field outlined class= 'neweventfield' v-model="endtime" type="time" label="(Optional) End Time [hh:mm AM/PM]"></v-text-field>
 
-                :colors="colors"
-
-                row-length="6"
-                shapes="circles"
-                show-border
-                popover-to="left"
-              ></swatches>
-            </div>
-      </v-form>
-      <v-form v-else-if="eventType == 'assignment'" @submit.prevent="addEvent" ref="form" class="neweventform">
-        <v-text-field class= 'neweventfield' v-model="name" type="text" label="Assignment Name"></v-text-field>
-        <v-text-field class= 'neweventfield' v-model="details" type="text" label="Details (e.g. Due 2359, submit in PDF format)"></v-text-field>
-        <v-text-field class= 'neweventfield' v-model="start" type="date" label="Due Date"></v-text-field>
-                <div class='colorfieldtitle'>
-          <div class="mr-4">
-          Please choose a color:
-          </div>
-                <swatches
-                v-model="color"
-
-                :colors="colors"
-
-                row-length="6"
-                shapes="circles"
-                show-border
-                popover-to="left"
-              ></swatches>
-            </div>
-      </v-form>
-      <v-form v-else-if="eventType== 'groupMeeting'" @submit.prevent="addEvent" ref="form" class="neweventform">
-        <v-card-text class='menu'> Saved Group Name:
+      <v-card-text class='menu'> Module: (Optional)
         <v-menu>
         <template v-slot:activator="{ on }">
-        <v-btn v-on="on" class="btn">
-          <span>{{ groups[group] }}</span>
+        <v-btn v-on="on" class="btn"  @click="displayCurrentMod" v-model="module">
+          <span>{{ module }}</span>
            <v-icon bottom>mdi-menu-down</v-icon>
           </v-btn>
           </template>
             <v-list>
-              <v-list-item @click="group='teamwork'">
-                <v-list-item-title>Team Work (BT3103)</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="group='teamhustle'">
-                <v-list-item-title>Team Hustle (IS3103)</v-list-item-title>
+              <v-list-item v-for = "mod in modules" v-bind:key="mod" @click="module = mod">
+                <v-list-item-title> {{ mod }} </v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
-          <v-card-text class='txt'>Haven't saved a group name? Add it <a href='https://google.com'>here</a>!</v-card-text>
-          </v-card-text>
-        <v-text-field class= 'neweventfield' v-model="details" type="text" label="Details (e.g. Meet at Computing)"></v-text-field>
-        <v-text-field class= 'neweventfield' v-model="start" type="date" label="Date"></v-text-field>
-        <v-text-field class= 'neweventfield' v-model="start" type="time" label="Start Time"></v-text-field>
-        <v-text-field class= 'neweventfield' v-model="end" type="time" label="End Time"></v-text-field>
+      </v-card-text>
+
         <div class='colorfieldtitle'>
           <div class="mr-4">
           Please choose a color:
           </div>
-                <swatches
-                v-model="color"
 
-                :colors="colors"
+      <v-btn
+        v-bind:color="this.color"
+        dark
+        @click.stop="dialog = true"
+      >
+        Color
+      </v-btn>
+  
+      <v-dialog
+        v-model="dialog"
+        max-width="300"
+      >
+      <ColorPicker v-model = "color"> </ColorPicker>
 
-                row-length="6"
-                shapes="circles"
-                show-border
-                popover-to="left"
-              ></swatches>
+            <v-btn
+              v-bind:color="this.color"
+              dark
+              @click="dialog = false"
+            >
+              Choose
+            </v-btn>
+
+      </v-dialog>
             </div>
+            <br>
+            <br>
+          <v-btn type="submit" color="primary" class="mr-4">Create Event</v-btn>
+          <v-btn color="error" class="mr-4" @click="reset"> Reset Form </v-btn>
+      </v-form>
+      <v-form v-else-if="eventType == 'assignment'" @submit.prevent="submittedAssignment" ref="form" class="neweventform">
+        <v-text-field outlined class= 'neweventfield' v-model="name" type="text" label="Assignment Name"></v-text-field>
+        <v-text-field outlined class= 'neweventfield' v-model="details" type="text" label="Details (e.g. Due 2359, submit in PDF format)"></v-text-field>
+        <v-text-field outlined class= 'neweventfield' v-model="enddate" type="date" label="Due Date"></v-text-field>
+
+        <v-card-text class='menu'> Module:
+                <v-menu>
+                <template v-slot:activator="{ on }">
+                <v-btn v-on="on" class="btn"  @click="displayCurrentMod" v-model="module">
+                  <span>{{ module }}</span>
+                  <v-icon bottom>mdi-menu-down</v-icon>
+                  </v-btn>
+                  </template>
+                    <v-list>
+                      <v-list-item v-for = "mod in modules" v-bind:key="mod" @click="module = mod">
+                        <v-list-item-title> {{ mod }} </v-list-item-title>
+                      </v-list-item>
+                    </v-list>
+                  </v-menu>
+              </v-card-text>
+
+          <div class='colorfieldtitle'>
+          <div class="mr-4">
+          Please choose a color:
+          </div>
+          <v-btn
+            v-bind:color="this.color"
+            dark
+            @click.stop="dialog = true"
+          >
+            Color
+          </v-btn>
+      
+          <v-dialog
+            v-model="dialog"
+            max-width="300"
+          >
+          <ColorPicker v-model = "color"> </ColorPicker>
+
+                <v-btn
+                  v-bind:color="this.color"
+                  dark
+                  @click="dialog = false"
+                >
+                  Choose
+                </v-btn>
+          </v-dialog>
+            </div>
+          <br>
+          <br>
+          <v-btn type="submit" color="primary" class="mr-4">Create Assignment</v-btn>
+          <v-btn color="error" class="mr-4" @click="reset"> Reset Form </v-btn>
+      </v-form>
+      <v-form v-else-if="eventType== 'groupMeeting'" @submit.prevent="submittedGroupMeeting" ref="form" class="neweventform">
+
+        <v-card-text class='menu'> Saved Group Name:
+        <v-menu>
+        <template v-slot:activator="{ on }">
+        <v-btn v-on="on" class="btn" @click = "displayCurrentGroups">
+          <span>{{ group }}</span>
+           <v-icon bottom>mdi-menu-down</v-icon>
+          </v-btn>
+          </template>
+            <v-list>
+              <v-list-item v-for = "grp in groups" v-bind:key="grp" @click="group = grp">
+                <v-list-item-title> {{ grp }} </v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+          <v-card-text class='txt'>Haven't saved a group name? Add it 
+            <v-btn    
+              small
+              color = "#1976D2"
+              @click.stop="groupMembers = true"> here! </v-btn> 
+
+              <v-dialog v-model = "groupMembers" max-width="550"> 
+                <CreateGroup @update-grp='updateGrp' @update-grpsnack='updateSnackGrp'></CreateGroup>
+              </v-dialog>
+              <v-snackbar
+                v-model="grpsnack"
+              >
+                Group successfully created! 
+                <v-btn
+                  color="error"
+                  text
+                  @click="grpsnack = false"
+                >
+                  Close
+                </v-btn>  
+              </v-snackbar>
+              
+              </v-card-text> 
+          </v-card-text>
+
+        <v-text-field outlined class= 'neweventfield' v-model="details" type="text" label="Details (e.g. Meet at Computing)"></v-text-field>
+        <v-text-field outlined class= 'neweventfield' v-model="start" type="date" label="Date"></v-text-field>
+        <v-text-field outlined class= 'neweventfield' v-model="start" type="time" label="Start Time"></v-text-field>
+        <v-text-field outlined class= 'neweventfield' v-model="end" type="time" label="End Time"></v-text-field>
+        <div class='colorfieldtitle'>
+          <div class="mr-4">
+          Please choose a color:
+          </div>
+            <v-btn
+              v-bind:color="this.color"
+              dark
+              @click.stop="dialog = true"
+            >
+              Color
+            </v-btn>
+        
+            <v-dialog
+              v-model="dialog"
+              max-width="300"
+            >
+            <ColorPicker v-model = "color"> </ColorPicker>
+
+                  <v-btn
+                    v-bind:color="this.color"
+                    dark
+                    @click="dialog = false"
+                  >
+                    Choose
+                  </v-btn>
+            </v-dialog>
+            </div>
+            <br>
+            <br>
+          <v-btn type="submit" color="primary" class="mr-4">Create Group Meeting</v-btn>
+          <v-btn color="error" class="mr-4" @click="reset"> Reset Form </v-btn>
       </v-form>
     <br>
-    <v-btn type="submit" color="primary" class="mr-4" @click.stop="submittedEvent">Create Event</v-btn>
-    <v-btn color="error" class="mr-4" @click="reset"> Reset Form </v-btn>
+    <!-- <v-btn type="submit" color="primary" class="mr-4" @click.stop="submittedEvent">Create Event</v-btn>
+    <v-btn color="error" class="mr-4" @click="reset"> Reset Form </v-btn> -->
     </v-container>
   </v-card>
 </template>
 
 <script>
-import Swatches from 'vue-swatches'
+import ColorPicker from 'vue-color-picker-wheel';
+import firebase from "firebase";
+import CreateGroup from './CreateGroup.vue'
+
 export default {
     components:{
-        Swatches,
+        ColorPicker, CreateGroup
     },
     data: () => ({
+      groupMembers: false,
+      grpsnack: false,
+      dialog: false,
       today: new Date().toISOString().substr(0, 10),
       focus: '',
       color: '#1976D2', // default event color
       colors: ['#1976D2', 'red', 'pink', 'cyan', 'orange', 'indigo', 'purple'],
-      start: null,
-      end: null,
+      startdate: null,
+      enddate: null,
+      starttime: '',
+      endtime: '',
       snackbar: false,
+      details: '',
+      name: '',
       eventType: 'event', //default
-      group: 'teamwork',
+      group: 'Select Group',
+      modules: [],
+      module: 'Select Module',
       eventTypes: {
         assignment: 'Assignment',
         event: 'Event',
@@ -144,17 +261,241 @@ export default {
       },
     }),
     methods: {
+    async displayCurrentMod() {
+      //retrieve and display existing modules from user's module list
+      await firebase.auth().onAuthStateChanged(user => {
+        console.log(user)
+        let currentmod = [];
+        firebase
+        .firestore()
+        .collection("users")
+        .doc(user.uid)
+        .get()
+        .then(function(doc) {
+          console.log("Ran this");
+          var user_modules = doc.data().module_list;
+          console.log(user_modules);
+          for (let i in user_modules) {
+            var mod = user_modules[i];
+            console.log(mod);
+            if (mod != "") {
+              firebase
+                .firestore()
+                .collection("module")
+                .doc(mod)
+                .get()
+                .then(function(doc) {
+                  var modcode = doc.data().module_code;
+                  currentmod.push(modcode);
+                });
+            }
+          }
+        });
+      this.modules = currentmod;
+      console.log("Reached this code");
+      console.log(this.modules);
+      });
+    },
+    async displayCurrentGroups() {
+      //retrieve and display existing modules from user's module list
+      await firebase.auth().onAuthStateChanged(user => {
+        console.log(user)
+        let currentgroups = [];
+        firebase
+        .firestore()
+        .collection("users")
+        .doc(user.uid)
+        .get()
+        .then(function(doc) {
+          console.log("Ran this");
+          var user_groups = doc.data().group_list;
+          console.log(user_groups);
+          for (let i in user_groups) {
+            var group = user_groups[i];
+            console.log(group);
+            if (group != "") {
+              firebase
+                .firestore()
+                .collection("group")
+                .doc(group)
+                .get()
+                .then(function(doc) {
+                  var groupname = doc.data().name + "(" + doc.data().module_id + ")";
+                  currentgroups.push(groupname);
+                });
+            }
+          }
+        });
+      this.groups = currentgroups;
+      console.log("Reached this code");
+      console.log(this.groups);
+      });
+    },
+      updateGrp() {
+        this.groupMembers = false;
+      },
+      updateSnackGrp() {
+        this.grpsnack = true;
+      },
       closeDialog() {
         this.$emit('update-dialog')
       },
       reset() {
         this.$refs.form.reset();
+        this.startdate = ""
+        this.enddate = ""
+        this.starttime = ""
+        this.endtime = ""
+        this.module = "Select Module"
+        this.group = "Select Group"
       },
       submittedEvent() {
+        if (this.name && this.startdate && this.enddate) {  //somewhere here
+          this.$emit('update-eventsnack')
+        } else {
+          this.$emit('update-ifEventFalse')
+        }
+        this.$emit('update-dialog')
+        this.addEvent()
+        this.$emit('getEventsfromDatabase') //calls the getEvent from Weekly.vue to update the calendar
+      },
+      submittedAssignment() {
+        console.log("hi")
+        console.log(this.name && this.enddate)
+        if (this.name && this.enddate) { //Takes in as long as there is a date
+          this.$emit('update-eventsnack')
+        } else {
+          this.$emit('update-ifAssignmentFalse')
+        }
+        this.$emit('update-dialog')
+        this.addAssignment()
+        this.$emit('getEventsfromDatabase') //calls the getEvent from Weekly.vue to update the calendar
+      }, 
+      submittedGroupMeeting() {
+        //add if condition once done to make sure "event successfully added" is not shown when event not actually created (requirements not satisfied)
         this.$emit('update-eventsnack')
         this.$emit('update-dialog')
+        this.addGroupMeeting()
+        this.$emit('getEventsfromDatabase') //calls the getEvent from Weekly.vue to update the calendar
       },
-    },
+     pushEventintoUsersFirebase(id) {
+      var eventlist;
+      var user = firebase.auth().currentUser;
+      firebase.firestore().collection('users').doc(user.uid).get().then(function(doc) {
+          eventlist = doc.data().event_list
+          eventlist.push(id)
+          eventlist = eventlist.filter(item => item)
+          console.log(eventlist)
+          firebase.firestore().collection('users').doc(user.uid).update({event_list:eventlist})
+        }) 
+        console.log("Added event into user's event_list!")
+        this.name = '',
+        this.details = '',
+        this.startdate = '',
+        this.enddate = '',
+        this.starttime = '',
+        this.endtime = '',
+        this.module = 'Select Module'
+      },
+      async addEvent () {
+        if (this.name && this.startdate && this.enddate) { //Takes in as long as there is a date
+          if (this.starttime != ''){ //If there is time input, then we input both date and time into database
+            var startinput = this.startdate.concat(" ".concat(this.starttime))
+            var endinput = this.enddate.concat(" ".concat(this.endtime))
+          } else { //if no time input, we just input date into database
+            startinput = this.startdate
+            endinput = this.enddate
+          }
+          var user = firebase.auth().currentUser;
+          var eventAdded = await firebase.firestore().collection('event').add({
+            name: this.name,
+            details: this.details,
+            startdate:this.startdate,
+            enddate:this.enddate,
+            starttime: this.starttime,
+            endtime:this.endtime,
+            start: startinput,
+            end: endinput,
+            color: this.color,
+            global: false,
+            group_id: "fofcnxjlqwf", //change this
+            module_id: this.module, //change this
+            type: 1, //1 == Event
+            uid: user.uid, //change this
+          })
+        await this.pushEventintoUsersFirebase(eventAdded.id);
+        }
+      },
+          async addAssignment () {
+            var startinput;
+            var endinput;
+            if (this.name && this.enddate) { //Takes in as long as there is a date
+                startinput = this.enddate
+                endinput = this.enddate
+              var user = firebase.auth().currentUser;
+              var eventAdded = await firebase.firestore().collection('event').add({
+                name: this.name,
+                details: this.details,
+                startdate:this.enddate,
+                enddate:this.enddate,
+                starttime: this.starttime,
+                endtime:this.endtime,
+                start: startinput,
+                end: endinput,
+                color: this.color,
+                global: false,
+                group_id: "fofcnxjlqwf", //change this
+                module_id: this.module, //change this
+                type: 2, //2 == Assignment
+                uid: user.uid, //change this
+              })
+              this.pushEventintoUsersFirebase(eventAdded.id);
+            }
+          },
+          async addGroupMeeting () { //must put in all members event_list
+            var startinput;
+            var endinput;
+            if (this.name && this.enddate) { //Takes in as long as there is a date
+                startinput = this.enddate
+                endinput = this.enddate
+              var user = firebase.auth().currentUser;
+              var eventAdded = await firebase.firestore().collection('event').add({
+                name: this.name,
+                details: this.details,
+                startdate:this.enddate,
+                enddate:this.enddate,
+                starttime: this.starttime,
+                endtime:this.endtime,
+                start: startinput,
+                end: endinput,
+                color: this.color,
+                global: false,
+                group_id: "fofcnxjlqwf", //change this
+                module_id: "jowfnflasdf", //change this
+                type: 2, //2 == Assignment
+                uid: user.uid, //change this
+              })
+              var eventlist;
+              firebase.firestore().collection('users').doc(user.uid).get().then(function(doc) {
+                  eventlist = doc.data().event_list
+                  eventlist.push(eventAdded.id)
+                  eventlist = eventlist.filter(item => item)
+                  console.log(eventlist)
+                  firebase.firestore().collection('users').doc(user.uid).update({event_list:eventlist})
+              }) //.update({event_list:eventAdded.id})
+              console.log("after ASSIGNMENT adding into user eventlist")
+              this.name = '',
+              this.details = '',
+              this.startdate = '',
+              this.enddate = '',
+              this.starttime = '',
+              this.endtime = ''
+            } else {
+              alert('You must enter event name, start, and end time')
+            }
+          },
+
+    }
     // model: {
     //   prop: 'dialog',
     //   event: 'change'

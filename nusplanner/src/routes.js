@@ -2,17 +2,16 @@ import Login from './components/Login.vue';
 import Main from './components/Main.vue';
 import SignUp from './components/SignUp.vue';
 import Groups from './components/Groups.vue';
+import Dashboard from './components/Dashboard.vue';
 
 export default [
     {
         path: '/',
-        redirect: '/home',
-        meta: {
-            auth: true
-        }
+        redirect: '/home'
     },
     {
         path: '/home',
+        name: 'home',
         component: Main,
         meta: {
             auth: true
@@ -29,16 +28,23 @@ export default [
     {
         path: '/signup',
         name: 'signup',
-        component: SignUp
+        component: SignUp,
+        meta: {
+            guest: true
+        }
     },
     {
         path: '/groups',
-        component: Groups
+        name: 'groups',
+        component: Groups,
+        meta: {
+            auth: true
+        }
     },
     {
         path: '/dashboard',
         name: 'dashboard',
-        component: Main,
+        component: Dashboard,
         meta: {
             auth: true
         }

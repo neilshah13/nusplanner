@@ -46,6 +46,23 @@
           </v-menu>
       </v-col>
   </v-row>
+  
+    <v-row justify="center" no gutters>
+      <v-col>
+       <!-- filter bar -->
+        <div class = "filterbar">
+          <v-container>
+          <v-row justify="space-around">
+            <strong> Filter By: </strong>
+            <v-checkbox value="2" v-model="selectedType" label="Assignment" color="rgb(42, 68, 99)"></v-checkbox>
+            <v-checkbox value="4" v-model="selectedType" label="Exam" color="rgb(42, 68, 99)"></v-checkbox>
+            <v-checkbox value="3" v-model="selectedType" label="Meeting" color="rgb(42, 68, 99)"></v-checkbox>
+            <v-checkbox value="1" v-model="selectedType" label="Others" color="rgb(42, 68, 99)"></v-checkbox>
+          </v-row>
+          </v-container>
+        </div>
+      </v-col>
+    </v-row>
 
       <v-row justify="center" no-gutters>
       <v-col md="auto">
@@ -75,14 +92,16 @@
       @click="grpsnack = false"
     >
       Close
-    </v-btn>
+    </v-btn>  
   </v-snackbar>
 
 <!-- add event dialog -->
 <v-dialog v-model="dialog" max-width="550">
-  <createvent @update-dialog='updateDialog' @update-eventsnack='updateSnackEvent'></createvent>
+  <createvent @update-dialog='updateDialog' @update-ifEventFalse='updateEventFalse' @update-ifAssignmentFalse='updateAssignmentFalse' @update-eventsnack='updateSnackEvent'  @getEventsfromDatabase ='getEvents'></createvent>
 </v-dialog>
-  <v-snackbar
+
+<!-- For Successful Event/Assignment/GroupMeeting -->
+  <v-snackbar 
     v-model="eventsnack"
   >
     Event successfully created! 
@@ -94,6 +113,39 @@
       Close
     </v-btn>
   </v-snackbar>
+<!-- For Event Failure -->
+  <v-snackbar
+    v-model="eventfalse"
+  >
+    Event not created! 
+    <br>
+    You must enter Event name, Start, and End Date
+    <v-btn
+      color="error"
+      text
+      @click="eventfalse = false"
+    >
+      Close
+    </v-btn>
+  </v-snackbar>
+
+<!-- For Assignment Failure -->
+  <v-snackbar
+    v-model="assignmentfalse"
+  >
+    Assignment not created! 
+    <br>
+    You must enter Assignment name, and Due Date
+    <v-btn
+      color="error"
+      text
+      @click="assignmentfalse = false"
+    >
+      Close
+    </v-btn>
+  </v-snackbar>
+
+  <!-- Need to create the above for groupmeeting too! and create a emit for it! -->
 
 <!-- calendar -->
 <v-row no-gutters>
@@ -115,7 +167,47 @@
         ></v-calendar>
         <v-container></v-container>
 <!-- popup after clicking on event -->
-        <v-menu
+<!-- If selecting a global event -->
+        <v-menu v-if = "selectedEvent.global === true" 
+          class="menu"
+          v-model="selectedOpen"
+          :close-on-content-click="false"
+          :activator="selectedElement">
+
+          <v-card color="grey lighten-4" flat>
+            <v-toolbar class="menu" :color="selectedEvent.color" dark>
+              <div align = "left">
+              <textarea
+                v-model= "selectedEvent.name"
+                class='txtarea'
+                type="text"
+                placeholder="Add a title">
+                </textarea>
+                </div>
+            </v-toolbar>
+            <v-card-text>
+              <v-form>                 
+                <div align = "LEFT">
+                <b> <u> {{selectedEvent.module_id}} </u> </b> 
+                <br> 
+                <u> Details </u> 
+                <br> 
+                {{ selectedEvent.details }} 
+                </div>
+              </v-form>
+              <br>
+              <br>
+              <font size="1"> **This is a Global Event and cannot be changed! </font>
+            </v-card-text>
+
+            <v-card-actions>
+              <v-btn text color="secondary" @click="selectedOpen = false, currentlyEditing= null">Close</v-btn>
+            </v-card-actions>
+          </v-card>
+         </v-menu>
+
+<!-- If NOT selecting a global event -->
+        <v-menu v-else
         class="menu"
           v-model="selectedOpen"
           :close-on-content-click="false"
@@ -132,21 +224,69 @@
                 @click.prevent="editEvent(selectedEvent)">
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
-              <v-btn text v-else @click="selectedOpen= false, currentlyEditing= null">Save</v-btn>
-              <v-btn icon>
+              <v-btn text v-else @click="onClickSave(selectedEvent)">Save</v-btn>
+              <v-btn icon @click="deleteEvent(selectedEvent)">
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
             </v-toolbar>
             <v-card-text>
-              <form v-if="currentlyEditing !== selectedEvent.id"> {{ selectedEvent.details }} </form>
-              <form v-else>
-                <textarea-autosize
+              <v-form v-if = "selectedEvent.global == true"> {{ selectedEvent.details }} </v-form>
+              <v-form v-else-if="currentlyEditing !== selectedEvent.id && selectedEvent.global === false">  
+                
+                <div align = "LEFT" v-if="selectedEvent.module_id !== 'Select Module'" >
+                  <b> <u> {{selectedEvent.module_id}} </u> </b> 
+                  <br> 
+                  <u> Details </u> 
+                  <br> 
+                  {{ selectedEvent.details }} 
+                </div>
+                <div align = "LEFT" v-else>
+                  <b> <u> Personal Event </u> </b> <br> Details:{{ selectedEvent.details }} 
+                </div>
+                
+                </v-form>
+              <v-form ref="form" class="neweventform" v-else>
+                <v-text-field class= 'neweventfield' v-model="selectedEvent.name" type="text" label="name"></v-text-field>
+                <v-text-field class= 'neweventfield' v-model="selectedEvent.details" type="text" label="Details (e.g. Meet at Jurong East MRT)"></v-text-field>
+                <v-text-field class= 'neweventfield' v-model="selectedEvent.startdate" type="date" label="Start Date"></v-text-field>
+                <v-text-field class= 'neweventfield' v-model="selectedEvent.enddate" type="date" label="End Date"></v-text-field>
+                <v-text-field class= 'neweventfield'  v-model="selectedEvent.starttime" type="time" label="(Optional) Start Time [hh:mm AM/PM] "></v-text-field>
+                <v-text-field class= 'neweventfield' v-model="selectedEvent.endtime" type="time" label="(Optional) End Time [hh:mm AM/PM] "></v-text-field>
+                <div class='colorfieldtitle'>
+                  <div class="mr-4">
+                  Please choose a color:
+                  </div>
+                    <v-btn
+                      v-bind:color="selectedEvent.color"
+                      dark
+                      @click.stop="colorpickerdialog = true"
+                    >
+                      Color
+                    </v-btn>
+                
+                    <v-dialog
+                      v-model="colorpickerdialog"
+                      max-width="300"
+                    >
+                    <ColorPicker v-model = "selectedEvent.color"> </ColorPicker>
+
+                          <v-btn
+                            v-bind:color="selectedEvent.color"
+                            dark
+                            @click="colorpickerdialog = false"
+                          >
+                            Choose
+                          </v-btn>
+                    </v-dialog>
+                    </div>
+
+                 <!-- (old one) <textarea-autosize
                   v-model="selectedEvent.details"
                   class = "txtarea"
                   type="text"
                   placeholder="Add some notes"
-                ></textarea-autosize>
-              </form>
+                ></textarea-autosize> -->
+              </v-form>
             </v-card-text>
             <v-card-actions>
               <v-btn text color="secondary" @click="selectedOpen = false, currentlyEditing= null">Close</v-btn>
@@ -161,14 +301,15 @@
 
 <script>
 import firebase from "firebase";
-console.log(firebase)
 import CreateEvent from "./CreateEvent.vue"
 import CreateGroup from "./CreateGroup.vue"
+import ColorPicker from 'vue-color-picker-wheel';
 
 export default {
         components:{
         createvent: CreateEvent,
-        creategroup: CreateGroup
+        creategroup: CreateGroup,
+        ColorPicker,
       },
     data: () => ({
       today: new Date().toISOString().substr(0, 10),
@@ -184,8 +325,11 @@ export default {
       selectedElement: null,
       selectedOpen: false,
       dialog: false, // for adding event
+      colorpickerdialog: false,
       groupMembers: false, // for adding groups
       eventsnack: false, // snackbar for added events
+      eventfalse: false,
+      assignmentfalse: false,
       grpsnack: false, // snackbar for added groups
       typeToLabel: {
         month: 'Month',
@@ -198,72 +342,24 @@ export default {
         groupMeeting: 'Group Meeting',
       },
       events: [],
-
-      // events: [
-      //   {
-      //     name: 'IS4241 Meeting',
-      //     details: 'At tembu',
-      //     start: '2020-02-25 09:00',
-      //     end: '2020-02-25 15:00',
-      //     color: 'orange',
-      //   },
-      //   {
-      //     name: 'Computing Career Fair',
-      //     details: 'Outside SR1',
-      //     start: '2020-02-24 12:00',
-      //     end: '2020-02-24 17:00',
-      //     color: 'cyan',
-      //   },
-      //   {
-      //     name: 'IS3103 Essay due',
-      //     details: 'Submit in pdf format, word count 1000',
-      //     start: '2020-02-24',
-      //     color: 'pink',
-      //   },
-      //   {
-      //     name: 'BT3103 Prototype Due',
-      //     details: 'A+?? :)',
-      //     start: '2020-03-02',
-      //     color: 'red',
-      //   },
-      //   {
-      //     name: 'BT3103 Group Meeting',
-      //     details: 'Just do work',
-      //     start: '2020-02-26 12:00',
-      //     end: '2020-02-26 17:00',
-      //     color: 'pink',
-      //   },
-      //   {
-      //     name: 'CS1231 Midterms',
-      //     details: 'At computing SR1',
-      //     start: '2020-02-29 10:00',
-      //     end: '2020-02-29 12:00',
-      //     color: 'purple',
-      //   },
-      //   {
-      //     name: 'BT3102 Midterms',
-      //     details: 'Due 1800, submit .csv file',
-      //     start: '2020-02-28',
-      //     color: 'indigo',
-      //   },
-      // ],
+      allEvents: [],
+      selectedType: ["1", "2", "3", "4"],
+      selectedModules: []
     }),
-    mounted () {
+    mounted() {
       this.getEvents()
+      this.$root.$on('filter-module', data => {
+        this.filterByModule(data)
+      })
     },
-    created() {
-      this.getEvents()
-    }
-    ,
-    /* For group members button */
     watch: {
-      isUpdating (val) {
-        if (val) {
-          setTimeout(() => (this.isUpdating = false), 3000)
-        }
+      selectedType() {
+        this.filterEvents()
       },
+      selectedModules() {
+        this.filterEvents()
+      }
     },
-    /* End For group members button */
     computed: {
       title () {
         const { start, end } = this
@@ -304,6 +400,13 @@ export default {
       updateSnackEvent() {
         this.eventsnack = true;
       },
+      updateEventFalse() {
+        this.eventfalse = true;
+      },
+      updateAssignmentFalse() {
+        this.assignmentfalse = true;
+      },
+
       updateSnackGrp() {
         this.grpsnack = true;
       },
@@ -327,6 +430,12 @@ export default {
           open()
         }
         nativeEvent.stopPropagation()
+      }, 
+      
+      onClickSave(ev) {
+          this.updateEvent(ev)
+          this.selectedOpen = false
+          this.currentlyEditing= null
       },
       editEvent(ev) {
         this.currentlyEditing = ev.id;
@@ -355,52 +464,81 @@ export default {
           ? `${a.getFullYear()}-${a.getMonth() + 1}-${a.getDate()} ${a.getHours()}:${a.getMinutes()}`
           : `${a.getFullYear()}-${a.getMonth() + 1}-${a.getDate()}`
       },
-      
+
+      filterByModule(arr) {
+        this.selectedModules = arr;
+        this.filterEvents();
+      },
+
+      filterEvents() {
+        let events = []
+        this.allEvents.forEach(eventData => {
+          if (this.selectedType.includes(eventData.type.toString()) && (this.selectedModules.includes(eventData.module_id) || eventData.module_id === "Select Module")) {
+            events.push(eventData)
+          }
+        })
+        this.events = events
+      },
+
       async getEvents () {
       let snapshot = await firebase.firestore().collection('event').get()
       let events = []
+      var user = firebase.auth().currentUser;
       snapshot.forEach(doc => {
-        console.log(doc.data())
-        let appData = doc.data()
-        appData.id = doc.id
-        events.push(appData)
-      })
-      this.events = events
-      },
-      /*  
-      async addEvent () {
-        if (this.name && this.start && this.end) {
-          await db.collection('calEvent').add({
-            name: this.name,
-            details: this.details,
-            start: this.start,
-            end: this.end,
-            color: this.color
-          })
-          this.getEvents()
-          this.name = '',
-          this.details = '',
-          this.start = '',
-          this.end = '',
-          this.color = ''
-        } else {
-          alert('You must enter event name, start, and end time')
+        let eventData = doc.data()
+        if (eventData.uid == user.uid || eventData.global == true) {
+          eventData.id = doc.id
+          events.push(eventData)
         }
-        },*/
-        /*
+      })
+      this.allEvents = events
+      this.events = events
+      }, 
+
+      /* addEvent() function moved to CreateEvent.vue */
+  
         async updateEvent (ev) {
-          await db.collection('calEvent').doc(this.currentlyEditing).update({
-            details: ev.details
-          })
+            console.log("just after event called")
+            if (ev.starttime != ''){ //If there is time input, then we input both date and time into database
+              var startinput = ev.startdate.concat(" ".concat(ev.starttime))
+              var endinput = ev.enddate.concat(" ".concat(ev.endtime))
+            } else { //if no time input, we just input date into database
+              startinput = ev.startdate
+              endinput = ev.enddate
+            }
+            await firebase.firestore().collection('event').doc(ev.id).update({
+              name: ev.name,
+              details: ev.details,
+              startdate: ev.startdate,
+              enddate: ev.enddate,
+              starttime: ev.starttime,
+              endtime: ev.endtime,
+              start: startinput,
+              end: endinput,
+              color: ev.color
+
+            })
+            
+            this.selectedOpen = false
+            this.currentlyEditing = null
+            this.getEvents()
+          }
+        ,
+        
+        async deleteEvent (ev) {
+          var user = firebase.auth().currentUser;
+          var eventlist;
+          await firebase.firestore().collection('event').doc(ev.id).delete();
+          firebase.firestore().collection('users').doc(user.uid).get().then(function(doc) {
+          eventlist = doc.data().event_list
+          var index = eventlist.indexOf(ev.id);
+          if (index !== -1) eventlist.splice(index, 1); //removing event from users' event_list
+          eventlist = eventlist.filter(item => item)
+          firebase.firestore().collection('users').doc(user.uid).update({event_list:eventlist})
+      }) 
           this.selectedOpen = false
-          this.currentlyEditing = null
           this.getEvents()
         },
-        async deleteEvent (ev) {
-          await db.collection('calEvent').doc(ev).delete()
-          this.selectedOpen = false
-          this.getEvents()
-        },*/
       },
     }
 </script>
@@ -427,5 +565,14 @@ export default {
 }
 .menu {
   font-size: 15px;
+}
+.filterbar {
+  background-color:aliceblue;
+  max-width: 2000px;
+  max-height: 70px;
+  color:rgb(42, 68, 99);
+}
+.neweventform {
+  display: block;
 }
 </style>

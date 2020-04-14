@@ -8,32 +8,20 @@
         </h1>
         <txt>Click to view full</txt>
         <p></p>
-        <!--first announcement -->
-        <v-card>
-          <p>
-            <v-container class="contain">
-              BT3103:
-              <i>
-                <strong>Prof Thangamani</strong>
-              </i>
-              <p>01/03/20, 16:04</p>
-            </v-container>
-            <v-divider></v-divider>
-          </p>
-        </v-card>
-        <!-- second announcement-->
-        <v-card>
-          <p>
-            <v-container class="contain">
-              IS3103:
-              <i>
-                <strong>Prof Oh</strong>
-              </i>
-              <p>05/03/20, 12:53</p>
-            </v-container>
-            <v-divider></v-divider>
-          </p>
-        </v-card>
+        <!--minimised view of announcement -->
+        <div v-for="announcement in announcements" v-bind:key="announcement.coordinator">
+          <v-card>
+            <p>
+              <v-container class="contain">
+                {{announcement.module_id}}:
+                <strong>{{announcement.title}}</strong> by
+                <i>{{announcement.coordinator}}</i>
+                <p>{{announcement.date_posted}}</p>
+              </v-container>
+              <v-divider></v-divider>
+            </p>
+          </v-card>
+        </div>
         <v-divider></v-divider>
       </v-container>
     </v-container>
@@ -44,32 +32,24 @@
             <strong>Announcements</strong>
           </h2>
           <div>
-            <!--first announcement -->
-            <v-card>
-              <p>
-                <v-container class="header">
-                  BT3103:
-                  <i>
-                    <strong>Prof Thangamani</strong>
-                  </i>
-                  <txt>[01/03/20, 16:04]</txt>
-                </v-container>
-                <v-card-text>Team "Work" you are the BEST!</v-card-text>
-              </p>
-            </v-card>
-            <!-- second announcement-->
-            <v-card>
-              <p>
-                <v-container class="header">
-                  IS3103:
-                  <i>
-                    <strong>Prof Oh</strong>
-                  </i>
-                  <txt>05/03/20, 12:53</txt>
-                </v-container>
-                <v-card-text>The tutorial on 12th March will be cancelled.</v-card-text>
-              </p>
-            </v-card>
+            <div v-for="announcement in announcements" v-bind:key="announcement.coordinator">
+              <!--detailed view of announcement -->
+              <v-card>
+                <p>
+                  <v-container class="header">
+                    {{announcement.module_id}}:
+                    <i>
+                      <strong>{{announcement.coordinator}}</strong>
+                    </i>
+                    <txt>{{announcement.date_posted}}</txt>
+                  </v-container>
+                  <v-card-text>
+                    <strong>{{announcement.title}} :</strong>
+                    {{announcement.description}}
+                  </v-card-text>
+                </p>
+              </v-card>
+            </div>
             <v-divider></v-divider>
             <btn
               class="btn"
@@ -86,10 +66,50 @@
 </template>
 
 <script>
+import firebase from "firebase";
+
 export default {
-  data: () => ({
-    dialog: false
-  })
+  data() {
+    return {
+      dialog: false,
+      announcements: [],
+      modules: []
+    };
+  },
+  mounted() {
+    //console.log("Ran Announcement Code");
+    this.$root.$on('announcement-module', data => {
+      this.runAnnouncements(data);
+    })
+  },
+  methods: {
+    runAnnouncements(data){
+      this.modules = data;
+      this.getAnnouncements()
+    },
+    async getAnnouncements() {
+      let snapshot = await firebase
+        .firestore()
+        .collection("announcement")
+        .get();
+      let ancmt_list = [];
+      snapshot.forEach(doc => {
+        if (this.modules.includes(doc.data().module_id)) {
+          let appData = doc.data();
+          let date = appData.date_posted.toDate();
+          appData.date_posted =
+            date.getDate().toString() +
+            "/" +
+            date.getMonth().toString() +
+            "/" +
+            date.getYear().toString();
+          appData.id = doc.id;
+          ancmt_list.push(appData);
+        }
+      });
+      this.announcements = ancmt_list;
+    },
+  }
 };
 </script>
 
@@ -128,9 +148,10 @@ txt {
   color: rgb(42, 68, 99);
   background: white;
   max-width: 250px;
-  font-size: 25px;
+  font-size: 20px;
   padding: 0;
   transform: scale(0.8);
+  cursor: pointer;
 }
 btn {
   background-color: rgb(42, 68, 99);

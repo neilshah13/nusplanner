@@ -1,25 +1,27 @@
 <template>
 <div id="app">
   <body>
-    <v-row no-gutters>
-      <v-col md= "12">
-        <moduleAdding></moduleAdding>
-      </v-col>
-    </v-row>
-    <v-row no-gutters>
-      <v-col md="2">
-        <announcement></announcement>
-        <Filters></Filters>
-      </v-col>
-      <v-col md="7">
-        <v-app>
-          <Weekly></Weekly>
-        </v-app>
-      </v-col>
-      <v-col md="3">
-        <todolist></todolist>
-      </v-col>
-    </v-row>
+    <v-app>
+      <v-row no-gutters >
+        <v-col md= "12">
+          <moduleAdding></moduleAdding>
+        </v-col>
+      </v-row>
+      <v-row no-gutters>
+        <v-col md="2">
+          <announcement></announcement>
+          <!--<Filters></Filters>-->
+        </v-col>
+        <v-col md="7">
+          <v-app>
+            <Weekly></Weekly>
+          </v-app>
+        </v-col>
+        <v-col md="3">
+          <todolist></todolist>
+        </v-col>
+      </v-row>
+    </v-app>
   </body>
 </div>
 </template>
@@ -31,7 +33,7 @@ import Weekly from "./Weekly.vue";
 import Vue from "vue";
 //import { AutoCompletePlugin } from "@syncfusion/ej2-vue-dropdowns";
 import ModuleAdding from "./ModuleSelector.vue";
-import Filters from "./Filters.vue";
+//import Filters from "./Filters.vue";
 import Announcement from "./Announcement.vue";
 
 //Vue.use(AutoCompletePlugin);
@@ -41,7 +43,7 @@ export default Vue.extend({
     //Header,
     todolist,
     Weekly,
-    Filters,
+    //Filters,
     moduleAdding: ModuleAdding,
     announcement: Announcement
   }
