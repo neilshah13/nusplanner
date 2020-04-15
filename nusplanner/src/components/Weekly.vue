@@ -57,7 +57,9 @@
             <v-checkbox value="2" v-model="selectedType" label="Assignment" color="rgb(42, 68, 99)"></v-checkbox>
             <v-checkbox value="4" v-model="selectedType" label="Exam" color="rgb(42, 68, 99)"></v-checkbox>
             <v-checkbox value="3" v-model="selectedType" label="Meeting" color="rgb(42, 68, 99)"></v-checkbox>
-            <v-checkbox value="1" v-model="selectedType" label="Others" color="rgb(42, 68, 99)"></v-checkbox>
+            <v-checkbox value="1" v-model="selectedType" label="Events" color="rgb(42, 68, 99)"></v-checkbox>
+            <v-checkbox v-model="personal" label="Personal" color="rgb(42, 68, 99)"></v-checkbox>
+
           </v-row>
           </v-container>
         </div>
@@ -321,8 +323,9 @@ export default {
       },
       events: [],
       allEvents: [],
-      selectedType: ["1", "2", "3", "4"],
-      selectedModules: []
+      selectedType: ["1", "2", "3", "4", "5"],
+      selectedModules: [],
+      personal: true
     }),
     mounted() {
       this.getEvents()
@@ -335,6 +338,9 @@ export default {
         this.filterEvents()
       },
       selectedModules() {
+        this.filterEvents()
+      },
+      personal() {
         this.filterEvents()
       }
     },
@@ -443,7 +449,10 @@ export default {
       filterEvents() {
         let events = []
         this.allEvents.forEach(eventData => {
-          if (this.selectedType.includes(eventData.type.toString()) && (this.selectedModules.includes(eventData.module_id) || eventData.module_id === "Select Module")) {
+          if (this.selectedType.includes(eventData.type.toString()) && this.selectedModules.includes(eventData.module_id)) {
+            events.push(eventData)
+          } 
+          if (this.selectedType.includes(eventData.type.toString()) && eventData.module_id == "Select Module" && this.personal) {
             events.push(eventData)
           }
         })
@@ -468,7 +477,6 @@ export default {
       /* addEvent() function moved to CreateEvent.vue */
 
         async updateEvent (ev) {
-            console.log("just after event called")
             if (ev.starttime != ''){ //If there is time input, then we input both date and time into database
               var startinput = ev.startdate.concat(" ".concat(ev.starttime))
               var endinput = ev.enddate.concat(" ".concat(ev.endtime))
