@@ -323,7 +323,7 @@ export default {
       },
       events: [],
       allEvents: [],
-      selectedType: ["1", "2", "3", "4", "5"],
+      selectedType: ["1", "2", "3", "4"],
       selectedModules: [],
       personal: true
     }),
