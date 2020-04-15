@@ -142,7 +142,7 @@ p {
   background: rgb(42, 68, 99);
   max-width: 475px;
 }
-txt {
+.txt {
   padding: 10px;
   font-size: 11px;
 }

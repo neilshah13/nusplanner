@@ -449,10 +449,13 @@ export default {
       filterEvents() {
         let events = []
         this.allEvents.forEach(eventData => {
-          if (this.selectedType.includes(eventData.type.toString()) && this.selectedModules.includes(eventData.module_id)) {
+          if (this.selectedType.length == 0 && eventData.module_id == "Select Module" && this.personal) {
+            events.push(eventData)
+          }
+          else if (this.selectedType.includes(eventData.type.toString()) && this.selectedModules.includes(eventData.module_id)) {
             events.push(eventData)
           } 
-          if (this.selectedType.includes(eventData.type.toString()) && eventData.module_id == "Select Module" && this.personal) {
+          else if (this.selectedType.includes(eventData.type.toString()) && eventData.module_id == "Select Module" && this.personal) {
             events.push(eventData)
           }
         })
