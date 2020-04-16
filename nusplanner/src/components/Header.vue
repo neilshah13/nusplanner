@@ -88,7 +88,7 @@ export default {
 }
 
 .header-login-signup .header-limiter {
-  max-width: 1200px;
+  max-width: 95%;
   text-align: center;
   margin: 0 auto;
 }
