@@ -10,7 +10,6 @@
       <v-row no-gutters>
         <v-col md="2">
           <announcement></announcement>
-          <!--<Filters></Filters>-->
         </v-col>
         <v-col md="7">
           <v-app>
@@ -65,11 +64,6 @@ body {
     padding-left: 0;
     padding-bottom: 0;
   }
-}
-
-#prioritylist {
-  float: right;
-  margin-right: 0;
 }
 
 #app {

@@ -2,7 +2,7 @@
   <div>
     <v-toolbar
       dark
-      color="blue darken-3"
+      color=#36567d
       src="https://lh3.googleusercontent.com/proxy/6_4hiPG1zpcr-h5C4h8M0pGIqQYxp1hUCoWJXaf_E2gk_MmGWsMtzNHPPBuYg_PdxPnK4DR5Cdm8AoaWa4UiXZdOThEJZDoXXSECzyFHedCLWdgTWTVLpMCGhBQ4LuLeM6_0IoXcYZxsqMTmsa5R"
       dense
     >
@@ -33,7 +33,7 @@
             v-for="mod in moduleList"
             :key="mod"
           >
-            <v-checkbox :label="mod" v-model="selectedModules" :value="mod"
+            <v-checkbox :label="mod" v-model="selectedModules" :value="mod" color="rgb(42, 68, 99)"
             append-icon="mdi-delete" class = "ml-auto" @click:append="deleteModFromList(mod)">
             </v-checkbox>
           </v-flex>
@@ -210,5 +210,6 @@ export default {
   font-size: 20px;
   text-align: center;
   margin: auto;
+  margin-bottom: -15px;
 }
 </style>

@@ -81,7 +81,7 @@ html, body {
 	width:18px; height:18px;
 	/*border:1px solid #FF6666;*/
 	border-radius:50%;
-	background:#FF6666;
+	background:#36486b;
 	opacity:0.7;
 	transition:	all .2s ease-in-out;
 }
