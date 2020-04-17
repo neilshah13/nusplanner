@@ -4,7 +4,7 @@
       <v-col>
           <!-- add groupMembers -->
           <v-btn color="primary" dark @click.stop="groupMembers = true" class="mr-4">
-            Add Group Members
+            Create Group
           </v-btn>
       </v-col>
       <v-col>
@@ -82,7 +82,7 @@
 
 <!-- add GroupMembers dialog -->
 <v-dialog v-model="groupMembers" max-width="550">
-<creategroup @update-grp='updateGrp' @update-grpsnack='updateSnackGrp'></creategroup>
+<creategroup @update-grp='updateGrp' @update-grpsnack='updateSnackGrp' @update-grpsnack-nouserfalse='updategroupnouser' @update-grpsnack-notfilled='updateSnackGrpnotfilled'></creategroup>
 </v-dialog>
   <v-snackbar
     v-model="grpsnack"
@@ -92,6 +92,32 @@
       color="error"
       text
       @click="grpsnack = false"
+    >
+      Close
+    </v-btn>
+  </v-snackbar>
+
+  <v-snackbar
+    v-model="grpsnacknouser"
+  >
+    You need to include yourself in the group!
+    <v-btn
+      color="error"
+      text
+      @click="grpsnacknouser = false"
+    >
+      Close
+    </v-btn>
+  </v-snackbar>
+
+  <v-snackbar
+    v-model="grpsnacknotfilled"
+  >
+    Please make sure all fields are filled!
+    <v-btn
+      color="error"
+      text
+      @click="grpsnacknotfilled = false"
     >
       Close
     </v-btn>
@@ -309,6 +335,8 @@ export default {
       assignmentfalse: false,
       grpmeetingfalse: false,
       grpsnack: false, // snackbar for added groups
+      grpsnacknouser: false,
+      grpsnacknotfilled: false,
       deleteconfirm: false,
       deletepopup: false,
       typeToLabel: {
@@ -383,9 +411,20 @@ export default {
       },
       updateSnackEvent() {
         this.eventsnack = true;
-      },
-      updateSnackGrp() {
+        setTimeout(function(){ this.eventsnack = this.eventsnack.replace(true, false); }, 3000)
+      }, 
+      updategroupnouser(){
+        this.grpsnacknouser = true;
+        setTimeout(function(){ this.grpsnacknouser = this.grpsnacknouser.replace(true, false); }, 3000)
+      }
+      ,updateSnackGrp() {
         this.grpsnack = true;
+        setTimeout(function(){ this.grpsnack = this.grpsnack.replace(true, false); }, 3000)
+      },
+      updateSnackGrpnotfilled() {
+        this.grpsnacknotfilled = true;
+        setTimeout(function(){ this.grpsnacknotfilled = this.grpsnacknotfilled.replace(true, false); }, 3000)
+
       },
       viewDay({ date }) {
         this.focus = date;

@@ -162,6 +162,7 @@ export default {
     },
     reset() {
       this.$refs.form.reset();
+      this.module = "Select Module"
     },
     indexWhere: function(array, conditionFn) {
       const item = array.find(conditionFn);
@@ -256,9 +257,14 @@ export default {
       // console.log(this.members)
     },
     async addGroups() {
-      this.$emit("update-dialog");
       //add to group collection
-      if (this.grpName && this.module && this.members) {
+      var current = firebase.auth().currentUser;
+      console.log(this.members)
+      console.log(this.members.indexOf(current.uid)==-1)
+      if (this.members.indexOf(current.uid)==-1) {
+        this.$emit("update-grpsnack-nouserfalse");
+      } 
+      else if (this.grpName && this.module != "Select Module" && this.members)  {
         this.$emit("update-grpsnack");
         this.$emit("update-grp");
         var groupadded = await firebase
@@ -291,10 +297,11 @@ export default {
         //clear out inputs after a submission
         this.grpName = "";
         this.members = "";
-        this.module = "";
+        this.module = "Select Module";
+        this.reset(); // To reset form, for some reason, without this, members wont be reset to empty!
         // console.log("saved")
       } else {
-        alert("Please make sure all fields are filled!");
+        this.$emit("update-grpsnack-notfilled");
       }
       //add to user collection's group_list
     }
