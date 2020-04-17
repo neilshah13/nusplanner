@@ -121,9 +121,9 @@ export default {
     deleteModFromList(mod) {
       var user = firebase.auth().currentUser;
       let ml_index = this.moduleList.indexOf(mod);
-      let sm_index = this.selectedModules.indexOf(mod)
+      //let sm_index = this.selectedModules.indexOf(mod)
       this.moduleList.splice(ml_index, 1);
-      this.selectedModules.splice(sm_index, 1);
+      //this.selectedModules.splice(sm_index, 1);
       firebase
         .firestore()
         .collection("module")
