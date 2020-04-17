@@ -26,6 +26,14 @@ export default {
                         stepSize: 1
                     }
                 }]
+            },
+            animation: {
+                duration: 10
+            },
+            elements: {
+                line: {
+                    tension: 0.3
+                }
             }
         }
     }),
@@ -55,30 +63,35 @@ export default {
                         for (let i in events) {
                             var e = events[i];
                             console.log("EVENTS")
+                            console.log(i)
                             console.log(e)
                             if (e != "") {
                                 await firebase.firestore().collection('event').doc(e).get().then(function(doc) {
                                     let deadline = doc.data().enddate
-                                    if (deadline == week[0]) {
-                                        count[0]++
-                                    }
-                                    if (deadline == week[1]) {
-                                        count[1]++
-                                    }
-                                    if (deadline == week[2]) {
-                                        count[2]++
-                                    }
-                                    if (deadline == week[3]) {
-                                        count[3]++
-                                    }
-                                    if (deadline == week[4]) {
-                                        count[4]++
-                                    }
-                                    if (deadline == week[5]) {
-                                        count[5]++
-                                    }
-                                    if (deadline == week[6]) {
-                                        count[6]++
+                                    console.log("CHECK")
+                                    console.log(week.includes(deadline))
+                                    if (week.includes(deadline)) {
+                                        if (deadline == week[0]) {
+                                            count[0]++
+                                        }
+                                        else if (deadline == week[1]) {
+                                            count[1]++
+                                        }
+                                        else if (deadline == week[2]) {
+                                            count[2]++
+                                        }
+                                        else if (deadline == week[3]) {
+                                            count[3]++
+                                        }
+                                        else if (deadline == week[4]) {
+                                            count[4]++
+                                        }
+                                        else if (deadline == week[5]) {
+                                            count[5]++
+                                        }
+                                        else if (deadline == week[6]) {
+                                            count[6]++
+                                        }
                                     }
                                 })
                                 self.chartdata.datasets[0].data = count
