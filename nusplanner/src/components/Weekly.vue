@@ -249,12 +249,142 @@
 
                 </v-form>
               <v-form ref="form" class="neweventform" v-else>
-                <v-text-field class= 'neweventfield' v-model="selectedEvent.name" type="text" label="name"></v-text-field>
-                <v-text-field class= 'neweventfield' v-model="selectedEvent.details" type="text" label="Details (e.g. Meet at Jurong East MRT)"></v-text-field>
+                <v-text-field outlined class= 'neweventfield' v-model="selectedEvent.name" type="text" label="Name"></v-text-field>
+                <v-text-field outlined class= 'neweventfield' v-model="selectedEvent.details" type="text" label="Details (e.g. Meet at Jurong East MRT)"></v-text-field>
                 <v-text-field class= 'neweventfield' v-model="selectedEvent.startdate" type="date" label="Start Date"></v-text-field>
                 <v-text-field class= 'neweventfield' v-model="selectedEvent.enddate" type="date" label="End Date"></v-text-field>
                 <v-text-field class= 'neweventfield'  v-model="selectedEvent.starttime" type="time" label="(Optional) Start Time [hh:mm AM/PM] "></v-text-field>
                 <v-text-field class= 'neweventfield' v-model="selectedEvent.endtime" type="time" label="(Optional) End Time [hh:mm AM/PM] "></v-text-field>
+           
+
+           <!-- <v-layout row wrap>
+          <v-menu
+            v-model="selectedEvent.fromStartDateMenu"
+            :close-on-content-click="false"
+            :nudge-right="40"
+            lazy
+            transition="scale-transition"
+            offset-y
+            full-width
+            max-width="290px"
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                outlined
+                class= 'neweventfield'
+                label="Start Date"
+                prepend-icon="event"
+                readonly
+                :value="selectedEvent.startdate"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker
+              locale="en-in"
+              v-model="selectedEvent.startdate"
+              no-title
+              @input="selectedEvent.fromStartDateMenu = false"
+            ></v-date-picker>
+          </v-menu>
+        </v-layout>
+        
+        <v-layout row wrap>
+          <v-menu
+            v-model="selectedEvent.fromEndDateMenu"
+            :close-on-content-click="false"
+            :nudge-right="40"
+            lazy
+            transition="scale-transition"
+            offset-y
+            full-width
+            max-width="290px"
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                outlined
+                class= 'neweventfield'
+                label="End Date"
+                prepend-icon="event"
+                readonly
+                :value="selectedEvent.enddate"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker
+              locale="en-in"
+              v-model="selectedEvent.enddate"
+              no-title
+              @input="selectedEvent.fromEndDateMenu = false"
+            ></v-date-picker>
+          </v-menu>
+        </v-layout>
+
+
+        <v-layout row wrap>
+          <v-menu
+            v-model="fromStartTimeMenu"
+            :close-on-content-click="false"
+            :nudge-right="40"
+            lazy
+            transition="scale-transition"
+            offset-y
+            full-width
+            max-width="290px"
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                outlined
+                class= 'neweventfield'
+                label="Start Time"
+                prepend-icon="event"
+                :value="selectedEvent.starttime"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-time-picker
+              locale="en-in"
+              v-model="selectedEvent.starttime"
+              no-title
+              @input="fromStartTimeMenu = false"
+            ></v-time-picker>
+          </v-menu>
+        </v-layout>
+        
+        <v-layout row wrap>
+          <v-menu
+            v-model="fromEndTimeMenu"
+            :close-on-content-click="false"
+            :nudge-right="40"
+            lazy
+            transition="scale-transition"
+            offset-y
+            full-width
+            max-width="290px"
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                outlined
+                class= 'neweventfield'
+                label="End Time"
+                prepend-icon="event"
+                readonly
+                :value="endtime"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-time-picker
+              locale="en-in"
+              v-model="endtime"
+              no-title
+              @input="fromEndTimeMenu = false"
+            ></v-time-picker>
+          </v-menu>
+        </v-layout> -->
+
                 <div class='colorfieldtitle'>
                   <div class="mr-4">
                   Please choose a color:
@@ -339,6 +469,7 @@ export default {
       grpsnacknotfilled: false,
       deleteconfirm: false,
       deletepopup: false,
+      FromStartTimeMenu: false,
       typeToLabel: {
         month: 'Month',
         week: 'Week',
@@ -519,6 +650,7 @@ export default {
       /* addEvent() function moved to CreateEvent.vue */
 
         async updateEvent (ev) {
+
             if (ev.starttime != ''){ //If there is time input, then we input both date and time into database
               var startinput = ev.startdate.concat(" ".concat(ev.starttime))
               var endinput = ev.enddate.concat(" ".concat(ev.endtime))
@@ -595,6 +727,9 @@ export default {
 }
 .neweventform {
   display: block;
+}
+.neweventfield {
+  transform: scale(0.75);
 }
 .deletetitle {
   padding: 12px;
