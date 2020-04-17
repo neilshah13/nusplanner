@@ -24,6 +24,9 @@ export default{
             display: true,
             text: 'Check how much time you spend on each Module'
           }          
+        },
+        animation: {
+          duration: 3000
         }
       }),
       methods: {
