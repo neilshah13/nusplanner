@@ -69,13 +69,15 @@
       <v-row justify="center" no-gutters>
       <v-col md="auto">
 <!-- prev week -->
-        <v-btn fab text small color="grey darken-2" @click="prev">
-            <v-icon text small>mdi-chevron-left</v-icon>
+        <v-btn fab text medium color="grey darken-2" @click="prev">
+            <v-icon text medium>mdi-chevron-left</v-icon>
         </v-btn>
+        <span class="maintitle">
 <!-- title -->{{ title }}
+        </span>
 <!-- next week -->
-        <v-btn fab text small color="grey darken-2" @click="next"> <!-- class mr-4 means to have a margin-->
-            <v-icon small>mdi-chevron-right</v-icon>
+        <v-btn fab text medium color="grey darken-2" @click="next"> <!-- class mr-4 means to have a margin-->
+            <v-icon medium>mdi-chevron-right</v-icon>
         </v-btn>
       </v-col>
     </v-row>
@@ -733,5 +735,9 @@ export default {
 }
 .deletetitle {
   padding: 12px;
+}
+.maintitle {
+  font-size: 20px;
+  padding: 30px;
 }
 </style>
