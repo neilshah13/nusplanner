@@ -195,7 +195,8 @@ export default {
 }
 
 #todolist {
-  resize: auto;
+  resize: vertical;
+  overflow: scroll;
   margin: auto;
   min-width: 10px;
   padding: 2rem 3rem 3rem;
