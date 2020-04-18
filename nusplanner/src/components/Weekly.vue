@@ -59,14 +59,13 @@
             <v-checkbox value="3" v-model="selectedType" label="Meeting" color="rgb(42, 68, 99)"></v-checkbox>
             <v-checkbox value="1" v-model="selectedType" label="Events" color="rgb(42, 68, 99)"></v-checkbox>
             <v-checkbox v-model="personal" label="Personal" color="rgb(42, 68, 99)"></v-checkbox>
-
           </v-row>
           </v-container>
         </div>
       </v-col>
     </v-row>
 
-      <v-row justify="center" no-gutters>
+      <v-row justify="center" no-gutters class="month">
       <v-col md="auto">
 <!-- prev week -->
         <v-btn fab text medium color="grey darken-2" @click="prev">
@@ -724,7 +723,7 @@ export default {
 .filterbar {
   background-color:aliceblue;
   max-width: 2000px;
-  max-height: 70px;
+  max-height: 63px;
   color:rgb(42, 68, 99);
 }
 .neweventform {
@@ -739,5 +738,9 @@ export default {
 .maintitle {
   font-size: 20px;
   padding: 30px;
+}
+.month {
+  margin-top: -10px;
+  margin-bottom: -10px;
 }
 </style>
