@@ -62,7 +62,7 @@
     <!-- <p v-else class="emptylist">Your todo list is empty.</p> -->
     <form name="newform" v-on:submit.prevent="addItem">
       <label for="newitem">Add to the todo list</label>
-      <input type="text" name="newitem" id="newitem" v-model="newitem" />
+      <input type="text" name="newitem" id="newitem" v-model="newitem" required/>
       <button type="submit">Add item</button>
     </form>
   </main>

@@ -4,7 +4,7 @@
       <v-col>
           <!-- add groupMembers -->
           <v-btn color="primary" dark @click.stop="groupMembers = true" class="mr-4">
-            Add Group Members
+            Create Group
           </v-btn>
       </v-col>
       <v-col>
@@ -57,7 +57,9 @@
             <v-checkbox value="2" v-model="selectedType" label="Assignment" color="rgb(42, 68, 99)"></v-checkbox>
             <v-checkbox value="4" v-model="selectedType" label="Exam" color="rgb(42, 68, 99)"></v-checkbox>
             <v-checkbox value="3" v-model="selectedType" label="Meeting" color="rgb(42, 68, 99)"></v-checkbox>
-            <v-checkbox value="1" v-model="selectedType" label="Others" color="rgb(42, 68, 99)"></v-checkbox>
+            <v-checkbox value="1" v-model="selectedType" label="Events" color="rgb(42, 68, 99)"></v-checkbox>
+            <v-checkbox v-model="personal" label="Personal" color="rgb(42, 68, 99)"></v-checkbox>
+
           </v-row>
           </v-container>
         </div>
@@ -67,20 +69,22 @@
       <v-row justify="center" no-gutters>
       <v-col md="auto">
 <!-- prev week -->
-        <v-btn fab text small color="grey darken-2" @click="prev">
-            <v-icon text small>mdi-chevron-left</v-icon>
+        <v-btn fab text medium color="grey darken-2" @click="prev">
+            <v-icon text medium>mdi-chevron-left</v-icon>
         </v-btn>
+        <span class="maintitle">
 <!-- title -->{{ title }}
+        </span>
 <!-- next week -->
-        <v-btn fab text small color="grey darken-2" @click="next"> <!-- class mr-4 means to have a margin-->
-            <v-icon small>mdi-chevron-right</v-icon>
+        <v-btn fab text medium color="grey darken-2" @click="next"> <!-- class mr-4 means to have a margin-->
+            <v-icon medium>mdi-chevron-right</v-icon>
         </v-btn>
       </v-col>
     </v-row>
 
 <!-- add GroupMembers dialog -->
 <v-dialog v-model="groupMembers" max-width="550">
-<creategroup @update-grp='updateGrp' @update-grpsnack='updateSnackGrp'></creategroup>
+<creategroup @update-grp='updateGrp' @update-grpsnack='updateSnackGrp' @update-grpsnack-nouserfalse='updategroupnouser' @update-grpsnack-notfilled='updateSnackGrpnotfilled'></creategroup>
 </v-dialog>
   <v-snackbar
     v-model="grpsnack"
@@ -90,6 +94,32 @@
       color="error"
       text
       @click="grpsnack = false"
+    >
+      Close
+    </v-btn>
+  </v-snackbar>
+
+  <v-snackbar
+    v-model="grpsnacknouser"
+  >
+    You need to include yourself in the group!
+    <v-btn
+      color="error"
+      text
+      @click="grpsnacknouser = false"
+    >
+      Close
+    </v-btn>
+  </v-snackbar>
+
+  <v-snackbar
+    v-model="grpsnacknotfilled"
+  >
+    Please make sure all fields are filled!
+    <v-btn
+      color="error"
+      text
+      @click="grpsnacknotfilled = false"
     >
       Close
     </v-btn>
@@ -221,12 +251,142 @@
 
                 </v-form>
               <v-form ref="form" class="neweventform" v-else>
-                <v-text-field class= 'neweventfield' v-model="selectedEvent.name" type="text" label="name"></v-text-field>
-                <v-text-field class= 'neweventfield' v-model="selectedEvent.details" type="text" label="Details (e.g. Meet at Jurong East MRT)"></v-text-field>
+                <v-text-field outlined class= 'neweventfield' v-model="selectedEvent.name" type="text" label="Name"></v-text-field>
+                <v-text-field outlined class= 'neweventfield' v-model="selectedEvent.details" type="text" label="Details (e.g. Meet at Jurong East MRT)"></v-text-field>
                 <v-text-field class= 'neweventfield' v-model="selectedEvent.startdate" type="date" label="Start Date"></v-text-field>
                 <v-text-field class= 'neweventfield' v-model="selectedEvent.enddate" type="date" label="End Date"></v-text-field>
                 <v-text-field class= 'neweventfield'  v-model="selectedEvent.starttime" type="time" label="(Optional) Start Time [hh:mm AM/PM] "></v-text-field>
                 <v-text-field class= 'neweventfield' v-model="selectedEvent.endtime" type="time" label="(Optional) End Time [hh:mm AM/PM] "></v-text-field>
+           
+
+           <!-- <v-layout row wrap>
+          <v-menu
+            v-model="selectedEvent.fromStartDateMenu"
+            :close-on-content-click="false"
+            :nudge-right="40"
+            lazy
+            transition="scale-transition"
+            offset-y
+            full-width
+            max-width="290px"
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                outlined
+                class= 'neweventfield'
+                label="Start Date"
+                prepend-icon="event"
+                readonly
+                :value="selectedEvent.startdate"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker
+              locale="en-in"
+              v-model="selectedEvent.startdate"
+              no-title
+              @input="selectedEvent.fromStartDateMenu = false"
+            ></v-date-picker>
+          </v-menu>
+        </v-layout>
+        
+        <v-layout row wrap>
+          <v-menu
+            v-model="selectedEvent.fromEndDateMenu"
+            :close-on-content-click="false"
+            :nudge-right="40"
+            lazy
+            transition="scale-transition"
+            offset-y
+            full-width
+            max-width="290px"
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                outlined
+                class= 'neweventfield'
+                label="End Date"
+                prepend-icon="event"
+                readonly
+                :value="selectedEvent.enddate"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker
+              locale="en-in"
+              v-model="selectedEvent.enddate"
+              no-title
+              @input="selectedEvent.fromEndDateMenu = false"
+            ></v-date-picker>
+          </v-menu>
+        </v-layout>
+
+
+        <v-layout row wrap>
+          <v-menu
+            v-model="fromStartTimeMenu"
+            :close-on-content-click="false"
+            :nudge-right="40"
+            lazy
+            transition="scale-transition"
+            offset-y
+            full-width
+            max-width="290px"
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                outlined
+                class= 'neweventfield'
+                label="Start Time"
+                prepend-icon="event"
+                :value="selectedEvent.starttime"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-time-picker
+              locale="en-in"
+              v-model="selectedEvent.starttime"
+              no-title
+              @input="fromStartTimeMenu = false"
+            ></v-time-picker>
+          </v-menu>
+        </v-layout>
+        
+        <v-layout row wrap>
+          <v-menu
+            v-model="fromEndTimeMenu"
+            :close-on-content-click="false"
+            :nudge-right="40"
+            lazy
+            transition="scale-transition"
+            offset-y
+            full-width
+            max-width="290px"
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                outlined
+                class= 'neweventfield'
+                label="End Time"
+                prepend-icon="event"
+                readonly
+                :value="endtime"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-time-picker
+              locale="en-in"
+              v-model="endtime"
+              no-title
+              @input="fromEndTimeMenu = false"
+            ></v-time-picker>
+          </v-menu>
+        </v-layout> -->
+
                 <div class='colorfieldtitle'>
                   <div class="mr-4">
                   Please choose a color:
@@ -307,8 +467,11 @@ export default {
       assignmentfalse: false,
       grpmeetingfalse: false,
       grpsnack: false, // snackbar for added groups
+      grpsnacknouser: false,
+      grpsnacknotfilled: false,
       deleteconfirm: false,
       deletepopup: false,
+      FromStartTimeMenu: false,
       typeToLabel: {
         month: 'Month',
         week: 'Week',
@@ -322,7 +485,8 @@ export default {
       events: [],
       allEvents: [],
       selectedType: ["1", "2", "3", "4"],
-      selectedModules: []
+      selectedModules: [],
+      personal: true
     }),
     mounted() {
       this.getEvents()
@@ -335,6 +499,9 @@ export default {
         this.filterEvents()
       },
       selectedModules() {
+        this.filterEvents()
+      },
+      personal() {
         this.filterEvents()
       }
     },
@@ -377,9 +544,20 @@ export default {
       },
       updateSnackEvent() {
         this.eventsnack = true;
-      },
-      updateSnackGrp() {
+        setTimeout(function(){ this.eventsnack = this.eventsnack.replace(true, false); }, 3000)
+      }, 
+      updategroupnouser(){
+        this.grpsnacknouser = true;
+        setTimeout(function(){ this.grpsnacknouser = this.grpsnacknouser.replace(true, false); }, 3000)
+      }
+      ,updateSnackGrp() {
         this.grpsnack = true;
+        setTimeout(function(){ this.grpsnack = this.grpsnack.replace(true, false); }, 3000)
+      },
+      updateSnackGrpnotfilled() {
+        this.grpsnacknotfilled = true;
+        setTimeout(function(){ this.grpsnacknotfilled = this.grpsnacknotfilled.replace(true, false); }, 3000)
+
       },
       viewDay({ date }) {
         this.focus = date;
@@ -443,7 +621,13 @@ export default {
       filterEvents() {
         let events = []
         this.allEvents.forEach(eventData => {
-          if (this.selectedType.includes(eventData.type.toString()) && (this.selectedModules.includes(eventData.module_id) || eventData.module_id === "Select Module")) {
+          if (this.selectedType.length == 0 && eventData.module_id == "Select Module" && this.personal) {
+            events.push(eventData)
+          }
+          else if (this.selectedType.includes(eventData.type.toString()) && this.selectedModules.includes(eventData.module_id)) {
+            events.push(eventData)
+          } 
+          else if (this.selectedType.includes(eventData.type.toString()) && eventData.module_id == "Select Module" && this.personal) {
             events.push(eventData)
           }
         })
@@ -468,7 +652,7 @@ export default {
       /* addEvent() function moved to CreateEvent.vue */
 
         async updateEvent (ev) {
-            console.log("just after event called")
+
             if (ev.starttime != ''){ //If there is time input, then we input both date and time into database
               var startinput = ev.startdate.concat(" ".concat(ev.starttime))
               var endinput = ev.enddate.concat(" ".concat(ev.endtime))
@@ -546,7 +730,14 @@ export default {
 .neweventform {
   display: block;
 }
+.neweventfield {
+  transform: scale(0.75);
+}
 .deletetitle {
   padding: 12px;
+}
+.maintitle {
+  font-size: 20px;
+  padding: 30px;
 }
 </style>

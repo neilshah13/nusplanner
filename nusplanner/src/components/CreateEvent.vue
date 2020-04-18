@@ -30,10 +30,139 @@
       <v-form v-if="eventType == 'event'" @submit.prevent="submittedEvent" ref="form" class="neweventform">
         <v-text-field outlined class= 'neweventfield' v-model="name" type="text" label="Event Name"></v-text-field>
         <v-text-field outlined class= 'neweventfield' v-model="details" type="text" label="Details (e.g. Meet at Jurong East MRT)"></v-text-field>
-        <v-text-field outlined class= 'neweventfield' v-model="startdate" type="date" label="Start Date"></v-text-field>
-        <v-text-field outlined class= 'neweventfield' v-model="enddate" type="date" label="End Date"></v-text-field>
-        <v-text-field outlined class= 'neweventfield' v-model="starttime" type="time" label="(Optional) Start Time [hh:mm AM/PM] "></v-text-field>
-        <v-text-field outlined class= 'neweventfield' v-model="endtime" type="time" label="(Optional) End Time [hh:mm AM/PM]"></v-text-field>
+        <!-- v-text-field outlined class= 'neweventfield' v-model="startdate" type="date" label="Start Date"></v-text-field> -->
+        <!-- <v-text-field outlined class= 'neweventfield' v-model="enddate" type="date" label="End Date"></v-text-field> -->
+        <!-- <v-text-field outlined class= 'neweventfield' v-model="starttime" type="time" label="(Optional) Start Time [hh:mm AM/PM] "></v-text-field> -->
+        <!-- <v-text-field outlined class= 'neweventfield' v-model="endtime" type="time" label="(Optional) End Time [hh:mm AM/PM]"></v-text-field> -->
+        
+        <v-layout row wrap>
+          <v-menu
+            v-model="fromStartDateMenu"
+            :close-on-content-click="false"
+            :nudge-right="40"
+            lazy
+            transition="scale-transition"
+            offset-y
+            full-width
+            max-width="290px"
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                outlined
+                class= 'neweventfield'
+                label="Start Date"
+                prepend-icon="event"
+                readonly
+                :value="startdate"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker
+              locale="en-in"
+              v-model="startdate"
+              no-title
+              @input="fromStartDateMenu = false"
+            ></v-date-picker>
+          </v-menu>
+        </v-layout>
+        
+        <v-layout row wrap>
+          <v-menu
+            v-model="fromEndDateMenu"
+            :close-on-content-click="false"
+            :nudge-right="40"
+            lazy
+            transition="scale-transition"
+            offset-y
+            full-width
+            max-width="290px"
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                outlined
+                class= 'neweventfield'
+                label="End Date"
+                prepend-icon="event"
+                readonly
+                :value="enddate"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker
+              locale="en-in"
+              v-model="enddate"
+              no-title
+              @input="fromEndDateMenu = false"
+            ></v-date-picker>
+          </v-menu>
+        </v-layout>
+
+        <v-layout row wrap>
+          <v-menu
+            v-model="fromStartTimeMenu"
+            :close-on-content-click="false"
+            :nudge-right="40"
+            v-on:click="this.starttime = ''"
+            lazy
+            transition="scale-transition"
+            offset-y
+            full-width
+            max-width="290px"
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                outlined
+                class= 'neweventfield'
+                label="Start Time"
+                prepend-icon="access_time"
+                readonly
+                :value="starttime"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-time-picker
+              v-model="starttime"
+              no-title
+              full-width
+              @input="fromStartTimeMenu = false"
+            ></v-time-picker>
+          </v-menu>
+        </v-layout>
+        
+        <v-layout row wrap>
+          <v-menu
+            v-model="fromEndTimeMenu"
+            :close-on-content-click="false"
+            :nudge-right="40"
+            lazy
+            transition="scale-transition"
+            offset-y
+            full-width
+            max-width="290px"
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                outlined
+                class= 'neweventfield'
+                label="End Time"
+                prepend-icon="access_time"
+                readonly
+                :value="endtime"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-time-picker
+              locale="en-in"
+              v-model="endtime"
+              no-title
+              @input="fromEndTimeMenu = false"
+            ></v-time-picker>
+          </v-menu>
+        </v-layout>
 
       <v-card-text class='menu'> Module (Optional):
         <v-menu>
@@ -140,7 +269,7 @@
 <!-- for group meeting -->
       <v-form v-else-if="eventType== 'groupMeeting'" @submit.prevent="submittedGroupMeeting" ref="form" class="neweventform">
 
-        <v-card-text class='menu'> Saved Groups:
+        <v-card-text class='menu'> Your Saved Groups:
         <v-menu>
         <template v-slot:activator="{ on }">
         <v-btn v-on="on" class="btn" @click = "displayCurrentGroups">
@@ -154,7 +283,7 @@
               </v-list-item>
             </v-list>
           </v-menu>
-          <v-card-text class='txt'>Haven't saved a group name? Add it
+          <v-card-text class='txt'>Haven't saved your group? Add it
             <v-btn
               small
               color= "primary"
@@ -181,8 +310,8 @@
 
         <v-text-field outlined class= 'neweventfield' v-model="details" type="text" label="Details (e.g. Meet at Computing)"></v-text-field>
         <v-text-field outlined class= 'neweventfield' v-model="startdate" type="date" label="Date"></v-text-field>
-        <v-text-field outlined class= 'neweventfield' v-model="starttime" type="time" label="Start Time"></v-text-field>
-        <v-text-field outlined class= 'neweventfield' v-model="endtime" type="time" label="End Time"></v-text-field>
+        <v-text-field outlined class= 'neweventfield' v-model="starttime" type="time" label="(Optional) Start Time [hh:mm AM/PM]"></v-text-field>
+        <v-text-field outlined class= 'neweventfield' v-model="endtime" type="time" label="(Optional) End Time [hh:mm AM/PM]"></v-text-field>
         <div class='colorfieldtitle'>
           <div class="mr-4">
           Please choose a color:
@@ -274,6 +403,11 @@ export default {
         ColorPicker, CreateGroup
     },
     data: () => ({
+      fromEndDateMenu: false,
+      fromStartDateMenu: false,
+      fromEndTimeMenu: false,
+      FromStartTimeMenu: false,
+      fromDateVal: null,
       groupMembers: false,
       grpsnack: false,
       dialog: false,
@@ -304,6 +438,13 @@ export default {
         groupMeeting: 'Group Meeting',
       },
     }),
+    computed: {
+      fromDateDisp() {
+              return this.fromDateVal;
+              // format date, apply validations, etc. Example below.
+              // return this.fromDateVal ? this.formatDate(this.fromDateVal) : "";
+            }
+    },
     methods: {
     async displayCurrentMod() {
       //retrieve and display existing modules from user's module list
@@ -417,15 +558,15 @@ export default {
         this.addAssignment()
         this.$emit('getEventsfromDatabase') //calls the getEvent from Weekly.vue to update the calendar
       },
-      submittedGroupMeeting() {
-        if (this.group && this.startdate) {
+      async submittedGroupMeeting() {
+        if (this.startdate && this.group != "Select Group") {
           this.$emit('update-dialog')
           this.$emit('update-eventsnack')
         } else {
           this.grpmeetingfalse = true
         }
         //add if condition once done to make sure "event successfully added" is not shown when event not actually created (requirements not satisfied)
-        this.addGroupMeeting()
+        await this.addGroupMeeting()
         this.$emit('getEventsfromDatabase') //calls the getEvent from Weekly.vue to update the calendar
       },
       async pushEventintoUsersFirebase(id) {
@@ -451,6 +592,8 @@ export default {
         this.color= '#1976D2' // default event color
       },
       async addEvent () {
+        console.log("HIHIIH")
+        console.log(this.starttime)
         if (this.name && this.startdate && this.enddate) { //Takes in as long as there is a date
           if (this.starttime != ''){ //If there is time input, then we input both date and time into database
             var startinput = this.startdate.concat(" ".concat(this.starttime))
@@ -474,7 +617,7 @@ export default {
             group_id: "", //change this
             module_id: this.module, //change this
             type: 1, //1 == Event
-            uid: user.uid, //change this
+            uid: user.uid,
           })
         this.pushEventintoUsersFirebase(eventAdded.id);
         }
@@ -500,13 +643,13 @@ export default {
                 group_id: "", //change this
                 module_id: this.module, //change this
                 type: 2, //2 == Assignment
-                uid: user.uid, //change this
+                uid: user.uid, 
               })
               this.pushEventintoUsersFirebase(eventAdded.id);
             }
           },
           async addGroupMeeting () { //must put in all members event_list
-            if (this.group && this.startdate) { //Takes in as long as there is group and date
+            if (this.group != "Select Group" && this.startdate) { //Takes in as long as there is group and date
               if (this.starttime != ''){ //If there is time input, then we input both date and time into database
                 var startinput = this.startdate.concat(" ".concat(this.starttime))
                 var endinput = this.startdate.concat(" ".concat(this.endtime))
@@ -537,10 +680,10 @@ export default {
                   group_id: this.group,
                   module_id: modid,
                   type: 3,
-                  uid: userlist[i], //change this
+                  uid: userlist[i], 
                 })
                 var eventlist;
-                await firebase.firestore().collection('users').doc(userlist[i]).get().then(function(doc) { //update user collection
+                firebase.firestore().collection('users').doc(userlist[i]).get().then(function(doc) { //update user collection
                   eventlist = doc.data().event_list
                   eventlist.push(eventAdded.id)
                   eventlist = eventlist.filter(item => item)

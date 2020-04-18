@@ -78,14 +78,14 @@ export default {
   },
   mounted() {
     //console.log("Ran Announcement Code");
-    this.$root.$on('announcement-module', data => {
+    this.$root.$on("announcement-module", data => {
       this.runAnnouncements(data);
-    })
+    });
   },
   methods: {
-    runAnnouncements(data){
+    runAnnouncements(data) {
       this.modules = data;
-      this.getAnnouncements()
+      this.getAnnouncements();
     },
     async getAnnouncements() {
       let snapshot = await firebase
@@ -97,9 +97,9 @@ export default {
         if (this.modules.includes(doc.data().module_id)) {
           let appData = doc.data();
           let date = appData.date_posted.toDate();
-          var day = date.getDate().toString()
-          var mth = (date.getMonth() + 1).toString()
-          var year = date.getUTCFullYear()
+          var day = date.getDate().toString();
+          var mth = (date.getMonth() + 1).toString();
+          var year = date.getUTCFullYear();
           if (mth.length == 1) {
             appData.date_posted = day + "/0" + mth + "/" + year;
           } else {
@@ -110,7 +110,7 @@ export default {
         }
       });
       this.announcements = ancmt_list;
-    },
+    }
   }
 };
 </script>
@@ -142,7 +142,7 @@ p {
   background: rgb(42, 68, 99);
   max-width: 475px;
 }
-txt {
+.txt {
   padding: 10px;
   font-size: 11px;
 }
