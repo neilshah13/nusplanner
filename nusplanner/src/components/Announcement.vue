@@ -1,7 +1,7 @@
 <template>
   <v-sheet>
     <!-- to view announcements, to be changed to when you enter website -->
-    <v-container @click="dialog = true" class="contain">
+    <v-container @click="dialog = true" class="contain-outer">
       <v-container class="cont">
         <h1>
           <strong>Announcements</strong>
@@ -147,6 +147,18 @@ p {
   font-size: 11px;
 }
 .contain {
+  color: rgb(42, 68, 99);
+  background: white;
+  max-width: 250px;
+  font-size: 20px;
+  padding: 0;
+  transform: scale(0.8);
+  cursor: pointer;
+  margin-top: 3px;
+}
+.contain-outer {
+  resize: vertical;
+  overflow: scroll;
   color: rgb(42, 68, 99);
   background: white;
   max-width: 250px;
