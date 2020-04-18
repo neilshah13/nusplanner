@@ -8,8 +8,9 @@
         </h1>
         <txt>Click to view full</txt>
         <p></p>
+        <div class="list">
         <!--minimised view of announcement -->
-        <div v-for="announcement in announcements" v-bind:key="announcement.coordinator" class="list">
+        <div v-for="announcement in announcements" v-bind:key="announcement.coordinator">
           <v-card>
             <p>
               <v-container class="contain">
@@ -21,6 +22,7 @@
               <v-divider></v-divider>
             </p>
           </v-card>
+        </div>
         </div>
         <v-divider></v-divider>
       </v-container>
