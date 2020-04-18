@@ -9,8 +9,8 @@
       </v-row>
       <v-row no-gutters>
         <v-col md="2">
+          <modlist></modlist>
           <announcement></announcement>
-          <!--<Filters></Filters>-->
         </v-col>
         <v-col md="7">
           <v-app>
@@ -35,6 +35,7 @@ import Vue from "vue";
 import ModuleAdding from "./ModuleSelector.vue";
 //import Filters from "./Filters.vue";
 import Announcement from "./Announcement.vue";
+import ModuleList from "./ModuleList.vue"
 
 //Vue.use(AutoCompletePlugin);
 export default Vue.extend({
@@ -45,7 +46,8 @@ export default Vue.extend({
     Weekly,
     //Filters,
     moduleAdding: ModuleAdding,
-    announcement: Announcement
+    announcement: Announcement,
+    modlist: ModuleList
   }
 });
 </script>
@@ -65,11 +67,6 @@ body {
     padding-left: 0;
     padding-bottom: 0;
   }
-}
-
-#prioritylist {
-  float: right;
-  margin-right: 0;
 }
 
 #app {

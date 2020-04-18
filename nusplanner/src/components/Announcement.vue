@@ -154,8 +154,9 @@ p {
   padding: 0;
   transform: scale(0.8);
   cursor: pointer;
+  margin-top: 3px;
 }
-btn {
+.btn {
   background-color: rgb(42, 68, 99);
   color: white;
   padding: 10px;
