@@ -28,22 +28,36 @@
       </v-toolbar-title>
 <!-- for events -->
       <v-form v-if="eventType == 'event'" @submit.prevent="submittedEvent" ref="form" class="neweventform">
-        <v-text-field outlined class= 'neweventfield' v-model="name" type="text" label="Event Name"></v-text-field>
-        <v-text-field outlined class= 'neweventfield' v-model="details" type="text" label="Details (e.g. Meet at Jurong East MRT)"></v-text-field>
+
+      <v-card-text class='menu'> Module (Optional):
+        <v-menu>
+        <template v-slot:activator="{ on }">
+        <v-btn v-on="on" class="btn" @click="displayCurrentMod" v-model="module">
+          <span>{{ module }}</span>
+           <v-icon bottom>mdi-menu-down</v-icon>
+          </v-btn>
+          </template>
+            <v-list>
+              <v-list-item v-for = "mod in modules" v-bind:key="mod" @click="module = mod">
+                <v-list-item-title> {{ mod }} </v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+      </v-card-text>
+
+        <v-text-field outlined prepend-icon="insert_emoticon" class= 'neweventfield' v-model="name" type="text" label="Event Name"></v-text-field>
+        <v-text-field outlined prepend-icon="insert_emoticon" class= 'neweventfield' v-model="details" type="text" label="Details (e.g. Meet at Jurong East MRT)"></v-text-field>
         <!-- v-text-field outlined class= 'neweventfield' v-model="startdate" type="date" label="Start Date"></v-text-field> -->
         <!-- <v-text-field outlined class= 'neweventfield' v-model="enddate" type="date" label="End Date"></v-text-field> -->
         <!-- <v-text-field outlined class= 'neweventfield' v-model="starttime" type="time" label="(Optional) Start Time [hh:mm AM/PM] "></v-text-field> -->
         <!-- <v-text-field outlined class= 'neweventfield' v-model="endtime" type="time" label="(Optional) End Time [hh:mm AM/PM]"></v-text-field> -->
         
-        <v-layout row wrap>
           <v-menu
             v-model="fromStartDateMenu"
             :close-on-content-click="false"
             :nudge-right="40"
-            lazy
             transition="scale-transition"
             offset-y
-            full-width
             max-width="290px"
             min-width="290px"
           >
@@ -61,21 +75,16 @@
             <v-date-picker
               locale="en-in"
               v-model="startdate"
-              no-title
               @input="fromStartDateMenu = false"
             ></v-date-picker>
           </v-menu>
-        </v-layout>
         
-        <v-layout row wrap>
           <v-menu
             v-model="fromEndDateMenu"
             :close-on-content-click="false"
             :nudge-right="40"
-            lazy
             transition="scale-transition"
             offset-y
-            full-width
             max-width="290px"
             min-width="290px"
           >
@@ -93,22 +102,17 @@
             <v-date-picker
               locale="en-in"
               v-model="enddate"
-              no-title
               @input="fromEndDateMenu = false"
             ></v-date-picker>
           </v-menu>
-        </v-layout>
 
-        <v-layout row wrap>
           <v-menu
             v-model="fromStartTimeMenu"
             :close-on-content-click="false"
             :nudge-right="40"
             v-on:click="this.starttime = ''"
-            lazy
             transition="scale-transition"
             offset-y
-            full-width
             max-width="290px"
             min-width="290px"
           >
@@ -116,7 +120,7 @@
               <v-text-field
                 outlined
                 class= 'neweventfield'
-                label="Start Time"
+                label="Start Time (Optional)"
                 prepend-icon="access_time"
                 readonly
                 :value="starttime"
@@ -124,23 +128,18 @@
               ></v-text-field>
             </template>
             <v-time-picker
+              ampm-in-title=true
               v-model="starttime"
-              no-title
               full-width
-              @input="fromStartTimeMenu = false"
             ></v-time-picker>
           </v-menu>
-        </v-layout>
         
-        <v-layout row wrap>
           <v-menu
             v-model="fromEndTimeMenu"
             :close-on-content-click="false"
             :nudge-right="40"
-            lazy
             transition="scale-transition"
             offset-y
-            full-width
             max-width="290px"
             min-width="290px"
           >
@@ -148,7 +147,7 @@
               <v-text-field
                 outlined
                 class= 'neweventfield'
-                label="End Time"
+                label="End Time (Optional)"
                 prepend-icon="access_time"
                 readonly
                 :value="endtime"
@@ -156,29 +155,13 @@
               ></v-text-field>
             </template>
             <v-time-picker
-              locale="en-in"
+              ampm-in-title=true
               v-model="endtime"
-              no-title
-              @input="fromEndTimeMenu = false"
+              full-width
             ></v-time-picker>
           </v-menu>
-        </v-layout>
 
-      <v-card-text class='menu'> Module (Optional):
-        <v-menu>
-        <template v-slot:activator="{ on }">
-        <v-btn v-on="on" class="btn" @click="displayCurrentMod" v-model="module">
-          <span>{{ module }}</span>
-           <v-icon bottom>mdi-menu-down</v-icon>
-          </v-btn>
-          </template>
-            <v-list>
-              <v-list-item v-for = "mod in modules" v-bind:key="mod" @click="module = mod">
-                <v-list-item-title> {{ mod }} </v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-      </v-card-text>
+
 
         <div class='colorfieldtitle'>
           <div class="mr-4">
@@ -214,11 +197,8 @@
       </v-form>
 <!-- for assignment -->
       <v-form v-else-if="eventType == 'assignment'" @submit.prevent="submittedAssignment" ref="form" class="neweventform">
-        <v-text-field outlined class= 'neweventfield' v-model="name" type="text" label="Assignment Name"></v-text-field>
-        <v-text-field outlined class= 'neweventfield' v-model="details" type="text" label="Details (e.g. Due 2359, submit in PDF format)"></v-text-field>
-        <v-text-field outlined class= 'neweventfield' v-model="enddate" type="date" label="Due Date"></v-text-field>
 
-        <v-card-text class='menu'> Module:
+        <v-card-text class='menu'> Module (Optional):
                 <v-menu>
                 <template v-slot:activator="{ on }">
                 <v-btn v-on="on" class="btn" @click="displayCurrentMod" v-model="module">
@@ -233,6 +213,39 @@
                     </v-list>
                   </v-menu>
               </v-card-text>
+
+        <v-text-field outlined class= 'neweventfield' prepend-icon="insert_emoticon" v-model="name" type="text" label="Assignment Name"></v-text-field>
+        <v-text-field outlined class= 'neweventfield' prepend-icon="insert_emoticon" v-model="details" type="text" label="Details (e.g. Due 2359, submit in PDF format)"></v-text-field>
+        <!-- <v-text-field outlined class= 'neweventfield' v-model="enddate" type="date" label="Due Date"></v-text-field> -->
+
+          <v-menu
+            v-model="fromEndDateMenu"
+            :close-on-content-click="false"
+            :nudge-right="40"
+            transition="scale-transition"
+            offset-y
+            max-width="290px"
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                outlined
+                class= 'neweventfield'
+                label="End Date"
+                prepend-icon="event"
+                readonly
+                :value="enddate"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker
+              locale="en-in"
+              v-model="enddate"
+              @input="fromEndDateMenu = false"
+            ></v-date-picker>
+          </v-menu>
+
+
 
           <div class='colorfieldtitle'>
           <div class="mr-4">
@@ -283,35 +296,96 @@
               </v-list-item>
             </v-list>
           </v-menu>
-          <v-card-text class='txt'>Haven't saved your group? Add it
-            <v-btn
-              small
-              color= "primary"
-              dark
-              @click.stop="groupMembers = true"> here! </v-btn>
-
-              <v-dialog v-model = "groupMembers" max-width="550">
-                <CreateGroup @update-grp='updateGrp' @update-grpsnack='updateSnackGrp'></CreateGroup>
-              </v-dialog>
-              <v-snackbar
-                v-model="grpsnack"
-              >
-                Group successfully created!
-                <v-btn
-                  color="error"
-                  text
-                  @click="grpsnack = false"
-                >
-                  Close
-                </v-btn>
-              </v-snackbar>
-              </v-card-text>
           </v-card-text>
 
-        <v-text-field outlined class= 'neweventfield' v-model="details" type="text" label="Details (e.g. Meet at Computing)"></v-text-field>
-        <v-text-field outlined class= 'neweventfield' v-model="startdate" type="date" label="Date"></v-text-field>
+        <v-text-field outlined prepend-icon="insert_emoticon" class= 'neweventfield' v-model="details" type="text" label="Details (e.g. Meet at Computing)"></v-text-field>
+        <!-- <v-text-field outlined class= 'neweventfield' v-model="startdate" type="date" label="Date"></v-text-field>
         <v-text-field outlined class= 'neweventfield' v-model="starttime" type="time" label="(Optional) Start Time [hh:mm AM/PM]"></v-text-field>
-        <v-text-field outlined class= 'neweventfield' v-model="endtime" type="time" label="(Optional) End Time [hh:mm AM/PM]"></v-text-field>
+        <v-text-field outlined class= 'neweventfield' v-model="endtime" type="time" label="(Optional) End Time [hh:mm AM/PM]"></v-text-field> -->
+
+          <v-menu
+            v-model="fromStartDateMenu"
+            :close-on-content-click="false"
+            :nudge-right="40"
+            transition="scale-transition"
+            offset-y
+            max-width="290px"
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                outlined
+                class= 'neweventfield'
+                label="Start Date"
+                prepend-icon="event"
+                readonly
+                :value="startdate"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker
+              locale="en-in"
+              v-model="startdate"
+              @input="fromStartDateMenu = false"
+            ></v-date-picker>
+          </v-menu>
+
+           <v-menu
+            v-model="fromStartTimeMenu"
+            :close-on-content-click="false"
+            :nudge-right="40"
+            v-on:click="this.starttime = ''"
+            transition="scale-transition"
+            offset-y
+            max-width="290px"
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                outlined
+                class= 'neweventfield'
+                label="Start Time (Optional)"
+                prepend-icon="access_time"
+                readonly
+                :value="starttime"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-time-picker
+              ampm-in-title=true
+              v-model="starttime"
+              full-width
+            ></v-time-picker>
+          </v-menu>
+        
+          <v-menu
+            v-model="fromEndTimeMenu"
+            :close-on-content-click="false"
+            :nudge-right="40"
+            transition="scale-transition"
+            offset-y
+            max-width="290px"
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                outlined
+                class= 'neweventfield'
+                label="End Time (Optional)"
+                prepend-icon="access_time"
+                readonly
+                :value="endtime"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-time-picker
+              ampm-in-title=true
+              v-model="endtime"
+              full-width
+            ></v-time-picker>
+          </v-menu>
+
+
         <div class='colorfieldtitle'>
           <div class="mr-4">
           Please choose a color:
@@ -396,11 +470,10 @@
 <script>
 import ColorPicker from 'vue-color-picker-wheel';
 import firebase from "firebase";
-import CreateGroup from './CreateGroup.vue'
 
 export default {
     components:{
-        ColorPicker, CreateGroup
+        ColorPicker
     },
     data: () => ({
       fromEndDateMenu: false,
@@ -661,6 +734,7 @@ export default {
               var groupid = this.groupids[index]
               var modid = this.groupmods[index]
               var userlist = []
+              console.log(groupid)
               await firebase.firestore().collection('group').doc(groupid).get().then(function(doc) {
                 userlist = doc.data().user_list
               })
@@ -691,13 +765,14 @@ export default {
                   firebase.firestore().collection('users').doc(userlist[i]).update({event_list:eventlist})
                 })
                }
+                this.group = 'Select Group',
+                this.details = '',
+                this.startdate = '',
+                this.starttime = '',
+                this.endtime = '',
+                this.color= '#1976D2' // default event color
              }
-              this.group = 'Select Group',
-              this.details = '',
-              this.startdate = '',
-              this.starttime = '',
-              this.endtime = '',
-              this.color= '#1976D2' // default event color
+
            },
     }
     // model: {
