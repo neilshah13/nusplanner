@@ -195,9 +195,8 @@ export default {
 }
 
 #todolist {
-  resize: vertical;
-  overflow: scroll;
-  margin: auto;
+  resize: auto;
+  margin-top: -3px;
   min-width: 10px;
   padding: 2rem 3rem 3rem;
   background: #36486b;
@@ -228,17 +227,20 @@ export default {
   opacity: 0.8;
 }
 #todolist ul {
-  margin-top: 1.5rem;
-  margin-left: -20px;
+  margin-top: 1rem;
+  margin-left: -30px;
+  margin-right:-15px;
   list-style: none;
+  overflow-y: scroll;
+  max-height: 554px;
 }
 #todolist .todolist-move {
   transition: transform 1s;
 }
 #todolist li {
   display: flex;
-  margin: 0 -1.5rem 4px;
-  padding: 1rem 2rem;
+  margin: 0 0rem 4px;
+  padding: 1rem 1.5rem;
   justify-content: space-between;
   align-items: center;
   background: rgba(255, 255, 255, 0.1);
@@ -328,4 +330,3 @@ form input {
   color: black;
 }
 </style>
-

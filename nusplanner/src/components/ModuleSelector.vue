@@ -26,9 +26,20 @@
       <v-spacer/>
       <v-card-subtitle>{{Week}}</v-card-subtitle>
     </v-toolbar>
-
     <h1>
-  
+      <div class="d-flex">
+        <v-layout class="whitebox">
+          <v-flex
+            class="d-flex bg-secondary col-sm-2 "
+            v-for="mod in moduleList"
+            :key="mod"
+          >
+            <v-checkbox :label="mod" v-model="selectedModules" :value="mod" color="rgb(42, 68, 99)"
+            append-icon="mdi-delete" class = "ml-auto" @click:append="deleteModFromList(mod)">
+            </v-checkbox>
+          </v-flex>
+        </v-layout>
+      </div>
     </h1>
   </div>
 </template>
@@ -54,6 +65,12 @@ export default {
     search(val) {
       val && val !== this.select && this.querySelections(val);
     },
+    selectedModules() {
+      this.$root.$emit("filter-module", this.selectedModules);
+    },
+    moduleList() {
+      this.$root.$emit("announcement-module", this.moduleList);
+    }
   },
   methods: {
     getWeek() {
@@ -101,6 +118,75 @@ export default {
         this.loading = false;
       }, 500);
     },
+    displayNewlyAddedMod(v) {
+      //adding missing modules   v = moduleCode
+      var user = firebase.auth().currentUser;
+      if (this.moduleList.includes(v) == false && v != null) {
+        //if module is not in user's module list
+        this.moduleList.push(v); //adding module_code into moduleList
+        if (!this.selectedModules.includes(v)) {
+          this.selectedModules.push(v);
+        }
+        firebase
+          .firestore()
+          .collection("module")
+          .where("module_code", "==", v)
+          .get()
+          .then(function(querySnapshot) {
+            querySnapshot.forEach(function(doc) {
+              var modID = doc.id;
+              firebase
+                .firestore()
+                .collection("users")
+                .doc(user.uid)
+                .get()
+                .then(function(doc) {
+                  var modulelist = doc.data().module_list;
+                  modulelist.push(modID);
+                  firebase
+                    .firestore()
+                    .collection("users")
+                    .doc(user.uid)
+                    .update({ module_list: modulelist });
+                });
+              this.loading = false;
+            });
+          });
+      }
+    },
+    deleteModFromList(mod) {
+      var user = firebase.auth().currentUser;
+      let ml_index = this.moduleList.indexOf(mod);
+      //let sm_index = this.selectedModules.indexOf(mod)
+      this.moduleList.splice(ml_index, 1);
+      //this.selectedModules.splice(sm_index, 1);
+      firebase
+        .firestore()
+        .collection("module")
+        .where("module_code", "==", mod)
+        .get()
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
+            var modID = doc.id;
+            firebase
+              .firestore()
+              .collection("users")
+              .doc(user.uid)
+              .get()
+              .then(function(doc) {
+                var nmodlist = doc.data().module_list;
+                var index = nmodlist.indexOf(modID);
+                if (index !== -1) nmodlist.splice(index, 1);
+                nmodlist = nmodlist.filter(item => item);
+                firebase
+                  .firestore()
+                  .collection("users")
+                  .doc(user.uid)
+                  .update({ module_list: nmodlist });
+              });
+          });
+        });
+    },
 
     fetchModules() {
       //update available modules from firebase database for autocomplete searchbar
@@ -114,81 +200,41 @@ export default {
           });
         });
     },
-
-    displayNewlyAddedMod(v) {
-      //adding missing modules   v = moduleCode
-      var user = firebase.auth().currentUser;
-      if (this.moduleList.includes(v) == false && v != null) {
-          //if module is not in user's module list
-          this.moduleList.push(v); //adding module_code into moduleList
-          if (!this.selectedModules.includes(v)) {
-          this.selectedModules.push(v);
-          }
-          firebase
+    displayCurrentMod() {
+      //retrieve and display existing modules from user's module list
+      firebase.auth().onAuthStateChanged(user => {
+        console.log(user);
+        let currentmod = [];
+        firebase
           .firestore()
-          .collection("module")
-          .where("module_code", "==", v)
+          .collection("users")
+          .doc(user.uid)
           .get()
-          .then(function(querySnapshot) {
-              querySnapshot.forEach(function(doc) {
-              var modID = doc.id;
-              firebase
+          .then(function(doc) {
+            var user_modules = doc.data().module_list;
+            for (let i in user_modules) {
+              var mod = user_modules[i];
+              if (mod != "") {
+                firebase
                   .firestore()
-                  .collection("users")
-                  .doc(user.uid)
+                  .collection("module")
+                  .doc(mod)
                   .get()
                   .then(function(doc) {
-                  var modulelist = doc.data().module_list;
-                  if (!modulelist.includes(modID)) {
-                    modulelist.push(modID);
-                    firebase
-                      .firestore()
-                      .collection("users")
-                      .doc(user.uid)
-                      .update({ module_list: modulelist 
-                    });
-                  }
+                    var modcode = doc.data().module_code;
+                    currentmod.push(modcode);
                   });
-              });
+              }
+            }
           });
-        }
-    },
-      displayCurrentMod() {
-        //retrieve and display existing modules from user's module list
-        firebase.auth().onAuthStateChanged(user => {
-            console.log(user);
-            let currentmod = [];
-            firebase
-            .firestore()
-            .collection("users")
-            .doc(user.uid)
-            .get()
-            .then(function(doc) {
-                var user_modules = doc.data().module_list;
-                for (let i in user_modules) {
-                var mod = user_modules[i];
-                if (mod != "") {
-                    firebase
-                    .firestore()
-                    .collection("module")
-                    .doc(mod)
-                    .get()
-                    .then(function(doc) {
-                        var modcode = doc.data().module_code;
-                        currentmod.push(modcode);
-                    });
-                }
-                }
-            });
-            this.moduleList = currentmod;
-            this.selectedModules = currentmod;
-        });        
+        this.moduleList = currentmod;
+        this.selectedModules = currentmod;
+      });
     }
   },
-  async mounted() {
+  created() {
     this.fetchModules();
-    await this.displayCurrentMod();
-    this.$root.$emit("mod-list", this.moduleList);
+    this.displayCurrentMod();
     this.getWeek();
   }
 };
@@ -199,7 +245,8 @@ export default {
   color: rgb(42, 68, 99);
   background: white;
   text-align: center;
-  margin: auto;
+  margin-top: -10px;
+  margin-bottom: 10px;
   max-height: 70px;
 }
 </style>

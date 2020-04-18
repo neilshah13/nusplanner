@@ -9,7 +9,7 @@
         <txt>Click to view full</txt>
         <p></p>
         <!--minimised view of announcement -->
-        <div v-for="announcement in announcements" v-bind:key="announcement.coordinator">
+        <div v-for="announcement in announcements" v-bind:key="announcement.coordinator" class="list">
           <v-card>
             <p>
               <v-container class="contain">
@@ -152,25 +152,29 @@ p {
   max-width: 250px;
   font-size: 20px;
   padding: 0;
-  transform: scale(0.8);
+  transform: scale(0.85);
   cursor: pointer;
   margin-top: 3px;
+  max-height: 300px;
 }
 .contain-outer {
-  resize: vertical;
-  overflow: scroll;
   color: rgb(42, 68, 99);
   background: white;
   max-width: 250px;
   font-size: 20px;
   padding: 0;
-  transform: scale(0.8);
+  transform: scale(0.82);
   cursor: pointer;
-  margin-top: 3px;
+  margin-top: 33px;
+  max-height:300px;
 }
 .btn {
   background-color: rgb(42, 68, 99);
   color: white;
   padding: 10px;
+}
+.list {
+  overflow-y: scroll;
+  max-height: 300px;
 }
 </style>
