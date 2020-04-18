@@ -2,8 +2,7 @@
   <main id="todolist">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <h1>
-      Todo List
-      <span>Get things done, one item at a time.</span>
+      What are you doing today?
     </h1>
     <transition-group name="todolist" tag="ul">
       <li v-for="item in todoByStatus" v-bind:class="item.done ? 'done' : ''" v-bind:key="item.id">
@@ -196,51 +195,57 @@ export default {
 }
 
 #todolist {
-  resize: none;
-  margin: 4rem auto;
+  resize: auto;
+  margin-top: -3px;
   min-width: 10px;
   padding: 2rem 3rem 3rem;
-  background: #ff6666;
+  background: #36486b;
   color: #fff;
-  box-shadow: -20px -20px 0px 0px rgba(100, 100, 100, 0.1);
-  transform: scale(0.75); /* scales entire todo-list smaller */
+  /* box-shadow: -20px -20px 0px 0px rgba(100, 100, 100, 0.1); */
+  transform: scale(0.85); /* scales entire todo-list smaller */
 }
 #todolist h1 {
   /*text-align:center;*/
   font-weight: normal;
-  font-size: 2.6rem;
-  letter-spacing: 0.05em;
+  font-size: 1.5rem;
+  font-family: 'Marker Felt';
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
-#todolist h1 span {
+/* #todolist h1 span {
   display: block;
   font-size: 0.8rem;
   margin-bottom: 0.7rem;
   margin-left: 3px;
   margin-top: 0.2rem;
-}
+} */
 
 #todolist .emptylist {
-  margin-top: 2.6rem;
+  /* margin-top: 2.6rem; */
   text-align: center;
   letter-spacing: 0.05em;
   font-style: italic;
   opacity: 0.8;
 }
 #todolist ul {
-  margin-top: 2.6rem;
+  margin-top: 1rem;
+  margin-left: -30px;
+  margin-right:-15px;
   list-style: none;
+  overflow-y: scroll;
+  max-height: 554px;
 }
 #todolist .todolist-move {
   transition: transform 1s;
 }
 #todolist li {
   display: flex;
-  margin: 0 -3rem 4px;
-  padding: 1.1rem 3rem;
+  margin: 0 0rem 4px;
+  padding: 1rem 1.5rem;
   justify-content: space-between;
   align-items: center;
   background: rgba(255, 255, 255, 0.1);
+  word-break: break-word;
+  text-align: left;
 }
 #todolist li:hover{
   background-color: rgba(255, 255, 255, 0.349);
@@ -279,7 +284,7 @@ export default {
 }
 #todolist textarea {
   background: #f7f1f1;
-  color: #ff5e5e;
+  color: #36486b;
   border: none;
 }
 
@@ -305,7 +310,7 @@ form input {
 form button {
   padding: 0 1.3rem;
   border: none;
-  background: #ff6666;
+  background: #445b88;
   color: white;
   text-transform: uppercase;
   font-weight: bold;
@@ -315,15 +320,13 @@ form button {
   transition: background 0.2s ease-out;
 }
 form button:hover {
-  background: #ff5e5e;
+  background: #36486b;
 }
 form input,
 form button {
-  font-family: "Quicksand", sans-serif;
   height: 3rem;
 }
 form input {
   color: black;
 }
 </style>
-

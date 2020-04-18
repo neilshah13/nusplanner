@@ -2,11 +2,11 @@
   <div>
     <v-toolbar
       dark
-      color="blue darken-3"
+      color=#36567d
       src="https://lh3.googleusercontent.com/proxy/6_4hiPG1zpcr-h5C4h8M0pGIqQYxp1hUCoWJXaf_E2gk_MmGWsMtzNHPPBuYg_PdxPnK4DR5Cdm8AoaWa4UiXZdOThEJZDoXXSECzyFHedCLWdgTWTVLpMCGhBQ4LuLeM6_0IoXcYZxsqMTmsa5R"
       dense
     >
-      <v-toolbar-title class="col-sm-2">Missing a module ? &nbsp;</v-toolbar-title><v-autocomplete
+      <v-toolbar-title class="col-sm-2"> Add a Module! &nbsp;</v-toolbar-title><v-autocomplete
       v-model="select"
       :loading="loading"
       :items="items"
@@ -23,8 +23,9 @@
       <v-btn icon @click=" displayNewlyAddedMod(select)">
         <v-icon>mdi-plus</v-icon>
       </v-btn>
+      <v-spacer/>
+      <v-card-subtitle>{{Week}}</v-card-subtitle>
     </v-toolbar>
-
     <h1>
       <div class="d-flex">
         <v-layout class="whitebox">
@@ -33,7 +34,7 @@
             v-for="mod in moduleList"
             :key="mod"
           >
-            <v-checkbox :label="mod" v-model="selectedModules" :value="mod"
+            <v-checkbox :label="mod" v-model="selectedModules" :value="mod" color="rgb(42, 68, 99)"
             append-icon="mdi-delete" class = "ml-auto" @click:append="deleteModFromList(mod)">
             </v-checkbox>
           </v-flex>
@@ -46,7 +47,6 @@
 
 <script>
 import firebase from "firebase";
-// import ClickOutside from 'vue-click-outside'
 
 export default {
   data() {
@@ -58,6 +58,7 @@ export default {
       moduleList: [],
       allModules: [],
       selectedModules: [],
+      Week: ""
     };
   },
   watch: {
@@ -72,6 +73,41 @@ export default {
     }
   },
   methods: {
+    getWeek() {
+      let curr = new Date
+      let day = curr.getDate()
+      let month = curr.getMonth() + 1
+      if (day <= 17 && month == 4) {
+        this.Week = "AY2019/20, Semester 2, Week 13"
+      }
+      else if (day <= 24 && month == 4) {
+        this.Week = "AY2019/20, Semester 2, Reading Week"
+      }
+      else if ((day <= 30 && month == 4) || (day == 1 && month == 5)) {
+        this.Week = "AY2019/20, Semester 2, Examination Week 1"
+      }
+      else if (day <= 8 && month == 5) {
+        this.Week = "AY2019/20, Semester 2, Examination Week 2"
+      }
+      else if (day <= 15 && month == 5) {
+        this.Week = "AY2019/20, Special Term, Week 1"
+      }
+      else if (day <= 22 && month == 5) {
+        this.Week = "AY2019/20, Special Term, Week 2"
+      }
+      else if (day <= 29 && month == 5) {
+        this.Week = "AY2019/20, Special Term, Week 3"
+      }
+      else if ((day <= 31 && month == 5) || (day <= 5 && month == 6)) {
+        this.Week = "AY2019/20, Special Term, Week 4"
+      }
+      else if (day <= 12 && month == 6) {
+        this.Week = "AY2019/20, Special Term, Week 5"
+      }
+      else if (day <= 19 && month == 6) {
+        this.Week = "AY2019/20, Special Term, Week 6"
+      }
+    },
     querySelections(v) {
       this.loading = true;
       // Simulated ajax query
@@ -199,6 +235,7 @@ export default {
   created() {
     this.fetchModules();
     this.displayCurrentMod();
+    this.getWeek();
   }
 };
 </script> 
@@ -207,8 +244,9 @@ export default {
 .whitebox {
   color: rgb(42, 68, 99);
   background: white;
-  font-size: 20px;
   text-align: center;
-  margin: auto;
+  margin-top: -10px;
+  margin-bottom: 10px;
+  max-height: 70px;
 }
 </style>

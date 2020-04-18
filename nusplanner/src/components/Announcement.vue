@@ -1,13 +1,14 @@
 <template>
   <v-sheet>
     <!-- to view announcements, to be changed to when you enter website -->
-    <v-container @click="dialog = true" class="contain">
+    <v-container @click="dialog = true" class="contain-outer">
       <v-container class="cont">
         <h1>
           <strong>Announcements</strong>
         </h1>
         <txt>Click to view full</txt>
         <p></p>
+        <div class="list">
         <!--minimised view of announcement -->
         <div v-for="announcement in announcements" v-bind:key="announcement.coordinator">
           <v-card>
@@ -21,6 +22,7 @@
               <v-divider></v-divider>
             </p>
           </v-card>
+        </div>
         </div>
         <v-divider></v-divider>
       </v-container>
@@ -152,12 +154,29 @@ p {
   max-width: 250px;
   font-size: 20px;
   padding: 0;
-  transform: scale(0.8);
+  transform: scale(0.85);
   cursor: pointer;
+  margin-top: 3px;
+  max-height: 300px;
 }
-btn {
+.contain-outer {
+  color: rgb(42, 68, 99);
+  background: white;
+  max-width: 250px;
+  font-size: 20px;
+  padding: 0;
+  transform: scale(0.82);
+  cursor: pointer;
+  margin-top: 33px;
+  max-height:300px;
+}
+.btn {
   background-color: rgb(42, 68, 99);
   color: white;
   padding: 10px;
+}
+.list {
+  overflow-y: scroll;
+  max-height: 300px;
 }
 </style>
