@@ -9,6 +9,7 @@
       </v-row>
       <v-row no-gutters>
         <v-col md="2">
+          <modulelist></modulelist>
           <announcement></announcement>
         </v-col>
         <v-col md="7">
@@ -34,6 +35,7 @@ import Vue from "vue";
 import ModuleAdding from "./ModuleSelector.vue";
 //import Filters from "./Filters.vue";
 import Announcement from "./Announcement.vue";
+import ModuleList from "./ModuleList.vue"
 
 //Vue.use(AutoCompletePlugin);
 export default Vue.extend({
@@ -45,6 +47,7 @@ export default Vue.extend({
     //Filters,
     moduleAdding: ModuleAdding,
     announcement: Announcement,
+    modulelist: ModuleList
   }
 });
 </script>
