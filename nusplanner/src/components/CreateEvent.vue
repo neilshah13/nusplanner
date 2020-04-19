@@ -231,7 +231,7 @@
               <v-text-field
                 outlined
                 class= 'neweventfield'
-                label="End Date"
+                label="Due Date"
                 prepend-icon="event"
                 readonly
                 :value="enddate"

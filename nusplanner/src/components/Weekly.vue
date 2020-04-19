@@ -424,7 +424,7 @@
                     <v-text-field
                       outlined
                       class= 'neweventfield'
-                      label="End Date"
+                      label="Due Date"
                       prepend-icon="event"
                       readonly
                       :value="selectedEvent.enddate"
@@ -1062,9 +1062,9 @@ export default {
 .neweventform {
   display: block;
 }
-.neweventfield {
+/* .neweventfield {
   transform: scale(0.75);
-}
+} */
 .deletetitle {
   padding: 12px;
 }
