@@ -110,7 +110,7 @@ export default {
 
 <style scoped>
 .box {
-  background-color:aliceblue;
+  background-color:whitesmoke;
   max-width: 200px;
   height: 260px;
   color:rgb(42, 68, 99);
