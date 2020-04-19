@@ -1,6 +1,5 @@
 <template>
     <div class="box">
-            <div class="fbm"><strong>Filter By Module</strong></div>
             <v-container class="modlist">
                 <ul
                 v-for="mod in moduleList"
@@ -112,28 +111,24 @@ export default {
 <style scoped>
 .box {
   background-color:aliceblue;
-  max-width: 2000px;
-  max-height: 80px;
+  max-width: 200px;
+  height: 260px;
   color:rgb(42, 68, 99);
-  display: flex;
-}
-.fbm {
-    text-align: left;
-    margin-left: 25px;
-    margin-right: -80px;
-    margin-top: 12px;
+  margin: 14px 0px -20px 20px;
+  padding-top: 2px;
+  padding-bottom: 2px;
 }
 .modlist {
-    max-width:600px;
-    display: inline-flex;
-    flex-wrap: wrap;
-    margin-top: -20px;
+    max-width: 200px;
+    max-height: 220px;
+    margin-top: 10px;
+    margin-left: 3px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    margin-left: -10px;
 }
 .mods {
-    width: 190px;
-    max-height:30px;
-    padding-right: 20px;
-    /* margin-top: -5px;
-    padding-left: 20px; */
+    margin-top: -20px;
+    margin-right: -10px;
 }
 </style>
