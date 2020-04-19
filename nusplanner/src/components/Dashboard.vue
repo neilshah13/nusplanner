@@ -1,9 +1,9 @@
 <template>
-    <v-container>
-            <v-app-bar dark>
-                <v-toolbar-title>DashBoard</v-toolbar-title>
-            </v-app-bar>
-        <v-container>
+    <div>
+        <v-toolbar dark color=#36486b dense>
+            <v-toolbar-title class="col-sm-2">DashBoard</v-toolbar-title>
+        </v-toolbar>
+        <div id="charts">
             <v-row no-gutters>
                 <v-col md= "4">
                     <doughnut></doughnut>
@@ -15,8 +15,8 @@
                     <linechart></linechart>
                 </v-col>
             </v-row>
-        </v-container>
-    </v-container>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -31,13 +31,7 @@ export default {
 </script>
 
 <style scoped>
-#chart{
-  height:400px;
-  width:400px;
-  border-style: solid;
-  border-color:rgb(109, 109, 109);
-  border-width: 1px;
-  padding:30px;
-  float:left;
+#charts {
+    padding: 0.5em 3em 3em;
 }
 </style>

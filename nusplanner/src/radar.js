@@ -23,6 +23,12 @@ export default{
           title:{
             display: true,
             text: 'Check how much time you spend on each Module'
+          },
+          scale:{
+            ticks:{
+              beginAtZero: true,
+              stepSize: 1
+            }
           }          
         },
         animation: {
