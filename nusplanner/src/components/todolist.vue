@@ -196,7 +196,7 @@ export default {
 
 #todolist {
   resize: auto;
-  margin-top: -3px;
+  margin-top: 15px;
   min-width: 10px;
   padding: 2rem 3rem 3rem;
   background: #36486b;
@@ -233,6 +233,7 @@ export default {
   list-style: none;
   overflow-y: scroll;
   max-height: 554px;
+  min-height:300px;
 }
 #todolist .todolist-move {
   transition: transform 1s;
