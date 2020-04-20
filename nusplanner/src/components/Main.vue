@@ -63,6 +63,9 @@ body {
     padding-right: 0;
     padding-left: 0;
     padding-bottom: 0;
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
   }
 }
 

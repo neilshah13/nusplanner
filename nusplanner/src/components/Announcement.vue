@@ -167,7 +167,7 @@ p {
   padding: 0;
   transform: scale(0.82);
   cursor: pointer;
-  margin-top: 33px;
+  margin-top: 32px;
   max-height:300px;
 }
 .btn {
@@ -178,5 +178,6 @@ p {
 .list {
   overflow-y: scroll;
   max-height: 300px;
+  height: 300px;
 }
 </style>
