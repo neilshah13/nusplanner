@@ -27,7 +27,6 @@
 <script>
 import firebase from "firebase";
 // import firebase, { database } from "firebase";
-
   export default {
     data: () => ({
       groups: [],
