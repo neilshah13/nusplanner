@@ -89,6 +89,7 @@
                   item-value="name"
                   multiple
                   :placeholder="text"
+                  no-data-text="Loading..."
                   @click="getUsers"
                   @change="addUser"
                 >
