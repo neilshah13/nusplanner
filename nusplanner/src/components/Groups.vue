@@ -1,10 +1,16 @@
 <template>
+<div id='app'>
   <v-container class="cont">
     <!-- <v-app-bar dark> -->
     <v-app-bar color='rgb(42, 68, 99)'>
         <v-toolbar-title class='toolbartitle'>Groups Created</v-toolbar-title>
     </v-app-bar>
     <v-container>
+      <v-btn color='creategrpbutton' @click='creategroup = true'>Create Group
+      <v-dialog v-model="creategroup">
+      <CreateGroup></CreateGroup>
+      </v-dialog>
+      </v-btn>
       <v-row dense>
         <v-col v-for="(group, i) in groups" :key="i" cols="12">
           <v-card :color="colors[i]" dark>
@@ -37,11 +43,6 @@
               <v-card-text align="left">
                 {{ arrange(group.usernames) }}
               </v-card-text>
-                <!-- <v-menu v-if="editGroup.name == currentlyEditing"
-                  class="menu"
-                  v-model="selectedOpen"
-                  :close-on-content-click="false"
-                  :activator="selectedElement"> -->
                   <v-card color="rgb(42, 68, 99)" v-if="group.name == editGroup.name">
                   <v-form ref="form" class="neweventform">
                     <v-text-field
@@ -80,6 +81,17 @@
                       <!-- input value to highlight the item  -->
                       {{ data.item }}
                     </v-chip>
+                   </template>
+                    <template v-slot:item="data">
+                    <template v-if="typeof data.item !== 'object'">
+                      <v-list-item-content v-text="data.item"></v-list-item-content>
+                    </template>
+                    <template v-else>
+                      <v-list-item-content>
+                        <v-list-item-title v-html="data.item.name"></v-list-item-title>
+                        <!-- <v-list-item-subtitle v-html="data.item.group"></v-list-item-subtitle> -->
+                      </v-list-item-content>
+                    </template>
                   </template>
                   </v-autocomplete>
                 <v-card-actions>
@@ -93,13 +105,21 @@
       </v-row>
     </v-container>
   </v-container>
+</div>
 </template>
 
 <script>
+// import Vue from "vue";
 import firebase from "firebase";
+import CreateGroup from "./CreateGroup.vue"
 // import firebase, { database } from "firebase";
 
-  export default {
+// export default Vue.extend({
+export default {
+    // name: "App",
+    components: {
+      CreateGroup
+    },
     data: () => ({
       groups: [], //groups {name, module_id, usernames}
       grpids: [], //group ids
@@ -109,6 +129,7 @@ import firebase from "firebase";
       editGroup: {}, //stores grp
       currentlyEditing: '', //stores grp name
       editIndex: '',
+      creategroup: false,
       // search: null,
       deletepopup: false,
       text: "Select Group Members",
@@ -134,15 +155,15 @@ import firebase from "firebase";
         return result;
       },
       async getGroups() {
-          var user = firebase.auth().currentUser; //current user
+          let grplist= [] // stores grpids
+          let groups = [] // store group name and module and members list
+          await firebase.auth().onAuthStateChanged(async function(user) {
           console.log("Current user is " + user.uid)
           let uid= user.uid
-          let grplist= []
           firebase.firestore().collection('users').doc(uid).get().then(function(doc) {
             grplist = doc.data().group_list
             console.log(grplist)
           })
-          let groups = [] // store group name and module and members list
           let groupdb = await firebase.firestore().collection('group').get()
           groupdb.forEach(doc => {
             for(var i = 0; i < grplist.length; i++) {
@@ -164,8 +185,6 @@ import firebase from "firebase";
             groups[j]['usernames'] = usernames
             delete groups[j].user_list
           }
-          this.groups = groups
-          this.grpids = grplist
         // firebase.firestore().collection('group').get().then(querySnapShot => {
         //   querySnapShot.forEach(doc => {
             // var groupInfo = {
@@ -175,7 +194,9 @@ import firebase from "firebase";
             // }
             // this.groups.push(groupInfo)
           // })
-        // })
+        })
+        this.groups = groups
+        this.grpids = grplist
       },
       async getUsers() {
         // should only get users in the module
@@ -278,6 +299,7 @@ import firebase from "firebase";
           .then(function(qs) {
             qs.forEach(function(doc) {
               grpid = doc.id
+              console.log("docid is " + doc.id)
             })
           })
         console.log("grpid updated is " + grpid)
@@ -396,3 +418,8 @@ import firebase from "firebase";
 .buttons {
   padding: 12px;
 }
+.creategrpbutton {
+  color: rgb(42, 68, 99);
+  font: white;
+}
+</style>
