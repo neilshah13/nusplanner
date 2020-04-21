@@ -1,84 +1,62 @@
 <template>
-  <v-card color="blue-grey">
-    <v-card-title primary-title class="justify-center">
-      <v-row>
-        <!-- <v-row align = "left"> -->
-        <v-btn class="btn" icon dark @click="closeGroupMembers" color="warning" outlined>
-          <!-- closing button -->
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </v-row>
-    </v-card-title>
+  <div id="app">
+      <v-card color="blue-grey darken-1" dark :loading="isUpdating" max-height="600">
 
-    <!-- Form start here ******************************-->
-    <div id="app">
-      <v-card color="blue-grey darken-1" dark :loading="isUpdating">
         <v-img height="200" src="../..//public/teamwork.jpg">
-          <v-row>
-            <v-col class="text-right" cols="12">
-              <v-menu bottom left transition="slide-y-transition">
-                <template v-slot:activator="{ on }">
-                  <v-btn icon v-on="on">
-                    <v-icon>mdi-dots-vertical</v-icon>
-                  </v-btn>
-                </template>
-                <v-list>
-                  <v-list-item @click="isUpdating = true">
-                    <v-list-item-action>
-                      <v-icon dark>mdi-settings</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>
-                      <v-list-item-title>Update</v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
-                </v-list>
-              </v-menu>
-            </v-col>
-            <v-row class="pa-4" align="center" justify="center">
-              <v-col class="text-center">
-                <h3 class="headline">{{ name }}</h3>
+            <v-row align="end" class="pb-2 fill-height">>
+              <v-col>
+                <div class="headline"> {{ name }} </div>
               </v-col>
             </v-row>
-          </v-row>
         </v-img>
-        <v-form ref="form">
-          <v-container>
-            <v-row>
-              <v-card-text class="menu">
-                Choose Module :
-                <v-menu>
-                  <template v-slot:activator="{ on }">
-                    <v-btn v-on="on" class="btn" @click="getMods">
-                      <span>{{ module }}</span>
-                      <v-icon bottom>mdi-menu-down</v-icon>
-                    </v-btn>
-                  </template>
-                  <v-list>
-                    <v-list-item v-for="mod in modules" :key="mod" @click="module=mod">
-                      <v-list-item-title>{{ mod }}</v-list-item-title>
-                    </v-list-item>
-                  </v-list>
-                </v-menu>
-              </v-card-text>
 
-              <v-col cols="12">
+        <v-form ref="form" class= "mb-0"> 
+          <v-container class= "fluid ma-0 pa-0 fill-height">
+            <v-row>
+              <v-card-title class="menu ml-4 mb-3 pa-0">
+                <div class="ps-7 title"> Choose Module : </div>
+                  <v-menu>
+                    <template v-slot:activator="{ on }">
+                      <v-btn v-on="on" class="btn" @click="getMods">
+                        <span>{{ module }}</span>
+                        <v-icon bottom>mdi-menu-down</v-icon>
+                      </v-btn>
+                    </template>
+                    <v-list>
+                      <v-list-item v-for="mod in modules" :key="mod" @click="module=mod">
+                        <v-list-item-title >{{ mod }}</v-list-item-title>
+                      </v-list-item>
+                    </v-list>
+                  </v-menu>
+              </v-card-title >
+            </v-row>
+            
+            <v-row class = "align-center justify-center pa-0 ma-0">
+              <v-col cols="11" >
                 <v-text-field
-                  class="groupname"
+                  class= "groupname"
                   v-model="grpName"
                   :disabled="isUpdating"
-                  outlined
                   color="blue-grey lighten-2"
                   label="Group Name"
+                  filled
                   light
+                  solo
+                  clearable
+                  flat
+                  dense
                 ></v-text-field>
               </v-col>
-              <v-col cols="12" md="6"></v-col>
-              <v-col cols="12">
+            </v-row>
+            
+              <!-- <v-col cols="11" md="6"></v-col> -->
+            <v-row class = "justify-center pa-0 ma-0">
+              <v-col cols="11" >
                 <v-autocomplete
                   class="groupmembers"
                   :disabled="isUpdating"
                   :items="usernames"
-                  outlined
+                  solo
                   dense
                   v-model="membernames"
                   chips
@@ -130,11 +108,11 @@
             </v-row>
           </v-container>
         </v-form>
-        <v-btn type="submit" color="primary" class="mr-4" @click.stop="addGroups">Save</v-btn>
-        <v-btn color="error" @click="reset">Reset</v-btn>
+        <v-btn type="submit" color="primary" class="mr-4 mb-4" @click.stop="addGroups">Create</v-btn>
+        <v-btn color="error" class = "ml-4 mb-4" @click="reset">Reset</v-btn>
       </v-card>
     </div>
-  </v-card>
+  
 </template>
 
 <script>
@@ -163,7 +141,6 @@ export default {
     },
     reset() {
       this.$refs.form.reset();
-      this.module = "Select Module"
     },
     indexWhere: function(array, conditionFn) {
       const item = array.find(conditionFn);
@@ -258,14 +235,9 @@ export default {
       // console.log(this.members)
     },
     async addGroups() {
+      this.$emit("update-dialog");
       //add to group collection
-      var current = firebase.auth().currentUser;
-      console.log(this.members)
-      console.log(this.members.indexOf(current.uid)==-1)
-      if (this.members.indexOf(current.uid)==-1) {
-        this.$emit("update-grpsnack-nouserfalse");
-      } 
-      else if (this.grpName && this.module != "Select Module" && this.members)  {
+      if (this.grpName && this.module && this.members) {
         this.$emit("update-grpsnack");
         this.$emit("update-grp");
         var groupadded = await firebase
@@ -298,11 +270,10 @@ export default {
         //clear out inputs after a submission
         this.grpName = "";
         this.members = "";
-        this.module = "Select Module";
-        this.reset(); // To reset form, for some reason, without this, members wont be reset to empty!
+        this.module = "";
         // console.log("saved")
       } else {
-        this.$emit("update-grpsnack-notfilled");
+        alert("Please make sure all fields are filled!");
       }
       //add to user collection's group_list
     }
@@ -335,8 +306,9 @@ export default {
 <style scoped>
 .groupname >>> .v-text-field__slot input {
   color: black;
+  position: none;
 }
 .btn {
-  transform: scale(0.75);
+  transform: scale(0.9);
 }
 </style>
