@@ -1,15 +1,15 @@
 <template>
   <v-container>
-    <v-row no-gutters>
-      <v-col>
+    <!-- <v-row no-gutters>
+       <v-col> -->
           <!-- add groupMembers -->
-          <v-btn color="primary" dark @click.stop="groupMembers = true" class="mr-4">
+<!--          <v-btn color="primary" dark @click.stop="groupMembers = true" class="mr-4">
             Create Group
           </v-btn>
-      </v-col>
-      <v-col>
+      </v-col> 
+      <v-col> -->
           <!-- add event -->
-          <v-btn color="primary" dark @click.stop="dialog = true">
+<!--          <v-btn color="primary" dark @click.stop="dialog = true">
             New Event
           </v-btn>
       </v-col>
@@ -18,7 +18,76 @@
             Today
           </v-btn>
       </v-col>
+      <v-col> -->
+<!-- to pick the month/week/day view -->
+<!--          <v-menu bottom right>
+            <template v-slot:activator="{ on }">
+              <v-btn outlined v-on="on">
+                <span>{{ typeToLabel[type] }}</span>
+                <v-icon right>mdi-menu-down</v-icon>
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item @click="type = 'day'">
+                <v-list-item-title>Day</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="type = 'week'">
+                <v-list-item-title>Week</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="type = 'month'">
+                <v-list-item-title>Month</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+      </v-col>
+  </v-row> -->
+
+    <v-row justify="center" no gutters>
       <v-col>
+       <!-- filter bar -->
+        <div class = "filterbar">
+          <v-container>
+          <v-row justify="space-around">
+            <div class="fbt"><strong>Filter By Type</strong></div>
+            <v-checkbox class="checkbox" value="2" v-model="selectedType" label="Assignment" color="rgb(42, 68, 99)"></v-checkbox>
+            <v-checkbox class="checkbox" value="4" v-model="selectedType" label="Exam" color="rgb(42, 68, 99)"></v-checkbox>
+            <v-checkbox class="checkbox" value="3" v-model="selectedType" label="Meeting" color="rgb(42, 68, 99)"></v-checkbox>
+            <v-checkbox class="checkbox" value="1" v-model="selectedType" label="Events" color="rgb(42, 68, 99)"></v-checkbox>
+            <v-checkbox class="checkbox" v-model="personal" label="Personal" color="rgb(42, 68, 99)"></v-checkbox>
+          </v-row>
+          </v-container>
+        </div>
+      </v-col>
+    </v-row>
+
+      <v-row justify="center" no-gutters class="month">
+       
+      <v-col> 
+<!-- add event -->
+         <v-btn color="primary" dark @click.stop="dialog = true">
+            New Event
+          </v-btn>
+      </v-col>
+
+      <v-col md="auto" class="arrows">
+<!-- prev week -->
+        <v-btn fab text medium color="grey darken-2" @click="prev">
+            <v-icon text medium>mdi-chevron-left</v-icon>
+        </v-btn>
+        <span class="maintitle">
+<!-- title -->{{ title }}
+        </span>
+<!-- next week -->
+        <v-btn fab text medium color="grey darken-2" @click="next"> <!-- class mr-4 means to have a margin-->
+            <v-icon medium>mdi-chevron-right</v-icon>
+        </v-btn>
+      </v-col>
+
+       <v-col>
+        <v-btn outlined class="mr-4" color="grey darken-2" @click="viewDay">
+            Today
+          </v-btn>
+
 <!-- to pick the month/week/day view -->
           <v-menu bottom right>
             <template v-slot:activator="{ on }">
@@ -44,40 +113,6 @@
               -->
             </v-list>
           </v-menu>
-      </v-col>
-  </v-row>
-  
-    <v-row justify="center" no gutters>
-      <v-col>
-       <!-- filter bar -->
-        <div class = "filterbar">
-          <v-container>
-          <v-row justify="space-around">
-            <strong> Filter By: </strong>
-            <v-checkbox value="2" v-model="selectedType" label="Assignment" color="rgb(42, 68, 99)"></v-checkbox>
-            <v-checkbox value="4" v-model="selectedType" label="Exam" color="rgb(42, 68, 99)"></v-checkbox>
-            <v-checkbox value="3" v-model="selectedType" label="Meeting" color="rgb(42, 68, 99)"></v-checkbox>
-            <v-checkbox value="1" v-model="selectedType" label="Events" color="rgb(42, 68, 99)"></v-checkbox>
-            <v-checkbox v-model="personal" label="Personal" color="rgb(42, 68, 99)"></v-checkbox>
-          </v-row>
-          </v-container>
-        </div>
-      </v-col>
-    </v-row>
-
-      <v-row justify="center" no-gutters class="month">
-      <v-col md="auto">
-<!-- prev week -->
-        <v-btn fab text medium color="grey darken-2" @click="prev">
-            <v-icon text medium>mdi-chevron-left</v-icon>
-        </v-btn>
-        <span class="maintitle">
-<!-- title -->{{ title }}
-        </span>
-<!-- next week -->
-        <v-btn fab text medium color="grey darken-2" @click="next"> <!-- class mr-4 means to have a margin-->
-            <v-icon medium>mdi-chevron-right</v-icon>
-        </v-btn>
       </v-col>
     </v-row>
 
@@ -175,13 +210,15 @@
 
           <v-card color="grey lighten-4" flat>
             <v-toolbar class="menu" :color="selectedEvent.color" dark>
-              <div align = "left">
-              <textarea
+              <div align = "left" class='txtarea'>
+                {{selectedEvent.name}}
+              <!-- So that users cant change name directly from the popup -->
+              <!-- <textarea
                 v-model= "selectedEvent.name"
                 class='txtarea'
                 type="text"
                 placeholder="Add a title">
-                </textarea>
+                </textarea> -->
                 </div>
             </v-toolbar>
             <v-card-text>
@@ -211,20 +248,27 @@
           :activator="selectedElement">
           <v-card color="grey lighten-4" flat>
             <v-toolbar class="menu" :color="selectedEvent.color" dark>
-              <textarea
+              <div class = 'txtarea'>
+                {{selectedEvent.name}}
+              </div>
+              <!-- So that users cant change name directly from the popup -->
+              <!-- <textarea
                 v-model= "selectedEvent.name"
                 class='txtarea'
                 type="text"
                 placeholder="Add a title">
-                </textarea>
-              <v-btn icon v-if="currentlyEditing !== selectedEvent.id"
+                </textarea> -->
+              <v-row justify = "end">
+              <v-btn icon max-width = 27 v-if="currentlyEditing !== selectedEvent.id"
                 @click.prevent="editEvent(selectedEvent)">
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
+
               <v-btn text v-else @click="onClickSave(selectedEvent)">Save</v-btn>
-              <v-btn icon @click="deletepopup = true">
+              <v-btn icon max-width = 28 @click="deletepopup = true">
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
+              </v-row>
               <v-dialog v-model="deletepopup" max-width="300">
                 <v-card min-height='120'>
                 <v-toolbar-title class='deletetitle'>
@@ -239,14 +283,36 @@
               <v-form v-if = "selectedEvent.global == true"> {{ selectedEvent.details }} </v-form>
               <v-form v-else-if="currentlyEditing !== selectedEvent.id && selectedEvent.global === false">
 
-                <div align = "LEFT" v-if="selectedEvent.module_id !== 'Select Module'" >
-                  <b> <u> {{selectedEvent.module_id}} </u> </b>
+                <div align = "LEFT" v-if="selectedEvent.module_id !== 'Select Module' && selectedEvent.module_id !== true && selectedEvent.type === 1" >
+                  <b> <u> {{selectedEvent.module_id}} Event </u> </b>
                   <br>
                   Details: {{ selectedEvent.details }}
                 </div>
+
+                <div align = "LEFT" v-else-if="selectedEvent.module_id !== 'Select Module' && selectedEvent.module_id !== true && selectedEvent.type === 2" >
+                  <b> <u> {{selectedEvent.module_id}} Assignment </u> </b>
+                  <br>
+                  Details: {{ selectedEvent.details }}
+                </div>                
+
+                <div align = "LEFT" v-else-if="selectedEvent.module_id !== 'Select Module' && selectedEvent.module_id !== true && selectedEvent.type === 3" >
+                  <b> <u> {{selectedEvent.module_id}} Group Meeting </u> </b>
+                  <br>
+                  Details: {{ selectedEvent.details }}
+                </div>
+
+                <div align = "LEFT" v-else-if = "selectedEvent.type === 1">
+                  <b> <u> Personal Event </u> </b> <br> Details: {{ selectedEvent.details }}
+                </div>
+                
+                <div align = "LEFT" v-else-if = "selectedEvent.type === 2">
+                  <b> <u> Personal Assignment </u> </b> <br> Details: {{ selectedEvent.details }}
+                </div>
+
                 <div align = "LEFT" v-else>
                   <b> <u> Personal </u> </b> <br> Details: {{ selectedEvent.details }}
-                </div>
+                </div>                
+              
 
                 </v-form>
               <v-form ref="form" class="neweventform" v-else-if="currentlyEditing === selectedEvent.id && selectedEvent.type === 1">
@@ -406,10 +472,7 @@
 <v-form ref="form" class="neweventform" v-else-if="currentlyEditing === selectedEvent.id && selectedEvent.type === 2">
                 <v-text-field outlined class= 'neweventfield' prepend-icon="insert_emoticon" v-model="selectedEvent.name" type="text" label="Name"></v-text-field>
                 <v-text-field outlined class= 'neweventfield' prepend-icon="insert_emoticon" v-model="selectedEvent.details" type="text" label="Details (e.g. Meet at Jurong East MRT)"></v-text-field>
-                <!-- <v-text-field class= 'neweventfield' v-model="selectedEvent.startdate" type="date" label="Start Date"></v-text-field>
-                <v-text-field class= 'neweventfield' v-model="selectedEvent.enddate" type="date" label="End Date"></v-text-field>
-                <v-text-field class= 'neweventfield'  v-model="selectedEvent.starttime" type="time" label="(Optional) Start Time [hh:mm AM/PM] "></v-text-field>
-                <v-text-field class= 'neweventfield' v-model="selectedEvent.endtime" type="time" label="(Optional) End Time [hh:mm AM/PM] "></v-text-field> -->
+                <!-- <v-text-field class= 'neweventfield' v-model="selectedEvent.enddate" type="date" label="End Date"></v-text-field> -->
               
               <v-menu
                   v-model="selectedEvent.fromEndDateMenu"
@@ -424,7 +487,7 @@
                     <v-text-field
                       outlined
                       class= 'neweventfield'
-                      label="End Date"
+                      label="Due Date"
                       prepend-icon="event"
                       readonly
                       :value="selectedEvent.enddate"
@@ -478,7 +541,6 @@
                 <v-text-field outlined class= 'neweventfield' prepend-icon="insert_emoticon" v-model="selectedEvent.name" type="text" label="Name"></v-text-field>
                 <v-text-field outlined class= 'neweventfield' prepend-icon="insert_emoticon" v-model="selectedEvent.details" type="text" label="Details (e.g. Meet at Jurong East MRT)"></v-text-field>
                 <!-- <v-text-field class= 'neweventfield' v-model="selectedEvent.startdate" type="date" label="Start Date"></v-text-field>
-                <v-text-field class= 'neweventfield' v-model="selectedEvent.enddate" type="date" label="End Date"></v-text-field>
                 <v-text-field class= 'neweventfield'  v-model="selectedEvent.starttime" type="time" label="(Optional) Start Time [hh:mm AM/PM] "></v-text-field>
                 <v-text-field class= 'neweventfield' v-model="selectedEvent.endtime" type="time" label="(Optional) End Time [hh:mm AM/PM] "></v-text-field> -->
 
@@ -767,12 +829,12 @@
 </v-container>
 </template>
 
+
 <script>
 import firebase from "firebase";
 import CreateEvent from "./CreateEvent.vue"
 import CreateGroup from "./CreateGroup.vue"
 import ColorPicker from 'vue-color-picker-wheel';
-
 export default {
         components:{
         createvent: CreateEvent,
@@ -804,6 +866,7 @@ export default {
       grpsnacknotfilled: false,
       deleteconfirm: false,
       deletepopup: false,
+      FromStartTimeMenu: false,
       typeToLabel: {
         month: 'Month',
         week: 'Week',
@@ -889,7 +952,6 @@ export default {
       updateSnackGrpnotfilled() {
         this.grpsnacknotfilled = true;
         setTimeout(function(){ this.grpsnacknotfilled = this.grpsnacknotfilled.replace(true, false); }, 3000)
-
       },
       viewDay({ date }) {
         this.focus = date;
@@ -944,12 +1006,10 @@ export default {
           ? `${a.getFullYear()}-${a.getMonth() + 1}-${a.getDate()} ${a.getHours()}:${a.getMinutes()}`
           : `${a.getFullYear()}-${a.getMonth() + 1}-${a.getDate()}`
       },
-
       filterByModule(arr) {
         this.selectedModules = arr;
         this.filterEvents();
       },
-
       filterEvents() {
         let events = []
         this.allEvents.forEach(eventData => {
@@ -965,7 +1025,6 @@ export default {
         })
         this.events = events
       },
-
       async getEvents () {
       let snapshot = await firebase.firestore().collection('event').get()
       let events = []
@@ -980,11 +1039,8 @@ export default {
       this.allEvents = events
       this.events = events
       },
-
       /* addEvent() function moved to CreateEvent.vue */
-
         async updateEvent (ev) {
-
             if (ev.starttime != ''){ //If there is time input, then we input both date and time into database
               var startinput = ev.startdate.concat(" ".concat(ev.starttime))
               var endinput = ev.enddate.concat(" ".concat(ev.endtime))
@@ -1002,15 +1058,12 @@ export default {
               start: startinput,
               end: endinput,
               color: ev.color
-
             })
-
             this.selectedOpen = false
             this.currentlyEditing = null
             this.getEvents()
           }
         ,
-
         async deleteEvent (ev) {
           this.deletepopup = false;
           var user = firebase.auth().currentUser;
@@ -1031,10 +1084,10 @@ export default {
 </script>
 
 <style scoped>
-.calendar {
-  margin: auto;
+#calendar {
+  /* margin: auto; */
   max-height: 600px;
-  max-width: 900px;
+  max-width: 1000px;
   position: relative;
   background-color: rgb(48, 57, 105);
   transform: scale(0.75);
@@ -1043,9 +1096,10 @@ export default {
 /*  flex-direction: row;*/
 }
 .txtarea {
-  font-size: 13px;
-  margin: auto;
-  padding:12px;
+  font-size: 15px;
+  /* margin: auto; */
+  /* padding:12px; */
+  padding-right: 70px;
 }
 .txt{
   font-size: 13px;
@@ -1056,15 +1110,29 @@ export default {
 .filterbar {
   background-color:aliceblue;
   max-width: 2000px;
-  max-height: 63px;
+  max-height: 50px;
   color:rgb(42, 68, 99);
+  margin-top: -10px;
+  margin-bottom: 8px;
+}
+.fbt {
+  text-align: left;
+  margin-left: 5px;
+}
+.checkbox {
+  display: inline-flex;
+  margin-top: -5px;
+}
+.arrows {
+  margin-top: -5px;
+  margin-bottom: 5px;
 }
 .neweventform {
   display: block;
 }
-.neweventfield {
+/* .neweventfield {
   transform: scale(0.75);
-}
+} */
 .deletetitle {
   padding: 12px;
 }

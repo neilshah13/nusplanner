@@ -8,6 +8,7 @@
         </h1>
         <txt>Click to view full</txt>
         <p></p>
+        <div class="list">
         <!--minimised view of announcement -->
         <div v-for="announcement in announcements" v-bind:key="announcement.coordinator">
           <v-card>
@@ -21,6 +22,7 @@
               <v-divider></v-divider>
             </p>
           </v-card>
+        </div>
         </div>
         <v-divider></v-divider>
       </v-container>
@@ -121,11 +123,11 @@ h1 {
   font-size: 20px;
 }
 h2 {
-  color: rgb(42, 68, 99);
+  color: #36486b;
 }
 p {
   font-size: 20px;
-  color: rgb(42, 68, 99);
+  color: #36486b;
   background: white;
   margin: 10px;
 }
@@ -133,13 +135,13 @@ p {
 .cont {
   font-size: 13px;
   color: white;
-  background: rgb(42, 68, 99);
+  background: #36486b;
   position: relative;
 }
 .header {
   font-size: 13px;
   color: white;
-  background: rgb(42, 68, 99);
+  background: #36486b;
   max-width: 475px;
 }
 .txt {
@@ -147,30 +149,35 @@ p {
   font-size: 11px;
 }
 .contain {
-  color: rgb(42, 68, 99);
+  color: #36486b;
   background: white;
   max-width: 250px;
   font-size: 20px;
   padding: 0;
-  transform: scale(0.8);
+  transform: scale(0.85);
   cursor: pointer;
   margin-top: 3px;
+  max-height: 300px;
 }
 .contain-outer {
-  resize: vertical;
-  overflow: scroll;
-  color: rgb(42, 68, 99);
+  color: #36486b;
   background: white;
   max-width: 250px;
   font-size: 20px;
   padding: 0;
-  transform: scale(0.8);
+  transform: scale(0.82);
   cursor: pointer;
-  margin-top: 3px;
+  margin-top: 32px;
+  max-height:300px;
 }
 .btn {
-  background-color: rgb(42, 68, 99);
+  background-color: #36486b;
   color: white;
   padding: 10px;
+}
+.list {
+  overflow-y: scroll;
+  max-height: 300px;
+  height: 300px;
 }
 </style>

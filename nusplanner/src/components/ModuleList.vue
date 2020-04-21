@@ -1,19 +1,19 @@
 <template>
     <div class="box">
-        <div class="fbm"><strong>Filter By Modules</strong></div>
-        <v-flex
-        v-for="mod in moduleList"
-        :key="mod" class="modlist">
-        <v-checkbox :label="mod" v-model="selectedModules" :value="mod" color="rgb(42, 68, 99)"
-        append-icon="mdi-delete" @click:append="deleteModFromList(mod)">
-        </v-checkbox>
-        </v-flex>
+            <v-container class="modlist">
+                <ul
+                v-for="mod in moduleList"
+                :key="mod" class="mods">
+                <v-checkbox :label="mod" v-model="selectedModules" :value="mod" color="rgb(42, 68, 99)"
+                append-icon="mdi-delete" @click:append="deleteModFromList(mod)">
+                </v-checkbox>
+                </ul>
+        </v-container>
     </div>    
 </template>
 
 <script>
 import firebase from "firebase";
-
 export default {
     data() {
         return {
@@ -26,24 +26,18 @@ export default {
         this.$root.$on('mod-list', data => {
             this.moduleList = data;
             this.selectedModules = data;
-            console.log('here')
-            console.log(this.moduleList)
-            console.log(this.selectedModules)
         })
         this.displayCurrentMod();
         
     },
-
     watch: {
         selectedModules() {
-            console.log(this.selectedModules)
             this.$root.$emit("filter-module", this.selectedModules);
         },
         moduleList() {
             this.$root.$emit("announcement-module", this.moduleList);
         }
     },
-
     methods: {
     deleteModFromList(mod) {
         var user = firebase.auth().currentUser;
@@ -79,13 +73,44 @@ export default {
         });
     },
 
+    displayCurrentMod() {
+        //retrieve and display existing modules from user's module list
+        firebase.auth().onAuthStateChanged(user => {
+            console.log(user);
+            let currentmod = [];
+            firebase
+            .firestore()
+            .collection("users")
+            .doc(user.uid)
+            .get()
+            .then(function(doc) {
+                var user_modules = doc.data().module_list;
+                for (let i in user_modules) {
+                var mod = user_modules[i];
+                if (mod != "") {
+                    firebase
+                    .firestore()
+                    .collection("module")
+                    .doc(mod)
+                    .get()
+                    .then(function(doc) {
+                        var modcode = doc.data().module_code;
+                        currentmod.push(modcode);
+                    });
+                }
+                }
+            });
+            this.moduleList = currentmod;
+            this.selectedModules = currentmod;
+        });        
     }
+}
 }
 </script>
 
-<style>
+<style scoped>
 .box {
-  background-color:aliceblue;
+  background-color:whitesmoke;
   max-width: 200px;
   height: 260px;
   color:rgb(42, 68, 99);
@@ -93,14 +118,17 @@ export default {
   padding-top: 2px;
   padding-bottom: 2px;
 }
-.fbm {
-    margin: 10px 30px 0px 30px;
-}
 .modlist {
-    max-width: 180px;
-    margin: -10px 20px -30px 30px;
-    padding-top: 3px;
+    max-width: 200px;
+    max-height: 220px;
+    margin-top: 10px;
+    margin-left: 3px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    margin-left: -10px;
 }
-
-
+.mods {
+    margin-top: -20px;
+    margin-right: -10px;
+}
 </style>

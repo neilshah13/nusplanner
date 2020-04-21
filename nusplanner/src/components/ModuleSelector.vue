@@ -2,7 +2,7 @@
   <div>
     <v-toolbar
       dark
-      color=#36567d
+      color=#36486b
       src="https://lh3.googleusercontent.com/proxy/6_4hiPG1zpcr-h5C4h8M0pGIqQYxp1hUCoWJXaf_E2gk_MmGWsMtzNHPPBuYg_PdxPnK4DR5Cdm8AoaWa4UiXZdOThEJZDoXXSECzyFHedCLWdgTWTVLpMCGhBQ4LuLeM6_0IoXcYZxsqMTmsa5R"
       dense
     >
@@ -27,10 +27,21 @@
       <v-spacer/>
       <v-card-subtitle>{{Week}}</v-card-subtitle>
     </v-toolbar>
-
-    <h1>
-  
-    </h1>
+    <!-- <h1>
+      <div class="d-flex">
+        <v-layout class="whitebox">
+          <v-flex
+            class="d-flex bg-secondary col-sm-2 "
+            v-for="mod in moduleList"
+            :key="mod"
+          >
+            <v-checkbox :label="mod" v-model="selectedModules" :value="mod" color="rgb(42, 68, 99)"
+            append-icon="mdi-delete" class = "ml-auto" @click:append="deleteModFromList(mod)">
+            </v-checkbox>
+          </v-flex>
+        </v-layout>
+      </div>
+    </h1> -->
   </div>
 </template>
 
@@ -55,43 +66,178 @@ export default {
     search(val) {
       val && val !== this.select && this.querySelections(val);
     },
+    // selectedModules() {
+    //   this.$root.$emit("filter-module", this.selectedModules);
+    // },
+    moduleList() {
+      this.$root.$emit("mod-list", this.moduleList);
+    }
   },
   methods: {
     getWeek() {
       let curr = new Date
       let day = curr.getDate()
       let month = curr.getMonth() + 1
-      if (13 <= day <= 17 && month == 4) {
+      if (day <= 17 && month == 4) {
         this.Week = "AY2019/20, Semester 2, Week 13"
       }
-      else if (18 <= day <= 24 && month == 4) {
+      else if (day <= 24 && month == 4) {
         this.Week = "AY2019/20, Semester 2, Reading Week"
       }
-      else if ((25 <= day <= 30 && month == 4) || (day == 1 && month == 5)) {
+      else if ((day <= 30 && month == 4) || (day == 1 && month == 5)) {
         this.Week = "AY2019/20, Semester 2, Examination Week 1"
       }
-      else if (2 <= day <= 8 && month == 5) {
+      else if (day <= 8 && month == 5) {
         this.Week = "AY2019/20, Semester 2, Examination Week 2"
       }
-      else if (9 <= day <= 15 && month == 5) {
+      else if (day <= 15 && month == 5) {
         this.Week = "AY2019/20, Special Term, Week 1"
       }
-      else if (16 <= day <= 22 && month == 5) {
+      else if (day <= 22 && month == 5) {
         this.Week = "AY2019/20, Special Term, Week 2"
       }
-      else if (23 <= day <= 29 && month == 5) {
+      else if (day <= 29 && month == 5) {
         this.Week = "AY2019/20, Special Term, Week 3"
       }
-      else if ((30 <= day <= 31 && month == 5) || (1 <= day <= 5 && month == 6)) {
+      else if ((day <= 31 && month == 5) || (day <= 5 && month == 6)) {
         this.Week = "AY2019/20, Special Term, Week 4"
       }
-      else if (6 <= day <= 12 && month == 6) {
+      else if (day <= 12 && month == 6) {
         this.Week = "AY2019/20, Special Term, Week 5"
       }
-      else if (13 <= day <= 19 && month == 6) {
+      else if (day <= 19 && month == 6) {
         this.Week = "AY2019/20, Special Term, Week 6"
       }
     },
+  //   querySelections(v) {
+  //     this.loading = true;
+  //     // Simulated ajax query
+  //     setTimeout(() => {
+  //       this.items = this.allModules.filter(e => {
+  //         return (e || "").toLowerCase().indexOf((v || "").toLowerCase()) > -1;
+  //       });
+  //       this.loading = false;
+  //     }, 500);
+  //   },
+  //   displayNewlyAddedMod(v) {
+  //     //adding missing modules   v = moduleCode
+  //     var user = firebase.auth().currentUser;
+  //     if (this.moduleList.includes(v) == false && v != null) {
+  //       //if module is not in user's module list
+  //       this.moduleList.push(v); //adding module_code into moduleList
+  //       if (!this.selectedModules.includes(v)) {
+  //         this.selectedModules.push(v);
+  //       }
+  //       firebase
+  //         .firestore()
+  //         .collection("module")
+  //         .where("module_code", "==", v)
+  //         .get()
+  //         .then(function(querySnapshot) {
+  //           querySnapshot.forEach(function(doc) {
+  //             var modID = doc.id;
+  //             firebase
+  //               .firestore()
+  //               .collection("users")
+  //               .doc(user.uid)
+  //               .get()
+  //               .then(function(doc) {
+  //                 var modulelist = doc.data().module_list;
+  //                 modulelist.push(modID);
+  //                 firebase
+  //                   .firestore()
+  //                   .collection("users")
+  //                   .doc(user.uid)
+  //                   .update({ module_list: modulelist });
+  //               });
+  //             this.loading = false;
+  //           });
+  //         });
+  //     }
+  //   },
+  //   deleteModFromList(mod) {
+  //     var user = firebase.auth().currentUser;
+  //     let ml_index = this.moduleList.indexOf(mod);
+  //     //let sm_index = this.selectedModules.indexOf(mod)
+  //     this.moduleList.splice(ml_index, 1);
+  //     //this.selectedModules.splice(sm_index, 1);
+  //     firebase
+  //       .firestore()
+  //       .collection("module")
+  //       .where("module_code", "==", mod)
+  //       .get()
+  //       .then(function(querySnapshot) {
+  //         querySnapshot.forEach(function(doc) {
+  //           var modID = doc.id;
+  //           firebase
+  //             .firestore()
+  //             .collection("users")
+  //             .doc(user.uid)
+  //             .get()
+  //             .then(function(doc) {
+  //               var nmodlist = doc.data().module_list;
+  //               var index = nmodlist.indexOf(modID);
+  //               if (index !== -1) nmodlist.splice(index, 1);
+  //               nmodlist = nmodlist.filter(item => item);
+  //               firebase
+  //                 .firestore()
+  //                 .collection("users")
+  //                 .doc(user.uid)
+  //                 .update({ module_list: nmodlist });
+  //             });
+  //         });
+  //       });
+  //   },
+
+  //   fetchModules() {
+  //     //update available modules from firebase database for autocomplete searchbar
+  //     firebase
+  //       .firestore()
+  //       .collection("module")
+  //       .get()
+  //       .then(querySnapShot => {
+  //         querySnapShot.forEach(doc => {
+  //           this.allModules.push(doc.data().module_code);
+  //         });
+  //       });
+  //   },
+  //   displayCurrentMod() {
+  //     //retrieve and display existing modules from user's module list
+  //     firebase.auth().onAuthStateChanged(user => {
+  //       console.log(user);
+  //       let currentmod = [];
+  //       firebase
+  //         .firestore()
+  //         .collection("users")
+  //         .doc(user.uid)
+  //         .get()
+  //         .then(function(doc) {
+  //           var user_modules = doc.data().module_list;
+  //           for (let i in user_modules) {
+  //             var mod = user_modules[i];
+  //             if (mod != "") {
+  //               firebase
+  //                 .firestore()
+  //                 .collection("module")
+  //                 .doc(mod)
+  //                 .get()
+  //                 .then(function(doc) {
+  //                   var modcode = doc.data().module_code;
+  //                   currentmod.push(modcode);
+  //                 });
+  //             }
+  //           }
+  //         });
+  //       this.moduleList = currentmod;
+  //       this.selectedModules = currentmod;
+  //     });
+  //   }
+  // },
+  // created() {
+  //   this.fetchModules();
+  //   this.displayCurrentMod();
+  //   this.getWeek();
+  // }
     querySelections(v) {
       this.loading = true;
       // Simulated ajax query
@@ -102,7 +248,6 @@ export default {
         this.loading = false;
       }, 500);
     },
-
     fetchModules() {
       //update available modules from firebase database for autocomplete searchbar
       firebase
@@ -115,7 +260,6 @@ export default {
           });
         });
     },
-
     displayNewlyAddedMod(v) {
       //adding missing modules   v = moduleCode
       var user = firebase.auth().currentUser;
@@ -188,19 +332,19 @@ export default {
   },
   async mounted() {
     this.fetchModules();
-    await this.displayCurrentMod();
-    this.$root.$emit("mod-list", this.moduleList);
+    this.displayCurrentMod();
     this.getWeek();
   }
 };
 </script> 
 
 <style scoped>
-.whitebox {
+/* .whitebox {
   color: rgb(42, 68, 99);
   background: white;
   text-align: center;
-  margin: auto;
+  margin-top: -10px;
+  margin-bottom: 10px;
   max-height: 70px;
-}
+} */
 </style>

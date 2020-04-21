@@ -9,7 +9,7 @@
       </v-row>
       <v-row no-gutters>
         <v-col md="2">
-          <modlist></modlist>
+          <modulelist></modulelist>
           <announcement></announcement>
         </v-col>
         <v-col md="7">
@@ -47,7 +47,7 @@ export default Vue.extend({
     //Filters,
     moduleAdding: ModuleAdding,
     announcement: Announcement,
-    modlist: ModuleList
+    modulelist: ModuleList
   }
 });
 </script>
@@ -66,6 +66,9 @@ body {
     padding-right: 0;
     padding-left: 0;
     padding-bottom: 0;
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
   }
 }
 
