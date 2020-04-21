@@ -111,21 +111,26 @@ export default {
 <style scoped>
 .box {
   background-color:whitesmoke;
-  max-width: 200px;
-  height: 260px;
+  width: 200px;
+  height: 240px;
   color:rgb(42, 68, 99);
-  margin: 14px 0px -20px 20px;
+  /* margin: 14px 0px -20px 20px; */
+  display: flex;
+  justify-content: center;
   padding-top: 2px;
   padding-bottom: 2px;
 }
 .modlist {
     max-width: 200px;
     max-height: 220px;
-    margin-top: 10px;
-    margin-left: 3px;
+    display: grid;
+    align-items: start;
+    justify-content: start;
+    /* margin-top: 10px; */
+    /* margin-left: 3px; */
     overflow-y: scroll;
     overflow-x: hidden;
-    margin-left: -10px;
+    /* margin-left: -10px; */
 }
 .mods {
     margin-top: -20px;
