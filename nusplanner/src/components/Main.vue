@@ -8,7 +8,7 @@
         </v-col>
       </v-row>
       <v-row no-gutters>
-        <v-col md="2">
+        <v-col md="2" class="leftpanel">
           <modulelist></modulelist>
           <announcement></announcement>
         </v-col>
@@ -71,7 +71,15 @@ body {
     width: 100%;
   }
 }
-
+.leftpanel {
+  margin-top: 15px;
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  grid-template-columns: auto;
+  grid-row-gap: 10%;
+  height:250px;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

@@ -1,5 +1,5 @@
 <template>
-  <v-sheet>
+  <v-sheet class="whole">
     <!-- to view announcements, to be changed to when you enter website -->
     <v-container @click="dialog = true" class="contain-outer">
       <v-container class="cont">
@@ -126,7 +126,7 @@ h2 {
   color: #36486b;
 }
 p {
-  font-size: 20px;
+  font-size: 14px;
   color: #36486b;
   background: white;
   margin: 10px;
@@ -142,7 +142,6 @@ p {
   font-size: 13px;
   color: white;
   background: #36486b;
-  max-width: 475px;
 }
 .txt {
   padding: 10px;
@@ -151,10 +150,10 @@ p {
 .contain {
   color: #36486b;
   background: white;
-  max-width: 250px;
-  font-size: 20px;
+  max-width: 150px;
+  font-size: 14px;
   padding: 0;
-  transform: scale(0.85);
+  /* transform: scale(0.85); */
   cursor: pointer;
   margin-top: 3px;
   max-height: 300px;
@@ -162,12 +161,11 @@ p {
 .contain-outer {
   color: #36486b;
   background: white;
-  max-width: 250px;
-  font-size: 20px;
+  max-width: 200px;
+  font-size: 14px;
   padding: 0;
-  transform: scale(0.82);
+  /* transform: scale(0.82); */
   cursor: pointer;
-  margin-top: 32px;
   max-height:300px;
 }
 .btn {
@@ -179,5 +177,10 @@ p {
   overflow-y: scroll;
   max-height: 300px;
   height: 300px;
+}
+.whole {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>
