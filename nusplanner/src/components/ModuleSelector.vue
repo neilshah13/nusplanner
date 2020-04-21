@@ -2,7 +2,7 @@
   <div>
     <v-toolbar
       dark
-      color=#36567d
+      color=#36486b
       src="https://lh3.googleusercontent.com/proxy/6_4hiPG1zpcr-h5C4h8M0pGIqQYxp1hUCoWJXaf_E2gk_MmGWsMtzNHPPBuYg_PdxPnK4DR5Cdm8AoaWa4UiXZdOThEJZDoXXSECzyFHedCLWdgTWTVLpMCGhBQ4LuLeM6_0IoXcYZxsqMTmsa5R"
       dense
     >
@@ -26,7 +26,7 @@
       <v-spacer/>
       <v-card-subtitle>{{Week}}</v-card-subtitle>
     </v-toolbar>
-    <h1>
+    <!-- <h1>
       <div class="d-flex">
         <v-layout class="whitebox">
           <v-flex
@@ -40,7 +40,7 @@
           </v-flex>
         </v-layout>
       </div>
-    </h1>
+    </h1> -->
   </div>
 </template>
 
@@ -65,11 +65,11 @@ export default {
     search(val) {
       val && val !== this.select && this.querySelections(val);
     },
-    selectedModules() {
-      this.$root.$emit("filter-module", this.selectedModules);
-    },
+    // selectedModules() {
+    //   this.$root.$emit("filter-module", this.selectedModules);
+    // },
     moduleList() {
-      this.$root.$emit("announcement-module", this.moduleList);
+      this.$root.$emit("mod-list", this.moduleList);
     }
   },
   methods: {
@@ -108,6 +108,135 @@ export default {
         this.Week = "AY2019/20, Special Term, Week 6"
       }
     },
+  //   querySelections(v) {
+  //     this.loading = true;
+  //     // Simulated ajax query
+  //     setTimeout(() => {
+  //       this.items = this.allModules.filter(e => {
+  //         return (e || "").toLowerCase().indexOf((v || "").toLowerCase()) > -1;
+  //       });
+  //       this.loading = false;
+  //     }, 500);
+  //   },
+  //   displayNewlyAddedMod(v) {
+  //     //adding missing modules   v = moduleCode
+  //     var user = firebase.auth().currentUser;
+  //     if (this.moduleList.includes(v) == false && v != null) {
+  //       //if module is not in user's module list
+  //       this.moduleList.push(v); //adding module_code into moduleList
+  //       if (!this.selectedModules.includes(v)) {
+  //         this.selectedModules.push(v);
+  //       }
+  //       firebase
+  //         .firestore()
+  //         .collection("module")
+  //         .where("module_code", "==", v)
+  //         .get()
+  //         .then(function(querySnapshot) {
+  //           querySnapshot.forEach(function(doc) {
+  //             var modID = doc.id;
+  //             firebase
+  //               .firestore()
+  //               .collection("users")
+  //               .doc(user.uid)
+  //               .get()
+  //               .then(function(doc) {
+  //                 var modulelist = doc.data().module_list;
+  //                 modulelist.push(modID);
+  //                 firebase
+  //                   .firestore()
+  //                   .collection("users")
+  //                   .doc(user.uid)
+  //                   .update({ module_list: modulelist });
+  //               });
+  //             this.loading = false;
+  //           });
+  //         });
+  //     }
+  //   },
+  //   deleteModFromList(mod) {
+  //     var user = firebase.auth().currentUser;
+  //     let ml_index = this.moduleList.indexOf(mod);
+  //     //let sm_index = this.selectedModules.indexOf(mod)
+  //     this.moduleList.splice(ml_index, 1);
+  //     //this.selectedModules.splice(sm_index, 1);
+  //     firebase
+  //       .firestore()
+  //       .collection("module")
+  //       .where("module_code", "==", mod)
+  //       .get()
+  //       .then(function(querySnapshot) {
+  //         querySnapshot.forEach(function(doc) {
+  //           var modID = doc.id;
+  //           firebase
+  //             .firestore()
+  //             .collection("users")
+  //             .doc(user.uid)
+  //             .get()
+  //             .then(function(doc) {
+  //               var nmodlist = doc.data().module_list;
+  //               var index = nmodlist.indexOf(modID);
+  //               if (index !== -1) nmodlist.splice(index, 1);
+  //               nmodlist = nmodlist.filter(item => item);
+  //               firebase
+  //                 .firestore()
+  //                 .collection("users")
+  //                 .doc(user.uid)
+  //                 .update({ module_list: nmodlist });
+  //             });
+  //         });
+  //       });
+  //   },
+
+  //   fetchModules() {
+  //     //update available modules from firebase database for autocomplete searchbar
+  //     firebase
+  //       .firestore()
+  //       .collection("module")
+  //       .get()
+  //       .then(querySnapShot => {
+  //         querySnapShot.forEach(doc => {
+  //           this.allModules.push(doc.data().module_code);
+  //         });
+  //       });
+  //   },
+  //   displayCurrentMod() {
+  //     //retrieve and display existing modules from user's module list
+  //     firebase.auth().onAuthStateChanged(user => {
+  //       console.log(user);
+  //       let currentmod = [];
+  //       firebase
+  //         .firestore()
+  //         .collection("users")
+  //         .doc(user.uid)
+  //         .get()
+  //         .then(function(doc) {
+  //           var user_modules = doc.data().module_list;
+  //           for (let i in user_modules) {
+  //             var mod = user_modules[i];
+  //             if (mod != "") {
+  //               firebase
+  //                 .firestore()
+  //                 .collection("module")
+  //                 .doc(mod)
+  //                 .get()
+  //                 .then(function(doc) {
+  //                   var modcode = doc.data().module_code;
+  //                   currentmod.push(modcode);
+  //                 });
+  //             }
+  //           }
+  //         });
+  //       this.moduleList = currentmod;
+  //       this.selectedModules = currentmod;
+  //     });
+  //   }
+  // },
+  // created() {
+  //   this.fetchModules();
+  //   this.displayCurrentMod();
+  //   this.getWeek();
+  // }
     querySelections(v) {
       this.loading = true;
       // Simulated ajax query
@@ -118,76 +247,6 @@ export default {
         this.loading = false;
       }, 500);
     },
-    displayNewlyAddedMod(v) {
-      //adding missing modules   v = moduleCode
-      var user = firebase.auth().currentUser;
-      if (this.moduleList.includes(v) == false && v != null) {
-        //if module is not in user's module list
-        this.moduleList.push(v); //adding module_code into moduleList
-        if (!this.selectedModules.includes(v)) {
-          this.selectedModules.push(v);
-        }
-        firebase
-          .firestore()
-          .collection("module")
-          .where("module_code", "==", v)
-          .get()
-          .then(function(querySnapshot) {
-            querySnapshot.forEach(function(doc) {
-              var modID = doc.id;
-              firebase
-                .firestore()
-                .collection("users")
-                .doc(user.uid)
-                .get()
-                .then(function(doc) {
-                  var modulelist = doc.data().module_list;
-                  modulelist.push(modID);
-                  firebase
-                    .firestore()
-                    .collection("users")
-                    .doc(user.uid)
-                    .update({ module_list: modulelist });
-                });
-              this.loading = false;
-            });
-          });
-      }
-    },
-    deleteModFromList(mod) {
-      var user = firebase.auth().currentUser;
-      let ml_index = this.moduleList.indexOf(mod);
-      //let sm_index = this.selectedModules.indexOf(mod)
-      this.moduleList.splice(ml_index, 1);
-      //this.selectedModules.splice(sm_index, 1);
-      firebase
-        .firestore()
-        .collection("module")
-        .where("module_code", "==", mod)
-        .get()
-        .then(function(querySnapshot) {
-          querySnapshot.forEach(function(doc) {
-            var modID = doc.id;
-            firebase
-              .firestore()
-              .collection("users")
-              .doc(user.uid)
-              .get()
-              .then(function(doc) {
-                var nmodlist = doc.data().module_list;
-                var index = nmodlist.indexOf(modID);
-                if (index !== -1) nmodlist.splice(index, 1);
-                nmodlist = nmodlist.filter(item => item);
-                firebase
-                  .firestore()
-                  .collection("users")
-                  .doc(user.uid)
-                  .update({ module_list: nmodlist });
-              });
-          });
-        });
-    },
-
     fetchModules() {
       //update available modules from firebase database for autocomplete searchbar
       firebase
@@ -200,39 +259,77 @@ export default {
           });
         });
     },
-    displayCurrentMod() {
-      //retrieve and display existing modules from user's module list
-      firebase.auth().onAuthStateChanged(user => {
-        console.log(user);
-        let currentmod = [];
-        firebase
+    displayNewlyAddedMod(v) {
+      //adding missing modules   v = moduleCode
+      var user = firebase.auth().currentUser;
+      if (this.moduleList.includes(v) == false && v != null) {
+          //if module is not in user's module list
+          this.moduleList.push(v); //adding module_code into moduleList
+          if (!this.selectedModules.includes(v)) {
+          this.selectedModules.push(v);
+          }
+          firebase
           .firestore()
-          .collection("users")
-          .doc(user.uid)
+          .collection("module")
+          .where("module_code", "==", v)
           .get()
-          .then(function(doc) {
-            var user_modules = doc.data().module_list;
-            for (let i in user_modules) {
-              var mod = user_modules[i];
-              if (mod != "") {
-                firebase
+          .then(function(querySnapshot) {
+              querySnapshot.forEach(function(doc) {
+              var modID = doc.id;
+              firebase
                   .firestore()
-                  .collection("module")
-                  .doc(mod)
+                  .collection("users")
+                  .doc(user.uid)
                   .get()
                   .then(function(doc) {
-                    var modcode = doc.data().module_code;
-                    currentmod.push(modcode);
+                  var modulelist = doc.data().module_list;
+                  if (!modulelist.includes(modID)) {
+                    modulelist.push(modID);
+                    firebase
+                      .firestore()
+                      .collection("users")
+                      .doc(user.uid)
+                      .update({ module_list: modulelist 
+                    });
+                  }
                   });
-              }
-            }
+              });
           });
-        this.moduleList = currentmod;
-        this.selectedModules = currentmod;
-      });
+        }
+    },
+      displayCurrentMod() {
+        //retrieve and display existing modules from user's module list
+        firebase.auth().onAuthStateChanged(user => {
+            console.log(user);
+            let currentmod = [];
+            firebase
+            .firestore()
+            .collection("users")
+            .doc(user.uid)
+            .get()
+            .then(function(doc) {
+                var user_modules = doc.data().module_list;
+                for (let i in user_modules) {
+                var mod = user_modules[i];
+                if (mod != "") {
+                    firebase
+                    .firestore()
+                    .collection("module")
+                    .doc(mod)
+                    .get()
+                    .then(function(doc) {
+                        var modcode = doc.data().module_code;
+                        currentmod.push(modcode);
+                    });
+                }
+                }
+            });
+            this.moduleList = currentmod;
+            this.selectedModules = currentmod;
+        });        
     }
   },
-  created() {
+  async mounted() {
     this.fetchModules();
     this.displayCurrentMod();
     this.getWeek();
@@ -241,12 +338,12 @@ export default {
 </script> 
 
 <style scoped>
-.whitebox {
+/* .whitebox {
   color: rgb(42, 68, 99);
   background: white;
   text-align: center;
   margin-top: -10px;
   margin-bottom: 10px;
   max-height: 70px;
-}
+} */
 </style>
