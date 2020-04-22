@@ -32,7 +32,7 @@
       <v-card-text class='menu'> Module (Optional):
         <v-menu>
         <template v-slot:activator="{ on }">
-        <v-btn v-on="on" class="btn" @click="displayCurrentMod" v-model="module">
+        <v-btn v-on="on" class="btn" @click="displayCurrentMod">
           <span>{{ module }}</span>
            <v-icon bottom>mdi-menu-down</v-icon>
           </v-btn>
@@ -201,7 +201,7 @@
         <v-card-text class='menu'> Module (Optional):
                 <v-menu>
                 <template v-slot:activator="{ on }">
-                <v-btn v-on="on" class="btn" @click="displayCurrentMod" v-model="module">
+                <v-btn v-on="on" class="btn" @click="displayCurrentMod">
                   <span>{{ module }}</span>
                   <v-icon bottom>mdi-menu-down</v-icon>
                   </v-btn>
@@ -548,6 +548,7 @@ export default {
                 });
              }
           }
+          currentmod.push('Select Module')
         });
       this.modules = currentmod;
       console.log("Reached this code");
