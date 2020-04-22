@@ -548,6 +548,7 @@ export default {
                 });
              }
           }
+          currentmod.push('Select Module')
         });
       this.modules = currentmod;
       console.log("Reached this code");
