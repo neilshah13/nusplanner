@@ -2,15 +2,12 @@
 <v-app>
   <v-container class="cont">
     <div class='vappbar'>
-      <div class='toolbarbtn'>
         <v-app-bar class='toolbar' color='rgb(42, 68, 99)'>
           <v-toolbar-title class='toolbartitle'>Groups Created</v-toolbar-title>
-        </v-app-bar>
-      </div>
     <!-- <v-app-bar class='appbar' color='rgb(42, 68, 99)'> -->
-      <div align='right'>
       <!-- <div class='btnalign'> -->
-      <v-btn color='primary' @click='creategroup = true'>Create Group
+        <v-spacer></v-spacer>
+      <v-btn @click='creategroup = true'>Create Group
       <v-dialog v-model="creategroup" max-width="550">
       <CreateGroup @module-notselected='modulesnack' @update-grpsnack='updateSnackGrp' @update-grpsnack-nouserfalse='updategroupnouser' @update-grpsnack-notfilled='updateSnackGrpnotfilled' @get-groups='getGroups'>
       </CreateGroup>
@@ -58,8 +55,8 @@
       <v-btn color="error" text @click="modulenotselected = false">Close</v-btn>
     </v-snackbar>
       </v-btn>
-      </div>
-      </div>
+      </v-app-bar>
+    </div>
     <div v-if="displayText != ''" class='displayPadding'>
       {{ displayText }}
     </div>
@@ -570,21 +567,16 @@ export default {
 }
 .vappbar {
   padding: 20px;
-  /* display: inline-flex; */
-}
-.toolbar {
-  margin: auto;
-}
-.toolbarbtn {
-  padding: 10px;
+  display: flex;
+  justify-content: space-between;
 }
 .toolbartitle {
   color: white;
   padding: 10px;
 }
-.btnalign {
+/* .btnalign {
   margin: right;
-}
+} */
 .neweventform {
   display: block;
 }

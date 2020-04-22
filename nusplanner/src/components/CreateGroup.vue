@@ -271,7 +271,7 @@ export default {
           });
         for (var i = 0; i < this.members.length; i++) {
           let uid = this.members[i];
-          firebase
+          await firebase
             .firestore()
             .collection("users")
             .doc(uid)
