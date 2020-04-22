@@ -305,7 +305,7 @@ export default {
 <style scoped>
 .groupname >>> .v-text-field__slot input {
   color: black;
-  position: none;
+  position: relative;
 }
 .btn {
   transform: scale(0.9);

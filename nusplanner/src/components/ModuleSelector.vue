@@ -6,7 +6,8 @@
       src="https://lh3.googleusercontent.com/proxy/6_4hiPG1zpcr-h5C4h8M0pGIqQYxp1hUCoWJXaf_E2gk_MmGWsMtzNHPPBuYg_PdxPnK4DR5Cdm8AoaWa4UiXZdOThEJZDoXXSECzyFHedCLWdgTWTVLpMCGhBQ4LuLeM6_0IoXcYZxsqMTmsa5R"
       dense
     >
-      <v-toolbar-title class="col-sm-0">  &nbsp;</v-toolbar-title><v-autocomplete
+      <v-toolbar-title class="col-sm-0">  &nbsp;</v-toolbar-title>
+      <v-autocomplete
       v-model="select"
       :loading="loading"
       :items="items"
