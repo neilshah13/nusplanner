@@ -1,13 +1,42 @@
 <template>
-  <div id="app">
-      <v-card color="blue-grey darken-1" dark :loading="isUpdating" max-height="600">
+  <v-card>
+    <v-toolbar color="blue-grey">
+        <!-- <v-row align = "left"> -->
+        <!-- <v-btn class="btn" icon dark @click="closeGroupMembers" color="warning" outlined>
+          <v-icon>mdi-close</v-icon>
+        </v-btn> -->
+    </v-toolbar>
 
-        <v-img height="200" src="../..//public/teamwork.jpg">
-            <v-row align="end" class="pb-2 fill-height">>
-              <v-col>
-                <div class="headline"> {{ name }} </div>
+    <!-- Form start here ******************************-->
+    <div id="app">
+      <v-card color="blue-grey darken-1" dark :loading="isUpdating">
+        <v-img class ='image' src="../..//public/project.png">
+          <!-- <v-row> -->
+            <!-- <v-col class="text-right" cols="12"> -->
+              <!-- <v-menu bottom left transition="slide-y-transition">
+                <template v-slot:activator="{ on }">
+                  <v-btn icon v-on="on">
+                    <v-icon>mdi-dots-vertical</v-icon>
+                  </v-btn>
+                </template>
+                <v-list>
+                  <v-list-item @click="isUpdating = true">
+                    <v-list-item-action>
+                      <v-icon dark>mdi-settings</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                      <v-list-item-title>Update</v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list>
+              </v-menu> -->
+            <!-- </v-col> -->
+            <!-- <v-row class="pa-4" align="center" justify="center">
+              <v-col class="text-center">
+                <h3 class="headline">{{ name }}</h3>
               </v-col>
-            </v-row>
+            </v-row> -->
+          <!-- </v-row> -->
         </v-img>
 
         <v-form ref="form" class= "mb-0"> 
@@ -67,13 +96,10 @@
                   item-value="name"
                   multiple
                   :placeholder="text"
+                  no-data-text="Loading..."
                   @click="getUsers"
                   @change="addUser"
                 >
-                  <v-snackbar v-model="modulenotselected">
-                    You must select a module!
-                    <v-btn color="error" text @click="modulenotselected = false">Close</v-btn>
-                  </v-snackbar>
 
                   <template v-slot:selection="data">
                     <!-- @click="addUser(data.item)" -->
@@ -135,9 +161,9 @@ export default {
     modules: []
   }),
   methods: {
-    closeGroupMembers() {
-      this.$emit("update-grp");
-    },
+    // closeGroupMembers() {
+    //   this.$emit("update-grp");
+    // },
     reset() {
       this.$refs.form.reset();
     },
@@ -174,9 +200,9 @@ export default {
     async getUsers() {
       // should only get users in the module
       if (this.module == "Select Module") {
-        this.modulenotselected = true;
+        this.$emit("module-notselected");
       } else {
-        console.log("Getting the users");
+        console.log("members now are " + this.membernames);
         let users = [];
         let usernames = [];
         let module_id = "";
@@ -236,9 +262,15 @@ export default {
     async addGroups() {
       this.$emit("update-dialog");
       //add to group collection
-      if (this.grpName && this.module && this.members) {
+      var current = firebase.auth().currentUser;
+      console.log(this.members)
+      console.log(this.members.indexOf(current.uid)==-1)
+      if (this.members.indexOf(current.uid)==-1) {
+        this.$emit("update-grpsnack-nouserfalse");
+      }
+      else if (this.grpName && this.module != "Select Module" && this.members)  {
         this.$emit("update-grpsnack");
-        this.$emit("update-grp");
+        // this.$emit("update-grp");
         var groupadded = await firebase
           .firestore()
           .collection("group")
@@ -249,7 +281,7 @@ export default {
           });
         for (var i = 0; i < this.members.length; i++) {
           let uid = this.members[i];
-          firebase
+          await firebase
             .firestore()
             .collection("users")
             .doc(uid)
@@ -265,6 +297,7 @@ export default {
                 .update({ group_list: grplist });
             });
         }
+        this.$emit("get-groups");
         // console.log("saved members" + this.members)
         //clear out inputs after a submission
         this.grpName = "";
@@ -309,5 +342,10 @@ export default {
 }
 .btn {
   transform: scale(0.9);
+}
+.image {
+  padding: 20px;
+  height: 220px;
+  /* transform: scale(0.65); */
 }
 </style>
