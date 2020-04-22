@@ -60,6 +60,10 @@ export default {
                 if (user) {
                     await firebase.firestore().collection('users').doc(user.uid).get().then(async function(doc) {
                         var events = doc.data().event_list;
+                        if (events.length <= 1) {
+                            self.chartdata.datasets[0].data = count
+                            self.renderChart(self.chartdata, self.options)
+                        }
                         for (let i in events) {
                             var e = events[i];
                             /*console.log("EVENTS")
