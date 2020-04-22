@@ -1,11 +1,18 @@
 <template>
 <v-app>
   <v-container class="cont">
+    <div class='vappbar'>
+      <div class='toolbarbtn'>
+        <v-app-bar class='toolbar' color='rgb(42, 68, 99)'>
+          <v-toolbar-title class='toolbartitle'>Groups Created</v-toolbar-title>
+        </v-app-bar>
+      </div>
     <!-- <v-app-bar class='appbar' color='rgb(42, 68, 99)'> -->
-
+      <div align='right'>
+      <!-- <div class='btnalign'> -->
       <v-btn color='primary' @click='creategroup = true'>Create Group
       <v-dialog v-model="creategroup" max-width="550">
-      <CreateGroup @module-notselected='modulesnack' @update-grpsnack='updateSnackGrp' @update-grpsnack-nouserfalse='updategroupnouser' @update-grpsnack-notfilled='updateSnackGrpnotfilled'>
+      <CreateGroup @module-notselected='modulesnack' @update-grpsnack='updateSnackGrp' @update-grpsnack-nouserfalse='updategroupnouser' @update-grpsnack-notfilled='updateSnackGrpnotfilled' @get-groups='getGroups'>
       </CreateGroup>
       </v-dialog>
       <v-snackbar
@@ -51,9 +58,8 @@
       <v-btn color="error" text @click="modulenotselected = false">Close</v-btn>
     </v-snackbar>
       </v-btn>
-    <v-app-bar color='rgb(42, 68, 99)'>
-      <v-toolbar-title class='toolbartitle'>Groups Created</v-toolbar-title>
-    </v-app-bar>
+      </div>
+      </div>
     <div v-if="displayText != ''" class='displayPadding'>
       {{ displayText }}
     </div>
@@ -217,6 +223,7 @@ export default {
             console.log(grplist)
           })
           if (grplist.length != 0) {
+            this.displayText= ''
             let groupdb = await firebase.firestore().collection('group').get()
             groupdb.forEach(doc => {
               for(var i = 0; i < grplist.length; i++) {
@@ -288,7 +295,7 @@ export default {
                       if (user.name != "") {
                         users.push(user);
                         usernames.push(user.name);
-                        console.log(user.name);
+                        console.log(user.id);
                       }
                     });
                   });
@@ -303,7 +310,7 @@ export default {
         // if (username.length > 1) {
         //   user = username[username.length - 1];
         // }
-        this.membernames = username
+        this.membernames = username //changed reference
         console.log("now membernames is " + this.membernames)
         // let index = this.usernames.indexOf(username)
         // const index = this.indexWhere(this.users, item => item.name == user);
@@ -312,10 +319,19 @@ export default {
       },
       remove(username) {
         // find from array of name and id
-        let membername = this.editGroup.usernames.indexOf(username);
+        var members = []
+        let membername = this.membernames.indexOf(username)
+        members = this.membernames
+        members.splice(membername, 1)
+        // this.membernames.splice(membername,1)
+        // for (var i = 0; i < this.membernames.length; i++) {
+        //   members.push(this.membernames[i])
+        // }
+        this.membernames = members
+        // let membername = this.editGroup.usernames.indexOf(username);
         console.log("current members are " + this.membernames)
         console.log("original is " + this.editGroup.usernames)
-        this.membernames.splice(membername, 1);
+        // this.membernames.splice(membername, 1);
         // let member = this.members.indexOf(this.users[index].id)
         // const index = this.indexWhere(this.users, item => item.name == membername)
         // let member = this.users.indexOf(membername)
@@ -323,7 +339,6 @@ export default {
         // console.log(this.members)
         console.log("now current members are " + this.membernames)
         console.log("now original is " + this.editGroup.usernames)
-
       },
       // saveGroup(grp) {
       //     grp.name = this.currentlyEditing
@@ -348,7 +363,10 @@ export default {
       // },
       editGrp(grp) {
         var members = []
-        members = grp.usernames
+        // members = grp.usernames
+        for (var i= 0; i < grp.usernames.length; i++) {
+          members.push(grp.usernames[i])
+        }
         var grpInfo = {
           name: grp.name,
           id: grp.id,
@@ -360,10 +378,10 @@ export default {
         this.membernames = members;
         this.module = grp.module_id;
       },
-      // indexWhere: function(array, conditionFn) {
-      //   const item = array.find(conditionFn);
-      //   return array.indexOf(item);
-      // },
+      indexWhere: function(array, conditionFn) {
+        const item = array.find(conditionFn);
+        return array.indexOf(item);
+      },
       async updateGroup(grp) { //grp == editGroup
         // let index = this.groups.indexOf(grp)
         // let idx = this.indexWhere((this.groups, item => item.id == grp.id))
@@ -378,40 +396,92 @@ export default {
           console.log("now updating for changed grp members")
           //get user ids
           var userids = []
+          // var modusers = this.users
+          console.log("this.membernames = " + this.membernames)
+          console.log("this.users = " + this.users)
           for (var j=0 ; j < this.membernames.length; j++) {
-            var uid = this.users.filter(function(user){return user.name == this.membernames[i]}).id;
-            userids.push(uid)
+            for (var u = 0; u < this.users.length; u++) {
+              if (this.membernames[j] == this.users[u].name) {
+                console.log("the final member is " + this.users[u].name)
+                userids.push(this.users[u].id)
+              }
+            }
+            // let idx = this.indexWhere((modusers, item => item.name == this.membernames[j]))
+            // var uid = modusers[idx].id
+            // var uid = this.users.filter(function(user){return user.name == this.membernames[j]}).id;
+            // userids.push(uid)
           }
           await firebase.firestore().collection('group').doc(grp.id).update({
             name: this.currentlyEditing,
-            user_list: userids
+            user_list: userids //store list of userids
           })
           this.currentlyEditing=''
-          let compiled_list = this.membernames
-          compiled_list.concat(grp.usernames)
+          let memberids = []
+          for (var k = 0; k < grp.usernames.length; k++) {
+            for (var m = 0; m < this.users.length; m++) {
+              if (grp.usernames[k] == this.users[m].name) {
+                console.log("the original member is " + this.users[m].name)
+                memberids.push(this.users[m].id)
+              }
+            }
+            // let idx = this.indexWhere((modusers, item => item.name == grp.usernames[k]))
+            // var mid = modusers[idx].id
+            // var uid = this.users.filter(function(user){return user.name == this.membernames[j]}).id;
+            // memberids.push(mid)
+          }
+          let compiled_list = userids
+          console.log("compiled_list at the start :" + compiled_list)
+          console.log("memberids are now " + memberids)
+          compiled_list = compiled_list.concat(memberids)
+          console.log("after concat is " + compiled_list)
           compiled_list = [...new Set(compiled_list)] //to get all affected
+          console.log("compiled list is " + compiled_list)
           for (var i = 0; i < compiled_list.length; i++) { //for all affected users
-            await firebase
-            .firestore()
-            .collection("users")
-            .where("name", "==", compiled_list[i]) //check for each member
-            .get()
-            .then(function(qs) {
-              qs.forEach(function(doc) {
-                let grplist = doc.data().group_list
-                if (compiled_list[i] in grp.usernames) { //user is in the final list
-                  if (!grplist.includes(grp.id)) { //add grpid to the group_list
-                    grplist.push(grp.id)
-                    console.log("new grp added for " + compiled_list[i])
+              await firebase.firestore().collection('users').doc(compiled_list[i]).get().then(function(doc) {
+                  let grplist = doc.data().group_list
+                  console.log("new members' userids are "+ userids)
+                  console.log("original members' userids are "+ memberids)
+                  if (userids.includes(compiled_list[i])) { //user in final list
+                    if (! memberids.includes(compiled_list[i])) { //user not in original list
+                      if (!grplist.includes(grp.id)) { //grp id is newly added
+                        grplist.push(grp.id)
+                        console.log("new grp added for " + compiled_list[i])
+                        grplist = grplist.filter(item => item)
+                        firebase.firestore().collection('users').doc(compiled_list[i]).update({group_list:grplist})
+                      }
+                    }
+                  } else { //user not in final list
+                    if (memberids.includes(compiled_list[i])) { //user in original list
+                      if (grplist.includes(grp.id)) { //grp id to delete
+                        let index = grplist.indexOf(grp.id)
+                        console.log("index to be deleted for " + compiled_list[i] + " is " + index)
+                        grplist.splice(index, 1)
+                        grplist = grplist.filter(item => item)
+                        firebase.firestore().collection('users').doc(compiled_list[i]).update({group_list:grplist})
+                      }
+                    }
                   }
-                } else { //user is not in the final list
-                  if (grplist.includes(grp.id)) { //remove grpid from the group_list
-                    let index = grplist.indexOf(grp.id)
-                    console.log("index to be deleted for " + compiled_list[i] + " is " + index)
-                    grplist.splice(index, 1)
-                  }
-                }
-              })
+            // await firebase
+            // .firestore()
+            // .collection("users")
+            // .where("name", "==", compiled_list[i]) //check for each member
+            // .get()
+            // .then(function(qs) {
+            //   qs.forEach(function(doc) {
+            //     let grplist = doc.data().group_list
+            //     if (compiled_list[i] in grp.usernames) { //user is in the final list
+            //       if (!grplist.includes(grp.id)) { //add grpid to the group_list
+            //         grplist.push(grp.id)
+            //         console.log("new grp added for " + compiled_list[i])
+            //       }
+            //     } else { //user is not in the final list
+            //       if (grplist.includes(grp.id)) { //remove grpid from the group_list
+            //         let index = grplist.indexOf(grp.id)
+            //         console.log("index to be deleted for " + compiled_list[i] + " is " + index)
+            //         grplist.splice(index, 1)
+            //       }
+            //     }
+            //   })
             })
           }
           this.membernames= []
@@ -491,14 +561,29 @@ export default {
   justify-content: space-between;
 } */
 .cont {
-  width: 50%;
+  width: 55%;
 }
 .group {
   width: 500px;
   margin: auto;
+  padding: 5px;
+}
+.vappbar {
+  padding: 20px;
+  /* display: inline-flex; */
+}
+.toolbar {
+  margin: auto;
+}
+.toolbarbtn {
+  padding: 10px;
 }
 .toolbartitle {
   color: white;
+  padding: 10px;
+}
+.btnalign {
+  margin: right;
 }
 .neweventform {
   display: block;
@@ -513,14 +598,13 @@ export default {
 .buttons {
   padding: 12px;
 }
-.creategrpbutton {
-  color: rgb(42, 68, 99);
-  font: white;
-}
 .deletetitle {
   padding: 12px;
 }
 .displayPadding {
   padding: 50px;
+}
+.creategroupbtn {
+  padding: 20px;
 }
 </style>

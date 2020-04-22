@@ -1,22 +1,19 @@
 <template>
-  <v-card color="blue-grey">
-    <v-card-title primary-title class="justify-center">
-      <v-row>
+  <v-card>
+    <v-toolbar color="blue-grey">
         <!-- <v-row align = "left"> -->
-        <v-btn class="btn" icon dark @click="closeGroupMembers" color="warning" outlined>
-          <!-- closing button -->
+        <!-- <v-btn class="btn" icon dark @click="closeGroupMembers" color="warning" outlined>
           <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </v-row>
-    </v-card-title>
+        </v-btn> -->
+    </v-toolbar>
 
     <!-- Form start here ******************************-->
     <div id="app">
       <v-card color="blue-grey darken-1" dark :loading="isUpdating">
-        <v-img height="200" src="../..//public/teamwork.jpg">
-          <v-row>
-            <v-col class="text-right" cols="12">
-              <v-menu bottom left transition="slide-y-transition">
+        <v-img class ='image' src="../..//public/project.png">
+          <!-- <v-row> -->
+            <!-- <v-col class="text-right" cols="12"> -->
+              <!-- <v-menu bottom left transition="slide-y-transition">
                 <template v-slot:activator="{ on }">
                   <v-btn icon v-on="on">
                     <v-icon>mdi-dots-vertical</v-icon>
@@ -32,14 +29,14 @@
                     </v-list-item-content>
                   </v-list-item>
                 </v-list>
-              </v-menu>
-            </v-col>
-            <v-row class="pa-4" align="center" justify="center">
+              </v-menu> -->
+            <!-- </v-col> -->
+            <!-- <v-row class="pa-4" align="center" justify="center">
               <v-col class="text-center">
                 <h3 class="headline">{{ name }}</h3>
               </v-col>
-            </v-row>
-          </v-row>
+            </v-row> -->
+          <!-- </v-row> -->
         </v-img>
         <v-form ref="form">
           <v-container>
@@ -154,9 +151,9 @@ export default {
     modules: []
   }),
   methods: {
-    closeGroupMembers() {
-      this.$emit("update-grp");
-    },
+    // closeGroupMembers() {
+    //   this.$emit("update-grp");
+    // },
     reset() {
       this.$refs.form.reset();
       this.module = "Select Module"
@@ -196,7 +193,7 @@ export default {
       if (this.module == "Select Module") {
         this.$emit("module-notselected");
       } else {
-        console.log("Getting the users");
+        console.log("members now are " + this.membernames);
         let users = [];
         let usernames = [];
         let module_id = "";
@@ -263,7 +260,7 @@ export default {
       }
       else if (this.grpName && this.module != "Select Module" && this.members)  {
         this.$emit("update-grpsnack");
-        this.$emit("update-grp");
+        // this.$emit("update-grp");
         var groupadded = await firebase
           .firestore()
           .collection("group")
@@ -290,6 +287,7 @@ export default {
                 .update({ group_list: grplist });
             });
         }
+        this.$emit("get-groups");
         // console.log("saved members" + this.members)
         //clear out inputs after a submission
         this.grpName = "";
@@ -334,5 +332,10 @@ export default {
 }
 .btn {
   transform: scale(0.75);
+}
+.image {
+  padding: 20px;
+  height: 220px;
+  /* transform: scale(0.65); */
 }
 </style>
