@@ -8,7 +8,7 @@ export default{
           labels: [],
           datasets: [
             {
-              label: "Number of Events per Module",
+              label: "Number of Global Events per Module",
               fill: true,
               backgroundColor: "rgba(45,148,205,0.2)",
               borderColor: "rgba(45,148,205,1)",
@@ -32,7 +32,7 @@ export default{
           }          
         },
         animation: {
-          duration: 3000
+          duration: 5000
         }
       }),
       methods: {

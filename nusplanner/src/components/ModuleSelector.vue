@@ -62,34 +62,34 @@ export default {
       let curr = new Date
       let day = curr.getDate()
       let month = curr.getMonth() + 1
-      if (13 <= day <= 17 && month == 4) {
+      if (day <= 17 && month == 4) {
         this.Week = "AY2019/20, Semester 2, Week 13"
       }
-      else if (18 <= day <= 24 && month == 4) {
+      else if (day <= 24 && month == 4) {
         this.Week = "AY2019/20, Semester 2, Reading Week"
       }
-      else if ((25 <= day <= 30 && month == 4) || (day == 1 && month == 5)) {
+      else if ((day <= 30 && month == 4) || (day == 1 && month == 5)) {
         this.Week = "AY2019/20, Semester 2, Examination Week 1"
       }
-      else if (2 <= day <= 8 && month == 5) {
+      else if (day <= 8 && month == 5) {
         this.Week = "AY2019/20, Semester 2, Examination Week 2"
       }
-      else if (9 <= day <= 15 && month == 5) {
+      else if (day <= 15 && month == 5) {
         this.Week = "AY2019/20, Special Term, Week 1"
       }
-      else if (16 <= day <= 22 && month == 5) {
+      else if (day <= 22 && month == 5) {
         this.Week = "AY2019/20, Special Term, Week 2"
       }
-      else if (23 <= day <= 29 && month == 5) {
+      else if (day <= 29 && month == 5) {
         this.Week = "AY2019/20, Special Term, Week 3"
       }
-      else if ((30 <= day <= 31 && month == 5) || (1 <= day <= 5 && month == 6)) {
+      else if ((day <= 31 && month == 5) || (day <= 5 && month == 6)) {
         this.Week = "AY2019/20, Special Term, Week 4"
       }
-      else if (6 <= day <= 12 && month == 6) {
+      else if (day <= 12 && month == 6) {
         this.Week = "AY2019/20, Special Term, Week 5"
       }
-      else if (13 <= day <= 19 && month == 6) {
+      else if (day <= 19 && month == 6) {
         this.Week = "AY2019/20, Special Term, Week 6"
       }
     },
