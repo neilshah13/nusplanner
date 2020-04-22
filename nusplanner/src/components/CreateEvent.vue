@@ -548,6 +548,7 @@ export default {
                 });
              }
           }
+          currentmod.push('Select Module')
         });
       this.modules = currentmod;
       console.log("Reached this code");
@@ -744,7 +745,7 @@ export default {
                   name: this.group + " Meeting",
                   details: this.details,
                   startdate:this.startdate,
-                  enddate:this.enddate,
+                  enddate:this.startdate,
                   starttime: this.starttime,
                   endtime: this.endtime,
                   start: startinput,
