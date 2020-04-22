@@ -1,47 +1,5 @@
 <template>
   <v-container>
-    <!-- <v-row no-gutters>
-       <v-col> -->
-          <!-- add groupMembers -->
-<!--          <v-btn color="primary" dark @click.stop="groupMembers = true" class="mr-4">
-            Create Group
-          </v-btn>
-      </v-col> 
-      <v-col> -->
-          <!-- add event -->
-<!--          <v-btn color="primary" dark @click.stop="dialog = true">
-            New Event
-          </v-btn>
-      </v-col>
-      <v-col>
-        <v-btn outlined class="mr-4" color="grey darken-2" @click="viewDay">
-            Today
-          </v-btn>
-      </v-col>
-      <v-col> -->
-<!-- to pick the month/week/day view -->
-<!--          <v-menu bottom right>
-            <template v-slot:activator="{ on }">
-              <v-btn outlined v-on="on">
-                <span>{{ typeToLabel[type] }}</span>
-                <v-icon right>mdi-menu-down</v-icon>
-              </v-btn>
-            </template>
-            <v-list>
-              <v-list-item @click="type = 'day'">
-                <v-list-item-title>Day</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="type = 'week'">
-                <v-list-item-title>Week</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="type = 'month'">
-                <v-list-item-title>Month</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-      </v-col>
-  </v-row> -->
-
     <v-row justify="center" no gutters>
       <v-col>
        <!-- filter bar -->
@@ -196,6 +154,7 @@
           :now="today"
           :type="type"
           @click:event="showEvent"
+          @click:more="viewDay"
           @click:date="viewDay"
           @change="updateRange"
         ></v-calendar>
@@ -1037,7 +996,7 @@ export default {
         }
       })
       this.allEvents = events
-      this.events = events
+      this.filterEvents();
       },
       /* addEvent() function moved to CreateEvent.vue */
         async updateEvent (ev) {
