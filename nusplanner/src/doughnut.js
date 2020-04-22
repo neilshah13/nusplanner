@@ -21,7 +21,7 @@ export default{
             text: ''
           },
           animation: {
-            duration: 3000
+            duration: 5000
           }
         }
       }),

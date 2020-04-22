@@ -11,7 +11,7 @@ export default {
                 backgroundColor: ["rgba(140,45,205,0.2)"],
                 borderColor: new Array(7).fill("rgba(140,45,205,1)"),
                 fill: true,
-                label: "Number of deadlines"
+                label: "Number of Event/Assignment deadlines"
             }]
         },
         options: {
@@ -28,7 +28,7 @@ export default {
                 }]
             },
             animation: {
-                duration: 10
+                duration: 1
             },
             elements: {
                 line: {
@@ -49,27 +49,31 @@ export default {
                 this.chartdata.labels.push(day)
             }
 
-            // for (let i = 1; i <= 7; i++) {
-            //     console.log(week[i - 1])
-            // }
+            /*for (let i = 1; i <= 7; i++) {
+                console.log(week[i - 1])
+            }*/
 
             let count = new Array(7).fill(0);
 
             var self = this;
-            firebase.auth().onAuthStateChanged(function(user) {
+            firebase.auth().onAuthStateChanged(async function(user) {
                 if (user) {
-                    firebase.firestore().collection('users').doc(user.uid).get().then(async function(doc) {
+                    await firebase.firestore().collection('users').doc(user.uid).get().then(async function(doc) {
                         var events = doc.data().event_list;
+                        if (events.length <= 1) {
+                            self.chartdata.datasets[0].data = count
+                            self.renderChart(self.chartdata, self.options)
+                        }
                         for (let i in events) {
                             var e = events[i];
-                            console.log("EVENTS")
+                            /*console.log("EVENTS")
                             console.log(i)
-                            console.log(e)
+                            console.log(e)*/
                             if (e != "") {
                                 await firebase.firestore().collection('event').doc(e).get().then(function(doc) {
                                     let deadline = doc.data().enddate
-                                    console.log("CHECK")
-                                    console.log(week.includes(deadline))
+                                    //console.log("CHECK")
+                                    //console.log(week.includes(deadline))
                                     if (week.includes(deadline)) {
                                         if (deadline == week[0]) {
                                             count[0]++
