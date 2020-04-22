@@ -117,7 +117,7 @@
     </v-row>
 
 <!-- add GroupMembers dialog -->
-<v-dialog v-model="groupMembers" max-width="550">
+<!-- <v-dialog v-model="groupMembers" max-width="550">
 <creategroup @update-grp='updateGrp' @update-grpsnack='updateSnackGrp' @update-grpsnack-nouserfalse='updategroupnouser' @update-grpsnack-notfilled='updateSnackGrpnotfilled'></creategroup>
 </v-dialog>
   <v-snackbar
@@ -157,7 +157,7 @@
     >
       Close
     </v-btn>
-  </v-snackbar>
+  </v-snackbar> -->
 
 <!-- add event dialog -->
 <v-dialog v-model="dialog" max-width="550">
@@ -833,12 +833,12 @@
 <script>
 import firebase from "firebase";
 import CreateEvent from "./CreateEvent.vue"
-import CreateGroup from "./CreateGroup.vue"
+// import CreateGroup from "./CreateGroup.vue"
 import ColorPicker from 'vue-color-picker-wheel';
 export default {
         components:{
         createvent: CreateEvent,
-        creategroup: CreateGroup,
+        // creategroup: CreateGroup,
         ColorPicker,
       },
     data: () => ({
@@ -861,9 +861,6 @@ export default {
       eventfalse: false,
       assignmentfalse: false,
       grpmeetingfalse: false,
-      grpsnack: false, // snackbar for added groups
-      grpsnacknouser: false,
-      grpsnacknotfilled: false,
       deleteconfirm: false,
       deletepopup: false,
       FromStartTimeMenu: false,
@@ -941,18 +938,6 @@ export default {
         this.eventsnack = true;
         setTimeout(function(){ this.eventsnack = this.eventsnack.replace(true, false); }, 3000)
       }, 
-      updategroupnouser(){
-        this.grpsnacknouser = true;
-        setTimeout(function(){ this.grpsnacknouser = this.grpsnacknouser.replace(true, false); }, 3000)
-      }
-      ,updateSnackGrp() {
-        this.grpsnack = true;
-        setTimeout(function(){ this.grpsnack = this.grpsnack.replace(true, false); }, 3000)
-      },
-      updateSnackGrpnotfilled() {
-        this.grpsnacknotfilled = true;
-        setTimeout(function(){ this.grpsnacknotfilled = this.grpsnacknotfilled.replace(true, false); }, 3000)
-      },
       viewDay({ date }) {
         this.focus = date;
         this.type = "day"; // by default is month

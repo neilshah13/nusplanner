@@ -93,10 +93,6 @@
                   @click="getUsers"
                   @change="addUser"
                 >
-                  <v-snackbar v-model="modulenotselected">
-                    You must select a module!
-                    <v-btn color="error" text @click="modulenotselected = false">Close</v-btn>
-                  </v-snackbar>
 
                   <template v-slot:selection="data">
                     <!-- @click="addUser(data.item)" -->
@@ -198,7 +194,7 @@ export default {
     async getUsers() {
       // should only get users in the module
       if (this.module == "Select Module") {
-        this.modulenotselected = true;
+        this.$emit("module-notselected");
       } else {
         console.log("Getting the users");
         let users = [];
@@ -264,7 +260,7 @@ export default {
       console.log(this.members.indexOf(current.uid)==-1)
       if (this.members.indexOf(current.uid)==-1) {
         this.$emit("update-grpsnack-nouserfalse");
-      } 
+      }
       else if (this.grpName && this.module != "Select Module" && this.members)  {
         this.$emit("update-grpsnack");
         this.$emit("update-grp");

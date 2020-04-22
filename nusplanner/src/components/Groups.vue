@@ -1,31 +1,76 @@
 <template>
-<div id='app'>
+<v-app>
   <v-container class="cont">
-    <!-- <v-app-bar dark> -->
-    <v-app-bar color='rgb(42, 68, 99)'>
-        <v-toolbar-title class='toolbartitle'>Groups Created</v-toolbar-title>
-    </v-app-bar>
-    <v-container>
-      <v-btn color='creategrpbutton' @click='creategroup = true'>Create Group
-      <v-dialog v-model="creategroup">
-      <CreateGroup></CreateGroup>
+    <!-- <v-app-bar class='appbar' color='rgb(42, 68, 99)'> -->
+
+      <v-btn color='primary' @click='creategroup = true'>Create Group
+      <v-dialog v-model="creategroup" max-width="550">
+      <CreateGroup @module-notselected='modulesnack' @update-grpsnack='updateSnackGrp' @update-grpsnack-nouserfalse='updategroupnouser' @update-grpsnack-notfilled='updateSnackGrpnotfilled'>
+      </CreateGroup>
       </v-dialog>
+      <v-snackbar
+    v-model="grpsnack"
+  >
+    Group successfully created!
+    <v-btn
+      color="error"
+      text
+      @click="grpsnack = false"
+    >
+      Close
+    </v-btn>
+  </v-snackbar>
+
+  <v-snackbar
+    v-model="grpsnacknouser"
+  >
+    You need to include yourself in the group!
+    <v-btn
+      color="error"
+      text
+      @click="grpsnacknouser = false"
+    >
+      Close
+    </v-btn>
+  </v-snackbar>
+
+  <v-snackbar
+    v-model="grpsnacknotfilled"
+  >
+    Please make sure all fields are filled!
+    <v-btn
+      color="error"
+      text
+      @click="grpsnacknotfilled = false"
+    >
+      Close
+    </v-btn>
+  </v-snackbar>
+    <v-snackbar v-model="modulenotselected">
+      You must select a module!
+      <v-btn color="error" text @click="modulenotselected = false">Close</v-btn>
+    </v-snackbar>
       </v-btn>
+    <v-app-bar color='rgb(42, 68, 99)'>
+      <v-toolbar-title class='toolbartitle'>Groups Created</v-toolbar-title>
+    </v-app-bar>
+    <div v-if="displayText != ''" class='displayPadding'>
+      {{ displayText }}
+    </div>
       <v-row dense>
         <v-col v-for="(group, i) in groups" :key="i" cols="12">
-          <v-card :color="colors[i]" dark>
-            <div class="d-flex flex-no-wrap justify-space-between">
+          <v-card class='group' :color="colors[i]" dark>
               <div class='editingtoolbar'>
                 <v-card-title class="headline" v-text="group.name">
                 </v-card-title>
                 <div class='buttons'>
-                <v-btn icon v-if="group.name != editGroup.name"
+                <v-btn icon v-if="group.id != editGroup.id"
                   @click.prevent="editGrp(group)">
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
-                <v-btn text v-else @click="saveGroup(editGroup)">Save</v-btn>
+                <v-btn text v-else @click="updateGroup(editGroup)">Save</v-btn>
                 <!-- <v-btn icon class='mr-4' @click="deletepopup = true"> -->
-                <v-btn icon class='mr-4' @click="deleteGroup(group)">
+                <v-btn icon class='mr-4' @click="deletepopup = true">
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
                 <v-dialog v-model="deletepopup" max-width="300">
@@ -43,7 +88,7 @@
               <v-card-text align="left">
                 {{ arrange(group.usernames) }}
               </v-card-text>
-                  <v-card color="rgb(42, 68, 99)" v-if="group.name == editGroup.name">
+                  <v-card color="rgb(42, 68, 99)" v-if="group.id == editGroup.id">
                   <v-form ref="form" class="neweventform">
                     <v-text-field
                       class="groupname"
@@ -66,6 +111,7 @@
                     :placeholder="text"
                     @click="getUsers"
                     @change="addUser"
+                    no-data-text="Loading..."
                   >
                    <template v-slot:selection="data">
                     <!-- @click="addUser(data.item)" -->
@@ -83,29 +129,30 @@
                     </v-chip>
                    </template>
                     <template v-slot:item="data">
+                    <!-- <template>
+                      <v-list-item-content v-text="data.item"></v-list-item-content>
+                    </template> -->
                     <template v-if="typeof data.item !== 'object'">
                       <v-list-item-content v-text="data.item"></v-list-item-content>
                     </template>
                     <template v-else>
                       <v-list-item-content>
                         <v-list-item-title v-html="data.item.name"></v-list-item-title>
-                        <!-- <v-list-item-subtitle v-html="data.item.group"></v-list-item-subtitle> -->
+                        <v-list-item-subtitle v-html="data.item.group"></v-list-item-subtitle>
                       </v-list-item-content>
-                    </template>
+                     </template>
                   </template>
                   </v-autocomplete>
                 <v-card-actions>
-                  <v-btn text color="secondary" @click="editGroup= {}">Close</v-btn>
+                  <v-btn text color="white" @click="editGroup= {}">Close</v-btn>
                 </v-card-actions>
               </v-form>
               </v-card>
-            </div>
           </v-card>
         </v-col>
       </v-row>
     </v-container>
-  </v-container>
-</div>
+</v-app>
 </template>
 
 <script>
@@ -122,16 +169,20 @@ export default {
     },
     data: () => ({
       groups: [], //groups {name, module_id, usernames}
-      grpids: [], //group ids
       membernames: [], //user names from the group
       usernames: [], //users' names taking the mod
       users: [], //users with {name, id} taking the mod
       editGroup: {}, //stores grp
       currentlyEditing: '', //stores grp name
-      editIndex: '',
+      module: 'Select Module',
       creategroup: false,
       // search: null,
       deletepopup: false,
+      grpsnack: false,
+      grpsnacknouser: false,
+      grpsnacknotfilled: false,
+      modulenotselected: false,
+      displayText: '',
       text: "Select Group Members",
       // loading: false,
       colors: [
@@ -157,33 +208,47 @@ export default {
       async getGroups() {
           let grplist= [] // stores grpids
           let groups = [] // store group name and module and members list
-          await firebase.auth().onAuthStateChanged(async function(user) {
-          console.log("Current user is " + user.uid)
-          let uid= user.uid
-          firebase.firestore().collection('users').doc(uid).get().then(function(doc) {
+          // await firebase.auth().onAuthStateChanged(async function(user) {
+          var current = firebase.auth().currentUser;
+          console.log("Current user is " + current.uid)
+          let uid= current.uid
+          await firebase.firestore().collection('users').doc(uid).get().then(function(doc) {
             grplist = doc.data().group_list
             console.log(grplist)
           })
-          let groupdb = await firebase.firestore().collection('group').get()
-          groupdb.forEach(doc => {
-            for(var i = 0; i < grplist.length; i++) {
-              if (doc.id == grplist[i]) { //finding the grp
-                groups.push(doc.data()) //now showing userids
+          if (grplist.length != 0) {
+            let groupdb = await firebase.firestore().collection('group').get()
+            groupdb.forEach(doc => {
+              for(var i = 0; i < grplist.length; i++) {
+                if (doc.id == grplist[i]) { //finding the grp
+                  var groupInfo = {
+                    name: doc.data().name,
+                    module_id: doc.data().module_id,
+                    user_list: doc.data().user_list,
+                    id: doc.id
+                  }
+                  groups.push(groupInfo) //now showing userids
+                  // groups.push(doc.data()) //now showing userids
+                }
               }
+            })
+            for (var j = 0; j < groups.length; j++) {
+              let members = groups[j].user_list
+              let usernames = []
+              for (var k = 0; k < members.length; k++) {
+                let memberid = members[k]
+                firebase.firestore().collection('users').doc(memberid).get().then(function(doc) {
+                  console.log(doc.data().name)
+                  usernames.push(doc.data().name)
+                })
+              }
+              // groups[j]['id'] = grplist[j]
+              groups[j]['usernames'] = usernames
+              console.log("usernames are " + usernames)
+              delete groups[j].user_list
             }
-          })
-          for (var j = 0; j < groups.length; j++) {
-            let members = groups[j].user_list
-            let usernames = []
-            for (var k = 0; k < members.length; k++) {
-              let memberid = members[k]
-              firebase.firestore().collection('users').doc(memberid).get().then(function(doc) {
-                console.log(doc.data().name)
-                usernames.push(doc.data().name)
-              })
-            }
-            groups[j]['usernames'] = usernames
-            delete groups[j].user_list
+          } else {
+            this.displayText = "You currently have no groups. Click on the Create Group button to create a group!"
           }
         // firebase.firestore().collection('group').get().then(querySnapShot => {
         //   querySnapShot.forEach(doc => {
@@ -194,52 +259,52 @@ export default {
             // }
             // this.groups.push(groupInfo)
           // })
-        })
         this.groups = groups
         this.grpids = grplist
       },
       async getUsers() {
         // should only get users in the module
-        let users = [];
-        let usernames = [];
-        let module_id = "";
-        await firebase
-          .firestore()
-          .collection("module")
-          .where("module_code", "==", this.editGroup.module_id) //module code
-          .get()
-          .then(function(qs) {
-            qs.forEach(function(document) {
-              module_id = document.id;
-              firebase
-                .firestore()
-                .collection("users")
-                .where("module_list", "array-contains", module_id) //module id
-                .get()
-                .then(function(querySnapshot) {
-                  querySnapshot.forEach(function(doc) {
-                    let user = { name: "", id: "" };
-                    user.name = doc.data().name;
-                    user.id = doc.id;
-                    if (user.name != "") {
-                      users.push(user);
-                      usernames.push(user.name);
-                      console.log(user.name);
-                    }
+          let users = [];
+          let usernames = [];
+          let module_id = "";
+          await firebase
+            .firestore()
+            .collection("module")
+            .where("module_code", "==", this.editGroup.module_id) //module code
+            .get()
+            .then(function(qs) {
+              qs.forEach(function(document) {
+                module_id = document.id;
+                firebase
+                  .firestore()
+                  .collection("users")
+                  .where("module_list", "array-contains", module_id) //module id
+                  .get()
+                  .then(function(querySnapshot) {
+                    querySnapshot.forEach(function(doc) {
+                      let user = { name: "", id: "" };
+                      user.name = doc.data().name;
+                      user.id = doc.id;
+                      if (user.name != "") {
+                        users.push(user);
+                        usernames.push(user.name);
+                        console.log(user.name);
+                      }
+                    });
                   });
-                });
-            });
+              });
           });
-        this.users = users;
-        this.usernames = usernames;
+          this.users = users;
+          this.usernames = usernames;
       },
       addUser(username) {
-        // find from array of name and id
-        let user = username;
-        if (username.length > 1) {
-          user = username[username.length - 1];
-        }
-        this.membernames.push(user)
+        // username is array of current users
+        // let user = username;
+        // if (username.length > 1) {
+        //   user = username[username.length - 1];
+        // }
+        this.membernames = username
+        console.log("now membernames is " + this.membernames)
         // let index = this.usernames.indexOf(username)
         // const index = this.indexWhere(this.users, item => item.name == user);
         // let userid = this.users[index].id;
@@ -260,13 +325,13 @@ export default {
         console.log("now original is " + this.editGroup.usernames)
 
       },
-      saveGroup(grp) {
-          grp.name = this.currentlyEditing
-          grp.usernames = this.membernames
-          this.updateGroup(grp)
-          this.editGroup = {}
-          this.currentlyEditing= ''
-      },
+      // saveGroup(grp) {
+      //     grp.name = this.currentlyEditing
+      //     grp.usernames = this.membernames
+      //     this.updateGroup(grp)
+      //     this.editGroup = {}
+      //     this.currentlyEditing= ''
+      // },
       // showGroup ({ nativeGroup, group }) {
       //   const open = () => {
       //     this.editGroup = group
@@ -282,39 +347,47 @@ export default {
       //   nativeGroup.stopPropagation()
       // },
       editGrp(grp) {
+        var members = []
+        members = grp.usernames
+        var grpInfo = {
+          name: grp.name,
+          id: grp.id,
+          module_id: grp.module_id,
+          usernames: grp.usernames
+        }
+        this.editGroup = grpInfo;
         this.currentlyEditing = grp.name;
-        this.editGroup = grp;
-        this.membernames = grp.usernames;
-        this.editIndex = this.groups.indexOf(grp)
+        this.membernames = members;
+        this.module = grp.module_id;
       },
+      // indexWhere: function(array, conditionFn) {
+      //   const item = array.find(conditionFn);
+      //   return array.indexOf(item);
+      // },
       async updateGroup(grp) { //grp == editGroup
         // let index = this.groups.indexOf(grp)
-        console.log("edited index is " + this.editIndex)
-        var grpid
-        await firebase
-          .firestore()
-          .collection("group")
-          .where("name", "==", this.groups[this.editIndex].name) //original name
-          .get()
-          .then(function(qs) {
-            qs.forEach(function(doc) {
-              grpid = doc.id
-              console.log("docid is " + doc.id)
-            })
-          })
-        console.log("grpid updated is " + grpid)
-        if (grp.usernames == this.groups[this.editIndex].usernames) { //if only grp name changed
+        // let idx = this.indexWhere((this.groups, item => item.id == grp.id))
+        // console.log("index of grp edited is " + idx)
+        if (grp.usernames == this.membernames) { //if only grp name changed
           console.log("now updating for unchanged grp members")
-          await firebase.firestore().collection('group').doc(grpid).update({
-            name: grp.name,
+          await firebase.firestore().collection('group').doc(grp.id).update({
+            name: this.currentlyEditing,
           })
+          this.currentlyEditing=''
         } else { //if user list changed
           console.log("now updating for changed grp members")
-          await firebase.firestore().collection('group').doc(grpid).update({
-            name: grp.name,
-            user_list: grp.usernames
+          //get user ids
+          var userids = []
+          for (var j=0 ; j < this.membernames.length; j++) {
+            var uid = this.users.filter(function(user){return user.name == this.membernames[i]}).id;
+            userids.push(uid)
+          }
+          await firebase.firestore().collection('group').doc(grp.id).update({
+            name: this.currentlyEditing,
+            user_list: userids
           })
-          let compiled_list = this.groups[this.editIndex].usernames
+          this.currentlyEditing=''
+          let compiled_list = this.membernames
           compiled_list.concat(grp.usernames)
           compiled_list = [...new Set(compiled_list)] //to get all affected
           for (var i = 0; i < compiled_list.length; i++) { //for all affected users
@@ -327,13 +400,13 @@ export default {
               qs.forEach(function(doc) {
                 let grplist = doc.data().group_list
                 if (compiled_list[i] in grp.usernames) { //user is in the final list
-                  if (!grplist.includes(grpid)) { //add grpid to the group_list
-                    grplist.push(grpid)
+                  if (!grplist.includes(grp.id)) { //add grpid to the group_list
+                    grplist.push(grp.id)
                     console.log("new grp added for " + compiled_list[i])
                   }
                 } else { //user is not in the final list
-                  if (grplist.includes(grpid)) { //remove grpid from the group_list
-                    let index = grplist.indexOf(grpid)
+                  if (grplist.includes(grp.id)) { //remove grpid from the group_list
+                    let index = grplist.indexOf(grp.id)
                     console.log("index to be deleted for " + compiled_list[i] + " is " + index)
                     grplist.splice(index, 1)
                   }
@@ -341,36 +414,31 @@ export default {
               })
             })
           }
+          this.membernames= []
+          this.editGroup={}
         }
         this.getGroups()
       },
       async deleteGroup (grp) { //selected grp
         this.deletepopup = false;
-        var grpid
-        await firebase
-          .firestore()
-          .collection("group")
-          .where("name", "==", grp.name) //check for each member
-          .get()
-          .then(function(qs) {
-            qs.forEach(function(doc) {
-              grpid = doc.id
-            })
+        let groupdb = await firebase.firestore().collection('group').get()
+          groupdb.forEach(async function(doc) {
+              if (doc.id == grp.id) { //finding the grp
+                await firebase.firestore().collection('group').doc(grp.id).delete();
+              }
           })
-        console.log("grpid deleted is " + grpid)
         // var user = firebase.auth().currentUser;
-        await firebase.firestore().collection('group').doc(grpid).delete();
         await firebase
         .firestore()
         .collection("users")
-        .where("group_list", "array-contains", grpid)
+        .where("group_list", "array-contains", grp.id)
         .get()
         .then(function(qs) {
           qs.forEach(async function(doc) {
             let userid = doc.id;
             await firebase.firestore().collection('users').doc(userid).get().then(function(document) {
               let grplist = document.data().group_list
-              let grpidx = grplist.indexOf(grpid)
+              let grpidx = grplist.indexOf(grp.id)
               if (grpidx !== -1) grplist.splice(grpidx, 1); //removing grp from users' group_list
               grplist = grplist.filter(item => item)
               firebase.firestore().collection('users').doc(userid).update({group_list:grplist})
@@ -379,6 +447,25 @@ export default {
         })
         this.getGroups()
       },
+      modulesnack() {
+        this.modulenotselected = true;
+        setTimeout(function(){ this.modulenotselected = this.modulenotselected.replace(true, false); }, 3000)
+      },
+      updategroupnouser(){
+        this.grpsnacknouser = true;
+        setTimeout(function(){ this.grpsnacknouser = this.grpsnacknouser.replace(true, false); }, 3000)
+      },
+      updateSnackGrp() {
+        this.grpsnack = true;
+        this.creategroup = false;
+        setTimeout(function(){ this.grpsnack = this.grpsnack.replace(true, false); }, 3000)
+        this.getGroups()
+      },
+      updateSnackGrpnotfilled() {
+        this.grpsnacknotfilled = true;
+        setTimeout(function(){ this.grpsnacknotfilled = this.grpsnacknotfilled.replace(true, false); }, 3000)
+      },
+
     },
     created() {
       this.getGroups();
@@ -399,8 +486,16 @@ export default {
 </script>
 
 <style scoped>
+/* .appbar {
+  display: flex;
+  justify-content: space-between;
+} */
 .cont {
-    width: 50%;
+  width: 50%;
+}
+.group {
+  width: 500px;
+  margin: auto;
 }
 .toolbartitle {
   color: white;
@@ -421,5 +516,11 @@ export default {
 .creategrpbutton {
   color: rgb(42, 68, 99);
   font: white;
+}
+.deletetitle {
+  padding: 12px;
+}
+.displayPadding {
+  padding: 50px;
 }
 </style>
