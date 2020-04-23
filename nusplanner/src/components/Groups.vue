@@ -1,6 +1,5 @@
 <template>
 <v-app>
-  <v-container class="cont">
     <div class='vappbar'>
         <v-app-bar class='toolbar' color='rgb(42, 68, 99)'>
           <v-toolbar-title class='toolbartitle'>Groups Created</v-toolbar-title>
@@ -156,7 +155,6 @@
           </v-card>
         </v-col>
       </v-row>
-    </v-container>
 </v-app>
 </template>
 
@@ -505,12 +503,12 @@ export default {
         .then(function(qs) {
           qs.forEach(async function(doc) {
             let userid = doc.id;
-            await firebase.firestore().collection('users').doc(userid).get().then(async function(document) {
+            await firebase.firestore().collection('users').doc(userid).get().then(function(document) {
               let grplist = document.data().group_list
               let grpidx = grplist.indexOf(grp.id)
               if (grpidx !== -1) grplist.splice(grpidx, 1); //removing grp from users' group_list
               grplist = grplist.filter(item => item)
-              await firebase.firestore().collection('users').doc(userid).update({group_list:grplist})
+              firebase.firestore().collection('users').doc(userid).update({group_list:grplist})
             })
           })
         })
@@ -568,13 +566,12 @@ export default {
   padding: 5px;
 }
 .vappbar {
-  padding: 20px;
   display: flex;
   justify-content: space-between;
 }
 .toolbartitle {
   color: white;
-  padding: 10px;
+  padding: 80px;
 }
 /* .btnalign {
   margin: right;
