@@ -12,8 +12,11 @@
       <CreateGroup @module-notselected='modulesnack' @update-grpsnack='updateSnackGrp' @update-grpsnack-nouserfalse='updategroupnouser' @update-grpsnack-notfilled='updateSnackGrpnotfilled' @get-groups='getGroups'>
       </CreateGroup>
       </v-dialog>
+      </v-btn>
+        </v-app-bar>
       <v-snackbar
     v-model="grpsnack"
+    class='grpsnackbar'
   >
     Group successfully created!
     <v-btn
@@ -40,6 +43,7 @@
 
   <v-snackbar
     v-model="grpsnacknotfilled"
+    class='grpsnackbar'
   >
     Please make sure all fields are filled!
     <v-btn
@@ -54,8 +58,6 @@
       You must select a module!
       <v-btn color="error" text @click="modulenotselected = false">Close</v-btn>
     </v-snackbar>
-      </v-btn>
-      </v-app-bar>
     </div>
     <div v-if="displayText != ''" class='displayPadding'>
       {{ displayText }}
@@ -503,12 +505,12 @@ export default {
         .then(function(qs) {
           qs.forEach(async function(doc) {
             let userid = doc.id;
-            await firebase.firestore().collection('users').doc(userid).get().then(function(document) {
+            await firebase.firestore().collection('users').doc(userid).get().then(async function(document) {
               let grplist = document.data().group_list
               let grpidx = grplist.indexOf(grp.id)
               if (grpidx !== -1) grplist.splice(grpidx, 1); //removing grp from users' group_list
               grplist = grplist.filter(item => item)
-              firebase.firestore().collection('users').doc(userid).update({group_list:grplist})
+              await firebase.firestore().collection('users').doc(userid).update({group_list:grplist})
             })
           })
         })
@@ -598,5 +600,8 @@ export default {
 }
 .creategroupbtn {
   padding: 20px;
+}
+.grpsnackbar {
+  display: flex;
 }
 </style>

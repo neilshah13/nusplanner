@@ -202,7 +202,7 @@ export default {
       if (this.module == "Select Module") {
         this.$emit("module-notselected");
       } else {
-        //console.log("members now are " + this.membernames);
+        console.log("members now are " + this.membernames);
         let users = [];
         let usernames = [];
         let module_id = "";
@@ -227,7 +227,7 @@ export default {
                     if (user.name != "") {
                       users.push(user);
                       usernames.push(user.name);
-                      //console.log(user.name);
+                      console.log(user.name);
                     }
                   });
                 });
@@ -247,6 +247,8 @@ export default {
       const index = this.indexWhere(this.users, item => item.name == user);
       let userid = this.users[index].id;
       this.members.push(userid);
+      console.log("membernames are now " + this.membernames)
+      console.log("members are now " + this.members)
     },
     remove(username) {
       // find from array of name and id
@@ -256,15 +258,13 @@ export default {
       // const index = this.indexWhere(this.users, item => item.name == membername)
       // let member = this.users.indexOf(membername)
       this.members.splice(membername, 1);
-      // console.log(this.membernames)
-      // console.log(this.members)
+      console.log("membernames are now " + this.membernames)
+      console.log("members are now " + this.members)
     },
     async addGroups() {
       this.$emit("update-dialog");
       //add to group collection
       var current = firebase.auth().currentUser;
-      //console.log(this.members)
-      //console.log(this.members.indexOf(current.uid)==-1)
       if (this.members.indexOf(current.uid)==-1) {
         this.$emit("update-grpsnack-nouserfalse");
       }
@@ -301,11 +301,13 @@ export default {
         // console.log("saved members" + this.members)
         //clear out inputs after a submission
         this.grpName = "";
-        this.members = "";
+        this.members = [];
+        this.membernames = [];
         this.module = "";
         // console.log("saved")
       } else {
-        alert("Please make sure all fields are filled!");
+        this.$emit("update-grpsnack-notfilled")
+        // alert("Please make sure all fields are filled!");
       }
       //add to user collection's group_list
     }
