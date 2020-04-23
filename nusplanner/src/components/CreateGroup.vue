@@ -221,13 +221,15 @@ export default {
                 .get()
                 .then(function(querySnapshot) {
                   querySnapshot.forEach(function(doc) {
+                    console.log("now user is " + doc.data().name)
                     let user = { name: "", id: "" };
                     user.name = doc.data().name;
                     user.id = doc.id;
+                    console.log(user)
                     if (user.name != "") {
                       users.push(user);
                       usernames.push(user.name);
-                      console.log(user.name);
+                    //console.log(user.id);
                     }
                   });
                 });
