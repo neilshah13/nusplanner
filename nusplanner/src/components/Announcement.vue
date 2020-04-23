@@ -41,7 +41,7 @@
                   <v-container class="header">
                     {{announcement.module_id}}:
                     <i>
-                      <strong>{{announcement.coordinator}}</strong>
+                      <strong>{{announcement.coordinator}} </strong>
                     </i>
                     <p class="date">{{announcement.date_posted}}</p>
                   </v-container>
