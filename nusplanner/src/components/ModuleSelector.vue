@@ -154,11 +154,11 @@ export default {
           });
         }
     },
-      displayCurrentMod() {
+      async displayCurrentMod() {
         //retrieve and display existing modules from user's module list
-        firebase.auth().onAuthStateChanged(user => {
+        let currentmod = [];
+        await firebase.auth().onAuthStateChanged(user => {
             console.log(user);
-            let currentmod = [];
             firebase
             .firestore()
             .collection("users")
@@ -181,9 +181,9 @@ export default {
                 }
                 }
             });
+        });       
             this.moduleList = currentmod;
             this.selectedModules = currentmod;
-        });        
     }
   },
   async mounted() {

@@ -50,14 +50,14 @@ Vue.config.productionTip = false
 import firebase from 'firebase';
 
 var firebaseConfig = {
-    apiKey: "AIzaSyDYr2wvDJ7h9JAaM0Z350Ux_4SNEhZaiUo",
-    authDomain: "nusplanner-74bbd.firebaseapp.com",
-    databaseURL: "https://nusplanner-74bbd.firebaseio.com",
-    projectId: "nusplanner-74bbd",
-    storageBucket: "nusplanner-74bbd.appspot.com",
-    messagingSenderId: "613681838416",
-    appId: "1:613681838416:web:72116564d894d2690d1455",
-    measurementId: "G-Q7RHBW61B0"
+    apiKey: "AIzaSyCNITTk9s0rFYy4gSE960qlap1flcMzNnQ",
+    authDomain: "nusplannerfinal.firebaseapp.com",
+    databaseURL: "https://nusplannerfinal.firebaseio.com",
+    projectId: "nusplannerfinal",
+    storageBucket: "nusplannerfinal.appspot.com",
+    messagingSenderId: "95015250506",
+    appId: "1:95015250506:web:bd29c273acadf5b9c694b3",
+    measurementId: "G-0MFYG8Q9R5"
 };
 
 firebase.initializeApp(firebaseConfig);
