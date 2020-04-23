@@ -14,7 +14,7 @@ export default [
         name: 'home',
         component: Main,
         meta: {
-            auth: true
+            auth: true,
         }
     },
     {

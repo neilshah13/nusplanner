@@ -194,7 +194,7 @@ export default {
       //retrieve and display existing modules from user's module list
       let currentmod = [];
       await firebase.auth().onAuthStateChanged(user => {
-        console.log(user);
+        //console.log(user);
         firebase
           .firestore()
           .collection("users")
