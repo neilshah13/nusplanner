@@ -7,12 +7,8 @@
       dense
       class = "justify-space-between"
     >
-<<<<<<< HEAD
       <v-toolbar-title >  &nbsp;</v-toolbar-title>
       <v-autocomplete
-=======
-      <v-toolbar-title class="col-sm-0">&nbsp;</v-toolbar-title><v-autocomplete
->>>>>>> upstream/master
       v-model="select"
       :loading="loading"
       :items="items"
@@ -30,16 +26,47 @@
       <v-btn icon @click=" displayNewlyAddedMod(select)">
         <v-icon>mdi-plus</v-icon>
       </v-btn>
-<<<<<<< HEAD
-      <v-spacer/>
-      <v-card-subtitle class= "col-sm-13">{{Week}}</v-card-subtitle>
-=======
       <v-spacer></v-spacer>
       <v-card-subtitle>{{Week}}</v-card-subtitle>
->>>>>>> upstream/master
     </v-toolbar>
 
     <h1></h1>
+    <div>
+    <v-snackbar
+      v-model="snackbar"
+      :timeout="timeout"
+      :multi-line="multiLine"
+      :top="true"
+       color="error"
+    > 
+      {{ text }}
+      <v-btn
+        color="blue"
+        text
+        @click="snackbar=false"
+      >
+        Close
+      </v-btn>
+    </v-snackbar>
+  </div>
+  <div>
+    <v-snackbar
+      v-model="snack"
+      :timeout="timeout1"
+      :multi-line="multiLine"
+      :top="true"
+      color="success"
+    > 
+      {{ text1 }}
+      <v-btn
+        color="blue"
+        text
+        @click="snackbar1=false"
+      >
+        Close
+      </v-btn>
+    </v-snackbar>
+  </div>
   </div>
 </template>
 
@@ -57,7 +84,13 @@ export default {
       moduleList: [],
       allModules: [],
       selectedModules: [],
-      Week: ""
+      Week: "",
+      snackbar: false,
+      text: "Module selected already in module list",
+      timeout: 2000,
+      snack: false,
+      text1: "Module successfully added",
+      timeout1: 2000
     };
   },
   watch: {
@@ -120,6 +153,7 @@ export default {
       //adding missing modules   v = moduleCode
       var user = firebase.auth().currentUser;
       if (this.moduleList.includes(v) == false && v != null) {
+        this.snack = true;
         //if module is not in user's module list
         this.moduleList.push(v); //adding module_code into moduleList
         if (!this.selectedModules.includes(v)) {
@@ -151,6 +185,9 @@ export default {
                 });
             });
           });
+      }
+      else {
+        this.snackbar = true;
       }
     },
     async displayCurrentMod() {
@@ -203,6 +240,6 @@ export default {
   max-height: 70px;
 }
 .btn {
-  max-width: 30px;
+  max-width: 300px;
 }
 </style>

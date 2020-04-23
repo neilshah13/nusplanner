@@ -56,11 +56,7 @@ var firebaseConfig = {
     messagingSenderId: "95015250506",
     appId: "1:95015250506:web:bd29c273acadf5b9c694b3",
     measurementId: "G-0MFYG8Q9R5"
-<<<<<<< HEAD
-  };
-=======
 };
->>>>>>> upstream/master
 
 firebase.initializeApp(firebaseConfig);
 const database = firebase.firestore();
