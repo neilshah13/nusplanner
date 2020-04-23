@@ -5,14 +5,15 @@
       color=#36567d
       src="https://lh3.googleusercontent.com/proxy/6_4hiPG1zpcr-h5C4h8M0pGIqQYxp1hUCoWJXaf_E2gk_MmGWsMtzNHPPBuYg_PdxPnK4DR5Cdm8AoaWa4UiXZdOThEJZDoXXSECzyFHedCLWdgTWTVLpMCGhBQ4LuLeM6_0IoXcYZxsqMTmsa5R"
       dense
+      class = "justify-space-between"
     >
-      <v-toolbar-title class="col-sm-0">  &nbsp;</v-toolbar-title>
+      <v-toolbar-title >  &nbsp;</v-toolbar-title>
       <v-autocomplete
       v-model="select"
       :loading="loading"
       :items="items"
       :search-input.sync="search"
-      class="col-sm-3"
+      class="col-sm-3 btn"
       cache-items
       flat
       hide-no-data
@@ -26,7 +27,7 @@
         <v-icon>mdi-plus</v-icon>
       </v-btn>
       <v-spacer/>
-      <v-card-subtitle>{{Week}}</v-card-subtitle>
+      <v-card-subtitle class= "col-sm-13">{{Week}}</v-card-subtitle>
     </v-toolbar>
 
     <h1>
@@ -203,5 +204,8 @@ export default {
   text-align: center;
   margin: auto;
   max-height: 70px;
+}
+.btn {
+  max-width: 30px;
 }
 </style>

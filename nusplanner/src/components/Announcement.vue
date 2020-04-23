@@ -16,7 +16,7 @@
               <v-container class="contain">
                 {{announcement.module_id}}:
                 <strong>{{announcement.title}}</strong> by
-                <i>{{announcement.coordinator}}</i>
+                <i>{{announcement.coordinator }} </i>
                 <p>{{announcement.date_posted}}</p>
               </v-container>
               <v-divider></v-divider>
@@ -41,7 +41,7 @@
                   <v-container class="header">
                     {{announcement.module_id}}:
                     <i>
-                      <strong>{{announcement.coordinator}}</strong>
+                      <strong>{{announcement.coordinator}} </strong>
                     </i>
                     <txt>{{announcement.date_posted}}</txt>
                   </v-container>

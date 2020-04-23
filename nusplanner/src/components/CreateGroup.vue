@@ -137,7 +137,7 @@
         <v-btn color="error" class = "ml-4 mb-4" @click="reset">Reset</v-btn>
       </v-card>
     </div>
-  
+  </v-card>
 </template>
 
 <script>
