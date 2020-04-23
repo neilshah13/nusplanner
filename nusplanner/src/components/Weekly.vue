@@ -190,7 +190,7 @@
               </v-form>
               <br>
               <br>
-              <font size="1"> **This is a Global Event and cannot be changed! </font>
+              <font size="1"> **This is set by your module coordinator and cannot be changed! </font>
             </v-card-text>
 
             <v-card-actions>

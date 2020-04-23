@@ -59,7 +59,7 @@
               type="submit"
               color="rgb(42, 68, 99)"
               @click.stop="dialog=false"
-            >Okay</btn>
+            >Close</btn>
           </div>
         </v-container>
       </v-card>
