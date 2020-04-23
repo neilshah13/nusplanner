@@ -89,7 +89,6 @@ export default {
   },
   methods: {
       async fetchItems() {
-      console.log("HELLO USER")
       let todo=[]
       let item={}
       await firebase.auth().onAuthStateChanged(function(user) {
