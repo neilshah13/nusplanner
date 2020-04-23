@@ -9,22 +9,6 @@
         <txt>Click to view full</txt>
         <p></p>
         <div class="list">
-<<<<<<< HEAD
-        <!--minimised view of announcement -->
-        <div v-for="announcement in announcements" v-bind:key="announcement.coordinator">
-          <v-card>
-            <p>
-              <v-container class="contain">
-                {{announcement.module_id}}:
-                <strong>{{announcement.title}}</strong> by
-                <i>{{announcement.coordinator }} </i>
-                <p>{{announcement.date_posted}}</p>
-              </v-container>
-              <v-divider></v-divider>
-            </p>
-          </v-card>
-        </div>
-=======
           <!--minimised view of announcement -->
           <div v-for="announcement in announcements" v-bind:key="announcement.coordinator">
             <v-card>
@@ -39,7 +23,6 @@
               </p>
             </v-card>
           </div>
->>>>>>> upstream/master
         </div>
         <v-divider></v-divider>
       </v-container>
