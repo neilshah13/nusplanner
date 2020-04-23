@@ -37,11 +37,11 @@
       :timeout="timeout"
       :multi-line="multiLine"
       :top="true"
-       color="error"
+       color="red darken-4"
     > 
       {{ text }}
       <v-btn
-        color="blue"
+        color="black"
         text
         @click="snackbar=false"
       >
@@ -59,7 +59,7 @@
     > 
       {{ text1 }}
       <v-btn
-        color="blue"
+        color="black"
         text
         @click="snackbar1=false"
       >
