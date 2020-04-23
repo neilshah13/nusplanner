@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-toolbar dark color=#36486b dense>
+        <v-toolbar dark color="#36567d" dense>
             <v-toolbar-title class="col-sm-2">DashBoard</v-toolbar-title>
         </v-toolbar>
         <div id="charts">
