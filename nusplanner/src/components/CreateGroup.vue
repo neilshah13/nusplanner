@@ -303,7 +303,7 @@ export default {
         this.grpName = "";
         this.members = [];
         this.membernames = [];
-        this.module = "";
+        this.module = "Select Module";
         // console.log("saved")
       } else {
         this.$emit("update-grpsnack-notfilled")

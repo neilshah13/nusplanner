@@ -1,7 +1,8 @@
 <template>
-<v-app>
-    <div class='vappbar'>
-        <v-app-bar class='toolbar' color='rgb(42, 68, 99)'>
+  <v-app>
+  <v-container>
+    <div>
+        <v-toolbar color="#36567d">
           <v-toolbar-title class='toolbartitle'>Groups Created</v-toolbar-title>
     <!-- <v-app-bar class='appbar' color='rgb(42, 68, 99)'> -->
       <!-- <div class='btnalign'> -->
@@ -12,7 +13,7 @@
       </CreateGroup>
       </v-dialog>
       </v-btn>
-        </v-app-bar>
+        </v-toolbar>
       <v-snackbar
     v-model="grpsnack"
     class='grpsnackbar'
@@ -155,6 +156,7 @@
           </v-card>
         </v-col>
       </v-row>
+  </v-container>
 </v-app>
 </template>
 
@@ -558,16 +560,12 @@ export default {
   justify-content: space-between;
 } */
 .cont {
-  width: 55%;
+  padding: 0;
 }
 .group {
   width: 500px;
   margin: auto;
   padding: 5px;
-}
-.vappbar {
-  display: flex;
-  justify-content: space-between;
 }
 .toolbartitle {
   color: white;
