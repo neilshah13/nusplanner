@@ -9,20 +9,20 @@
         <txt>Click to view full</txt>
         <p></p>
         <div class="list">
-        <!--minimised view of announcement -->
-        <div v-for="announcement in announcements" v-bind:key="announcement.coordinator">
-          <v-card>
-            <p>
-              <v-container class="contain">
-                {{announcement.module_id}}:
-                <strong>{{announcement.title}}</strong> by
-                <i>{{announcement.coordinator}}</i>
-                <p>{{announcement.date_posted}}</p>
-              </v-container>
-              <v-divider></v-divider>
-            </p>
-          </v-card>
-        </div>
+          <!--minimised view of announcement -->
+          <div v-for="announcement in announcements" v-bind:key="announcement.coordinator">
+            <v-card>
+              <p>
+                <v-container class="contain">
+                  {{announcement.module_id}}:
+                  <strong>{{announcement.title}}</strong> by
+                  <i>{{announcement.coordinator}}</i>
+                  <p>{{announcement.date_posted}}</p>
+                </v-container>
+                <v-divider></v-divider>
+              </p>
+            </v-card>
+          </div>
         </div>
         <v-divider></v-divider>
       </v-container>
@@ -37,13 +37,13 @@
             <div v-for="announcement in announcements" v-bind:key="announcement.coordinator">
               <!--detailed view of announcement -->
               <v-card>
-                <p>
+                <p class="outer">
                   <v-container class="header">
                     {{announcement.module_id}}:
                     <i>
                       <strong>{{announcement.coordinator}}</strong>
                     </i>
-                    <txt>{{announcement.date_posted}}</txt>
+                    <p class="date">{{announcement.date_posted}}</p>
                   </v-container>
                   <v-card-text>
                     <strong>{{announcement.title}} :</strong>
@@ -124,7 +124,7 @@ h1 {
 h2 {
   color: #36486b;
 }
-p {
+.outer {
   font-size: 14px;
   color: #36486b;
   background: white;
@@ -143,6 +143,10 @@ p {
   background: #36486b;
 }
 .txt {
+  padding: 10px;
+  font-size: 11px;
+}
+.date {
   padding: 10px;
   font-size: 11px;
 }
@@ -165,7 +169,7 @@ p {
   padding: 0;
   /* transform: scale(0.82); */
   cursor: pointer;
-  max-height:300px;
+  max-height: 300px;
 }
 .btn {
   background-color: #36486b;

@@ -142,36 +142,36 @@ export default {
           });
       }
     },
-      async displayCurrentMod() {
-        //retrieve and display existing modules from user's module list
-        let currentmod = [];
-        await firebase.auth().onAuthStateChanged(user => {
-            console.log(user);
-            firebase
-            .firestore()
-            .collection("users")
-            .doc(user.uid)
-            .get()
-            .then(function(doc) {
-                var user_modules = doc.data().module_list;
-                for (let i in user_modules) {
-                var mod = user_modules[i];
-                if (mod != "") {
-                    firebase
-                    .firestore()
-                    .collection("module")
-                    .doc(mod)
-                    .get()
-                    .then(function(doc) {
-                        var modcode = doc.data().module_code;
-                        currentmod.push(modcode);
-                    });
-                }
-                }
-            });
-        });       
-            this.moduleList = currentmod;
-            this.selectedModules = currentmod;
+    async displayCurrentMod() {
+      //retrieve and display existing modules from user's module list
+      let currentmod = [];
+      await firebase.auth().onAuthStateChanged(user => {
+        console.log(user);
+        firebase
+          .firestore()
+          .collection("users")
+          .doc(user.uid)
+          .get()
+          .then(function(doc) {
+            var user_modules = doc.data().module_list;
+            for (let i in user_modules) {
+              var mod = user_modules[i];
+              if (mod != "") {
+                firebase
+                  .firestore()
+                  .collection("module")
+                  .doc(mod)
+                  .get()
+                  .then(function(doc) {
+                    var modcode = doc.data().module_code;
+                    currentmod.push(modcode);
+                  });
+              }
+            }
+          });
+      });
+      this.moduleList = currentmod;
+      this.selectedModules = currentmod;
     }
   },
   async mounted() {
