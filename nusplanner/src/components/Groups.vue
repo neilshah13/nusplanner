@@ -284,22 +284,23 @@ export default {
               qs.forEach(function(document) {
                 module_id = document.id;
                 firebase
-                  .firestore()
-                  .collection("users")
-                  .where("module_list", "array-contains", module_id) //module id
-                  .get()
-                  .then(function(querySnapshot) {
-                    querySnapshot.forEach(function(doc) {
-                      let user = { name: "", id: "" };
-                      user.name = doc.data().name;
-                      user.id = doc.id;
-                      if (user.name != "") {
-                        users.push(user);
-                        usernames.push(user.name);
-                        //console.log(user.id);
-                      }
-                    });
-                  });
+              .firestore()
+              .collection("users")
+              .where("module_list", "array-contains", module_id) //module id
+              .get()
+              .then(function(querySnapshot) {
+                querySnapshot.forEach(function(doc) {
+                  let user = { name: "", id: "" };
+                  user.name = doc.data().name;
+                  user.id = doc.id;
+                  console.log("now user is "+ user)
+                  if (user.name != "") {
+                    users.push(user);
+                    usernames.push(user.name);
+                    // console.log(user.id);
+                  }
+                });
+              });
               });
           });
           this.users = users;
@@ -391,15 +392,13 @@ export default {
         // let index = this.groups.indexOf(grp)
         // let idx = this.indexWhere((this.groups, item => item.id == grp.id))
         // console.log("index of grp edited is " + idx)
-        if (this.currentlyEditing == grp.name) { //if nth changed
-          
-        } else if (grp.usernames == this.membernames) { //if only grp name changed
+        if (this.currentlyEditing != grp.name && grp.usernames == this.membernames) { //if only grp name changed
           //console.log("now updating for unchanged grp members")
           await firebase.firestore().collection('group').doc(grp.id).update({
             name: this.currentlyEditing,
           })
           this.currentlyEditing=''
-        } else { //if user list changed
+        } else if (this.currentlyEditing == grp.name && grp.usernames != this.membernames) { //if user list changed
           //console.log("now updating for changed grp members")
           //get user ids
           var userids = []
