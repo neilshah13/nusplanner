@@ -985,13 +985,12 @@ export default {
       },
       /* addEvent() function moved to CreateEvent.vue */
         async updateEvent (ev) {
-          console.log("Hello editing Group meeting here!!!")
-          console.log(ev)
             if (ev.starttime != ''){ //If there is time input, then we input both date and time into database
               var startinput = ev.startdate.concat(" ".concat(ev.starttime))
               var endinput = ev.enddate.concat(" ".concat(ev.endtime))
             } else { //if no time input, we just input date into database
-              startinput = ev.startdate
+              if(ev.type==2){startinput = ev.enddate}
+              else{startinput = ev.startdate}
               endinput = ev.enddate
             }
             await firebase.firestore().collection('event').doc(ev.id).update({

@@ -76,7 +76,7 @@ export default {
     displayCurrentMod() {
         //retrieve and display existing modules from user's module list
         firebase.auth().onAuthStateChanged(user => {
-            console.log(user);
+            //console.log(user);
             let currentmod = [];
             firebase
             .firestore()

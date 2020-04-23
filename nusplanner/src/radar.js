@@ -44,7 +44,6 @@ export default{
                 var mods = doc.data().module_list;
                 for (let i in mods) {
                   var mod = mods[i];
-                  //console.log(mod)
                   if (mod != "") {
                     await firebase.firestore().collection('module').doc(mod).get().then(function(doc) {
                       self.chartdata.labels.push(doc.data().module_code);
