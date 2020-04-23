@@ -75,7 +75,7 @@
                 </v-btn>
                 <v-btn text v-else @click="updateGroup(editGroup)">Save</v-btn>
                 <!-- <v-btn icon class='mr-4' @click="deletepopup = true"> -->
-                <v-btn icon class='mr-4' @click="deletepopup = true">
+                <v-btn icon class='mr-4' @click="deletepopup = true, selectGrp(group)">
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
                 <v-dialog v-model="deletepopup" max-width="300">
@@ -83,7 +83,7 @@
                     <v-toolbar-title class='deletetitle'>
                       Confirm delete?
                     </v-toolbar-title>
-                  <v-btn color='primary' class= 'mr-4' @click="deleteGroup(group)"> Confirm </v-btn>
+                  <v-btn color='primary' class= 'mr-4' @click="deleteGroup(selected.id)"> Confirm </v-btn>
                   <v-btn @click='deletepopup = false'> Cancel </v-btn>
                   </v-card>
                 </v-dialog>
@@ -178,6 +178,7 @@ export default {
       usernames: [], //users' names taking the mod
       users: [], //users with {name, id} taking the mod
       editGroup: {}, //stores grp
+      selected: {},
       currentlyEditing: '', //stores grp name
       module: 'Select Module',
       creategroup: false,
@@ -233,6 +234,7 @@ export default {
                     user_list: doc.data().user_list,
                     id: doc.id
                   }
+                  // console.log("grpid for group " + doc.data().name + " is " + doc.id)
                   groups.push(groupInfo) //now showing userids
                   // groups.push(doc.data()) //now showing userids
                 }
@@ -310,6 +312,7 @@ export default {
         //   user = username[username.length - 1];
         // }
         this.membernames = username //changed reference
+        // console.log("now members are " + username)
         //console.log("now membernames is " + this.membernames)
         // let index = this.usernames.indexOf(username)
         // const index = this.indexWhere(this.users, item => item.name == user);
@@ -377,6 +380,9 @@ export default {
         this.membernames = members;
         this.module = grp.module_id;
       },
+      selectGrp(group) {
+        this.selected = group
+      },
       indexWhere: function(array, conditionFn) {
         const item = array.find(conditionFn);
         return array.indexOf(item);
@@ -385,7 +391,9 @@ export default {
         // let index = this.groups.indexOf(grp)
         // let idx = this.indexWhere((this.groups, item => item.id == grp.id))
         // console.log("index of grp edited is " + idx)
-        if (grp.usernames == this.membernames) { //if only grp name changed
+        if (this.currentlyEditing == grp.name) { //if nth changed
+          
+        } else if (grp.usernames == this.membernames) { //if only grp name changed
           //console.log("now updating for unchanged grp members")
           await firebase.firestore().collection('group').doc(grp.id).update({
             name: this.currentlyEditing,
@@ -488,26 +496,28 @@ export default {
         }
         this.getGroups()
       },
-      async deleteGroup (grp) { //selected grp
+      async deleteGroup (grp) { //selected grp's id
         this.deletepopup = false;
-        let groupdb = await firebase.firestore().collection('group').get()
-          groupdb.forEach(async function(doc) {
-              if (doc.id == grp.id) { //finding the grp
-                await firebase.firestore().collection('group').doc(grp.id).delete();
-              }
-          })
+        // console.log("the group deleted is " + grp)
+        // let groupdb = await firebase.firestore().collection('group').get()
+        //   groupdb.forEach(async function(doc) {
+        //       if (doc.id == grp.id) { //finding the grp
+        //       console.log("now deleting grp " + doc.id)
+        await firebase.firestore().collection('group').doc(grp).delete();
+          //     }
+          // })
         // var user = firebase.auth().currentUser;
         await firebase
         .firestore()
         .collection("users")
-        .where("group_list", "array-contains", grp.id)
+        .where("group_list", "array-contains", grp)
         .get()
         .then(function(qs) {
           qs.forEach(async function(doc) {
             let userid = doc.id;
             await firebase.firestore().collection('users').doc(userid).get().then(function(document) {
               let grplist = document.data().group_list
-              let grpidx = grplist.indexOf(grp.id)
+              let grpidx = grplist.indexOf(grp)
               if (grpidx !== -1) grplist.splice(grpidx, 1); //removing grp from users' group_list
               grplist = grplist.filter(item => item)
               firebase.firestore().collection('users').doc(userid).update({group_list:grplist})
