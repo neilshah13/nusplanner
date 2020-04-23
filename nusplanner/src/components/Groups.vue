@@ -213,11 +213,11 @@ export default {
           let groups = [] // store group name and module and members list
           // await firebase.auth().onAuthStateChanged(async function(user) {
           var current = firebase.auth().currentUser;
-          console.log("Current user is " + current.uid)
+          //console.log("Current user is " + current.uid)
           let uid= current.uid
           await firebase.firestore().collection('users').doc(uid).get().then(function(doc) {
             grplist = doc.data().group_list
-            console.log(grplist)
+            //console.log(grplist)
           })
           if (grplist.length != 0) {
             this.displayText= ''
@@ -242,13 +242,13 @@ export default {
               for (var k = 0; k < members.length; k++) {
                 let memberid = members[k]
                 firebase.firestore().collection('users').doc(memberid).get().then(function(doc) {
-                  console.log(doc.data().name)
+                  //console.log(doc.data().name)
                   usernames.push(doc.data().name)
                 })
               }
               // groups[j]['id'] = grplist[j]
               groups[j]['usernames'] = usernames
-              console.log("usernames are " + usernames)
+              //console.log("usernames are " + usernames)
               delete groups[j].user_list
             }
           } else {
@@ -292,7 +292,7 @@ export default {
                       if (user.name != "") {
                         users.push(user);
                         usernames.push(user.name);
-                        console.log(user.id);
+                        //console.log(user.id);
                       }
                     });
                   });
@@ -308,7 +308,7 @@ export default {
         //   user = username[username.length - 1];
         // }
         this.membernames = username //changed reference
-        console.log("now membernames is " + this.membernames)
+        //console.log("now membernames is " + this.membernames)
         // let index = this.usernames.indexOf(username)
         // const index = this.indexWhere(this.users, item => item.name == user);
         // let userid = this.users[index].id;
@@ -326,16 +326,16 @@ export default {
         // }
         this.membernames = members
         // let membername = this.editGroup.usernames.indexOf(username);
-        console.log("current members are " + this.membernames)
-        console.log("original is " + this.editGroup.usernames)
+        //console.log("current members are " + this.membernames)
+        //console.log("original is " + this.editGroup.usernames)
         // this.membernames.splice(membername, 1);
         // let member = this.members.indexOf(this.users[index].id)
         // const index = this.indexWhere(this.users, item => item.name == membername)
         // let member = this.users.indexOf(membername)
         // console.log(this.membernames)
         // console.log(this.members)
-        console.log("now current members are " + this.membernames)
-        console.log("now original is " + this.editGroup.usernames)
+        //console.log("now current members are " + this.membernames)
+        //console.log("now original is " + this.editGroup.usernames)
       },
       // saveGroup(grp) {
       //     grp.name = this.currentlyEditing
@@ -384,22 +384,22 @@ export default {
         // let idx = this.indexWhere((this.groups, item => item.id == grp.id))
         // console.log("index of grp edited is " + idx)
         if (grp.usernames == this.membernames) { //if only grp name changed
-          console.log("now updating for unchanged grp members")
+          //console.log("now updating for unchanged grp members")
           await firebase.firestore().collection('group').doc(grp.id).update({
             name: this.currentlyEditing,
           })
           this.currentlyEditing=''
         } else { //if user list changed
-          console.log("now updating for changed grp members")
+          //console.log("now updating for changed grp members")
           //get user ids
           var userids = []
           // var modusers = this.users
-          console.log("this.membernames = " + this.membernames)
-          console.log("this.users = " + this.users)
+          //console.log("this.membernames = " + this.membernames)
+          //console.log("this.users = " + this.users)
           for (var j=0 ; j < this.membernames.length; j++) {
             for (var u = 0; u < this.users.length; u++) {
               if (this.membernames[j] == this.users[u].name) {
-                console.log("the final member is " + this.users[u].name)
+                //console.log("the final member is " + this.users[u].name)
                 userids.push(this.users[u].id)
               }
             }
@@ -417,7 +417,7 @@ export default {
           for (var k = 0; k < grp.usernames.length; k++) {
             for (var m = 0; m < this.users.length; m++) {
               if (grp.usernames[k] == this.users[m].name) {
-                console.log("the original member is " + this.users[m].name)
+                //console.log("the original member is " + this.users[m].name)
                 memberids.push(this.users[m].id)
               }
             }
@@ -427,22 +427,22 @@ export default {
             // memberids.push(mid)
           }
           let compiled_list = userids
-          console.log("compiled_list at the start :" + compiled_list)
-          console.log("memberids are now " + memberids)
+          //console.log("compiled_list at the start :" + compiled_list)
+          //console.log("memberids are now " + memberids)
           compiled_list = compiled_list.concat(memberids)
-          console.log("after concat is " + compiled_list)
+          //console.log("after concat is " + compiled_list)
           compiled_list = [...new Set(compiled_list)] //to get all affected
-          console.log("compiled list is " + compiled_list)
+          //console.log("compiled list is " + compiled_list)
           for (var i = 0; i < compiled_list.length; i++) { //for all affected users
               await firebase.firestore().collection('users').doc(compiled_list[i]).get().then(function(doc) {
                   let grplist = doc.data().group_list
-                  console.log("new members' userids are "+ userids)
-                  console.log("original members' userids are "+ memberids)
+                  //console.log("new members' userids are "+ userids)
+                  //console.log("original members' userids are "+ memberids)
                   if (userids.includes(compiled_list[i])) { //user in final list
                     if (! memberids.includes(compiled_list[i])) { //user not in original list
                       if (!grplist.includes(grp.id)) { //grp id is newly added
                         grplist.push(grp.id)
-                        console.log("new grp added for " + compiled_list[i])
+                        //console.log("new grp added for " + compiled_list[i])
                         grplist = grplist.filter(item => item)
                         firebase.firestore().collection('users').doc(compiled_list[i]).update({group_list:grplist})
                       }
@@ -451,7 +451,7 @@ export default {
                     if (memberids.includes(compiled_list[i])) { //user in original list
                       if (grplist.includes(grp.id)) { //grp id to delete
                         let index = grplist.indexOf(grp.id)
-                        console.log("index to be deleted for " + compiled_list[i] + " is " + index)
+                        //console.log("index to be deleted for " + compiled_list[i] + " is " + index)
                         grplist.splice(index, 1)
                         grplist = grplist.filter(item => item)
                         firebase.firestore().collection('users').doc(compiled_list[i]).update({group_list:grplist})

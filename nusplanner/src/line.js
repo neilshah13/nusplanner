@@ -66,14 +66,9 @@ export default {
                         }
                         for (let i in events) {
                             var e = events[i];
-                            /*console.log("EVENTS")
-                            console.log(i)
-                            console.log(e)*/
                             if (e != "") {
                                 await firebase.firestore().collection('event').doc(e).get().then(function(doc) {
                                     let deadline = doc.data().enddate
-                                    //console.log("CHECK")
-                                    //console.log(week.includes(deadline))
                                     if (week.includes(deadline)) {
                                         if (deadline == week[0]) {
                                             count[0]++

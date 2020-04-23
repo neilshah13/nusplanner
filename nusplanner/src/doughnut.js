@@ -37,16 +37,11 @@ export default{
                 querySnapShot.forEach(doc => {
                   if (doc.data().done == false) {
                       undone++
-                      //console.log(doc.data().done)
-                      //console.log(undone)
                   } else {
                    done++
                   }
                 })
               var total = done+undone
-              //console.log("DONE HERE")
-              // console.log(undone)
-              // console.log(total)
               self.chartdata.datasets[0].data.push(Math.round(done*100/total))
               self.chartdata.datasets[0].data.push(Math.round(undone*100/total))
               self.options.title.text = Math.round(done*100/total) + '% of Tasks Completed'

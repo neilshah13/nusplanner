@@ -70,7 +70,7 @@ export default {
       firebase.auth().onAuthStateChanged(async function(user) {
         if (user) {
           user.displayName = null
-          console.log("Successful login");
+          //console.log("Successful login");
           self.$router.push({ path: "/home" });
           //console.log(user.uid)
           await firebase.firestore().collection("users").doc(user.uid).get().then(function(doc) {

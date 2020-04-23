@@ -79,7 +79,6 @@ export default {
     };
   },
   mounted() {
-    //console.log("Ran Announcement Code");
     this.$root.$on("announcement-module", data => {
       this.runAnnouncements(data);
     });

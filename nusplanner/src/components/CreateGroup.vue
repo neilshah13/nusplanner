@@ -137,7 +137,7 @@
         <v-btn color="error" class = "ml-4 mb-4" @click="reset">Reset</v-btn>
       </v-card>
     </div>
-  
+  </v-card>
 </template>
 
 <script>
@@ -202,7 +202,7 @@ export default {
       if (this.module == "Select Module") {
         this.$emit("module-notselected");
       } else {
-        console.log("members now are " + this.membernames);
+        //console.log("members now are " + this.membernames);
         let users = [];
         let usernames = [];
         let module_id = "";
@@ -227,7 +227,7 @@ export default {
                     if (user.name != "") {
                       users.push(user);
                       usernames.push(user.name);
-                      console.log(user.name);
+                      //console.log(user.name);
                     }
                   });
                 });
@@ -263,8 +263,8 @@ export default {
       this.$emit("update-dialog");
       //add to group collection
       var current = firebase.auth().currentUser;
-      console.log(this.members)
-      console.log(this.members.indexOf(current.uid)==-1)
+      //console.log(this.members)
+      //console.log(this.members.indexOf(current.uid)==-1)
       if (this.members.indexOf(current.uid)==-1) {
         this.$emit("update-grpsnack-nouserfalse");
       }

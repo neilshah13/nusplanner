@@ -114,9 +114,9 @@ export default {
             edit: false,
             uid: user.uid
           })
-          console.log("Successful Creation of data for user");
+          //console.log("Successful Creation of data for user");
           self.$router.push({ path : '/home' });
-          console.log("pushed to home page")
+          //console.log("pushed to home page")
         }
       });
     }

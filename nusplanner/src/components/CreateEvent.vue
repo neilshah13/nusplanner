@@ -522,7 +522,7 @@ export default {
     async displayCurrentMod() {
       //retrieve and display existing modules from user's module list
       await firebase.auth().onAuthStateChanged(user => {
-        console.log(user)
+        //console.log(user)
         let currentmod = [];
         firebase
         .firestore()
@@ -530,12 +530,11 @@ export default {
         .doc(user.uid)
         .get()
         .then(function(doc) {
-          console.log("Ran this");
           var user_modules = doc.data().module_list;
-          console.log(user_modules);
+          //console.log(user_modules);
           for (let i in user_modules) {
             var mod = user_modules[i];
-            console.log(mod);
+            //console.log(mod);
             if (mod != "") {
               firebase
                 .firestore()
@@ -551,8 +550,7 @@ export default {
           currentmod.push('Select Module')
         });
       this.modules = currentmod;
-      console.log("Reached this code");
-      console.log(this.modules);
+      //console.log(this.modules);
       });
     },
     async displayCurrentGroups() {
@@ -589,7 +587,6 @@ export default {
       this.groupids = grpids;
       this.groupmods = modids;
       this.groups = currentgroups;
-      console.log("Reached this code");
       });
     },
       updateGrp() {
@@ -621,8 +618,7 @@ export default {
         this.$emit('getEventsfromDatabase') //calls the getEvent from Weekly.vue to update the calendar
       },
       submittedAssignment() {
-        console.log("hi")
-        console.log(this.name && this.enddate)
+        //console.log(this.name && this.enddate)
         if (this.name && this.enddate) { //Takes in as long as there is a date
           this.$emit('update-dialog')
           this.$emit('update-eventsnack')
@@ -651,10 +647,10 @@ export default {
             eventlist = doc.data().event_list
             eventlist.push(id)
             eventlist = eventlist.filter(item => item)
-            console.log(eventlist)
+            //console.log(eventlist)
             firebase.firestore().collection('users').doc(uid).update({event_list:eventlist})
         })
-        console.log("Added event into user's event_list!")
+        //console.log("Added event into user's event_list!")
         this.name = '',
         this.details = '',
         this.startdate = '',
@@ -666,8 +662,7 @@ export default {
         this.color= '#1976D2' // default event color
       },
       async addEvent () {
-        console.log("HIHIIH")
-        console.log(this.starttime)
+        //console.log(this.starttime)
         if (this.name && this.startdate && this.enddate) { //Takes in as long as there is a date
           if (this.starttime != ''){ //If there is time input, then we input both date and time into database
             var startinput = this.startdate.concat(" ".concat(this.starttime))
@@ -735,12 +730,12 @@ export default {
               var groupid = this.groupids[index]
               var modid = this.groupmods[index]
               var userlist = []
-              console.log(groupid)
+              //console.log(groupid)
               await firebase.firestore().collection('group').doc(groupid).get().then(function(doc) {
                 userlist = doc.data().user_list
               })
               for (let i in userlist) {
-                console.log("user is " + userlist[i])
+                //console.log("user is " + userlist[i])
                 var eventAdded = await firebase.firestore().collection('event').add({ //update event collection
                   name: this.group + " Meeting",
                   details: this.details,
@@ -762,7 +757,7 @@ export default {
                   eventlist = doc.data().event_list
                   eventlist.push(eventAdded.id)
                   eventlist = eventlist.filter(item => item)
-                  console.log(eventlist)
+                  //console.log(eventlist)
                   firebase.firestore().collection('users').doc(userlist[i]).update({event_list:eventlist})
                 })
                }
